@@ -1,0 +1,1852 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="description" content="Kleine Übungen für Gedächtnis, Sprache und Handgeschicklichkeit — für Menschen nach einem Schlaganfall oder mit einer Demenzerkrankung. Ohne Zeitdruck und ohne Punkte.">
+<meta name="theme-color" content="#EFF2EE">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kopf & Hand">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Kopf &amp; Hand</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<style>
+/* ------------------------------------------------------------------
+   Kopf & Hand — Übungen für Kopf und Hände
+   Bewusst ein einziges, helles Farbschema: für Menschen mit
+   Sehschwäche ist heller Grund mit dunkler Schrift verlässlich
+   lesbar. Statt Dunkelmodus gibt es einen Kontrast-Regler.
+   ------------------------------------------------------------------ */
+
+:root{
+  --paper:      #EFF2EE;
+  --paper-deep: #E6E8E6;
+  --card:       #FFFFFF;
+  --ink:        #16201A;
+  --ink-2:      #4E5A51;
+  --line:       #D2D5D2;
+  --line-2:     #B7BCB8;
+  --green:      #2A6B4C;
+  --green-deep: #1D4C36;
+  --green-soft: #DFEDE4;
+  --honey:      #A66A15;
+  --honey-soft: #F6E9D2;
+  --sky:        #2B5E7E;
+  --sky-soft:   #DCE9F0;
+  --soil:       #A38A6A;
+  --soil-deep:  #7C6650;
+  --shadow:     0 2px 0 rgba(22,32,26,.06), 0 8px 24px -12px rgba(22,32,26,.28);
+  --radius:     16px;
+  --tap:        4.4rem;
+
+  /* Jede Übung setzt ihre eigene Farbe in diese vier Marken ein.
+     --wash tönt den ganzen Bildschirm ganz leicht mit ein, damit man
+     schon am Hintergrund merkt, worin man gerade steckt. */
+  --akzent:      #2A6B4C;
+  --akzent-deep: #1D4C36;
+  --akzent-soft: #DCEBE2;
+  --wash:        #EFF2EE;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", "Noto Sans", sans-serif;
+}
+
+/* Kontrastverstärkung (Einstellungen) */
+body.hc{
+  --paper:      #FFFFFF;
+  --paper-deep: #F0F0F0;
+  --card:       #FFFFFF;
+  --ink:        #000000;
+  --ink-2:      #262626;
+  --line:       #666666;
+  --line-2:     #333333;
+  --green:      #0B4A2E;
+  --green-deep: #06301D;
+  --green-soft: #FFFFFF;
+  --honey:      #6B3D00;
+  --honey-soft: #FFFFFF;
+  --sky:        #123B54;
+  --sky-soft:   #FFFFFF;
+  --soil:       #6B573F;
+  --soil-deep:  #3A2E20;
+  --shadow:     0 0 0 rgba(0,0,0,0);
+  /* Die Übungsfarben bleiben als Erkennungsmerkmal erhalten, die
+     zarten Tönungen weichen aber reinem Weiß. */
+  --akzent-soft: #FFFFFF;
+  --wash:        #FFFFFF;
+}
+body.hc .tile{ --kachel-bg:#FFFFFF; --kachel-line:var(--line-2); }
+
+html{ font-size:18px; -webkit-text-size-adjust:100%; }
+html.t-gross{ font-size:21px; }
+html.t-sehrgross{ font-size:25px; }
+
+body{
+  margin:0;
+  background:var(--wash);
+  color:var(--ink);
+  font-family:var(--font);
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
+
+*{ box-sizing:border-box; }
+button{ font:inherit; color:inherit; }
+[hidden]{ display:none !important; }
+
+/* Alles im Spielfeld ist Tippfläche, keine Textauswahl, kein Zoom-Ruckeln */
+.stage, .tile, .btn, .card, .dom, .basket, .item{
+  -webkit-user-select:none; user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+:focus-visible{
+  outline:4px solid var(--sky);
+  outline-offset:3px;
+}
+
+/* ---------------- Gerüst ---------------- */
+
+.app{
+  max-width:60rem;
+  margin:0 auto;
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Die Navigationsleiste wächst bewusst NICHT mit dem Textgrößen-Regler:
+   sie ist ohnehin großzügig bemessen, und mitwachsend würde sie bei
+   „Sehr groß“ den Titel aus der Zeile drängen. */
+.bar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  background:var(--wash);
+  border-bottom:2px solid var(--line);
+  position:sticky; top:0; z-index:20;
+}
+
+.bar h1{
+  font-size:19px;
+  font-weight:650;
+  letter-spacing:.005em;
+  margin:0;
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.iconbtn{
+  display:inline-flex; align-items:center; gap:8px;
+  min-height:56px; padding:0 17px;
+  background:var(--card);
+  border:2px solid var(--line-2);
+  border-radius:12px;
+  font-size:17px; font-weight:600;
+  cursor:pointer;
+}
+.iconbtn:active{ transform:translateY(1px); }
+.iconbtn svg{ width:25px; height:25px; flex:none; }
+
+main{ flex:1; padding:1.1rem .8rem 3rem; }
+
+/* ---------------- Startseite ---------------- */
+
+.lede{
+  margin:.2rem .2rem 1.5rem;
+  font-size:1.05rem;
+  color:var(--ink-2);
+  max-width:38ch;
+}
+
+.sectionhead{
+  display:flex; align-items:baseline; gap:.7rem;
+  margin:2rem .2rem .9rem;
+}
+.sectionhead:first-of-type{ margin-top:.4rem; }
+.sectionhead h2{
+  font-size:1.35rem; font-weight:680; margin:0;
+  letter-spacing:-.01em;
+  color:var(--kapitel, var(--ink));
+}
+.sectionhead span{ font-size:.95rem; color:var(--ink-2); }
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(15.5rem, 1fr));
+  gap:.85rem;
+}
+
+.tile{
+  display:flex; align-items:center; gap:1rem;
+  text-align:left;
+  padding:1.15rem 1.1rem;
+  background:var(--kachel-bg, var(--card));
+  border:2px solid var(--kachel-line, var(--line));
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  min-height:6.2rem;
+}
+.tile:active{ transform:translateY(1px); }
+.tile .ic{
+  flex:none; width:3.4rem; height:3.4rem;
+  display:grid; place-items:center;
+  border-radius:12px;
+  background:var(--kachel-farbe, var(--akzent));
+  color:#fff;
+}
+.tile .ic svg{ width:2.1rem; height:2.1rem; }
+.tile b{ display:block; font-size:1.18rem; font-weight:650; line-height:1.25; }
+.tile small{ display:block; font-size:.94rem; color:var(--ink-2); margin-top:.2rem; }
+
+/* ---------------- Schwierigkeit ---------------- */
+
+.choose{ max-width:30rem; margin:1rem auto; }
+.choose h2{ font-size:1.5rem; margin:0 0 .3rem; letter-spacing:-.01em; }
+.choose p{ color:var(--ink-2); margin:0 0 1.6rem; font-size:1.05rem; }
+
+.btn{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  width:100%;
+  min-height:var(--tap);
+  padding:.9rem 1.2rem;
+  margin-bottom:.75rem;
+  background:var(--card);
+  border:2px solid var(--line-2);
+  border-radius:14px;
+  font-size:1.2rem; font-weight:620;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+}
+.btn:active{ transform:translateY(1px); }
+.btn em{ font-style:normal; font-weight:500; font-size:.95rem; color:var(--ink-2); }
+.btn.primary{
+  background:var(--akzent); border-color:var(--akzent-deep); color:#fff;
+  justify-content:center;
+}
+.btn.primary em{ color:rgba(255,255,255,.85); }
+
+/* ---------------- Spielfläche ---------------- */
+
+.stage{ max-width:52rem; margin:0 auto; }
+
+.prompt{
+  font-size:1.3rem; font-weight:620;
+  text-align:center;
+  margin:.2rem auto 1.2rem;
+  max-width:32ch;
+  text-wrap:balance;
+  line-height:1.35;
+}
+.prompt small{ display:block; font-weight:500; font-size:.95rem; color:var(--ink-2); margin-top:.35rem; }
+
+.progress{
+  display:flex; align-items:center; gap:.7rem;
+  margin:0 auto 1.3rem; max-width:32rem;
+}
+.progress .track{
+  flex:1; height:.9rem;
+  background:var(--akzent-soft);
+  border:2px solid var(--line);
+  border-radius:99px;
+  overflow:hidden;
+}
+.progress .fill{
+  height:100%; width:0;
+  background:var(--akzent);
+  border-radius:99px;
+  transition:width .45s cubic-bezier(.2,.8,.3,1);
+}
+.progress .num{
+  font-size:.98rem; font-weight:640; color:var(--ink-2);
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+
+/* Memory */
+.memgrid{ display:grid; gap:.7rem; margin:0 auto; max-width:34rem; }
+.card{
+  position:relative;
+  aspect-ratio:1/1;
+  border:none; padding:0; background:none;
+  cursor:pointer;
+  perspective:900px;
+}
+.card .inner{
+  position:absolute; inset:0;
+  transition:transform .4s cubic-bezier(.3,.9,.35,1);
+  transform-style:preserve-3d;
+}
+.card.open .inner, .card.done .inner{ transform:rotateY(180deg); }
+.card .face{
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  border-radius:14px;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  font-size:clamp(2rem, 11vw, 3.4rem);
+  line-height:1;
+}
+.card .back{
+  background:var(--akzent);
+  border:2px solid var(--akzent-deep);
+  color:rgba(255,255,255,.5);
+}
+.card .front{
+  background:var(--card);
+  border:2px solid var(--line-2);
+  transform:rotateY(180deg);
+}
+.card.done .front{
+  background:var(--akzent-soft);
+  border-color:var(--akzent);
+}
+.card.done{ animation:pop .4s ease; }
+
+/* Domino */
+.domrow{
+  display:flex; gap:.35rem; justify-content:center; align-items:center;
+  flex-wrap:nowrap; margin-bottom:1.6rem; min-height:5.4rem;
+  overflow-x:auto; padding-bottom:.3rem;
+}
+.domrow .lead{ font-size:1.5rem; color:var(--ink-2); padding:0 .2rem; }
+.dom{
+  display:flex;
+  background:var(--card);
+  border:2px solid var(--line-2);
+  border-radius:10px;
+  overflow:hidden;
+  padding:0;
+  cursor:pointer;
+}
+.dom.laid{ cursor:default; border-color:var(--line); }
+.dom .half{
+  width:2.6rem; height:2.6rem;
+  flex:none;
+  display:grid; grid-template:repeat(3,1fr)/repeat(3,1fr);
+  padding:.32rem;
+}
+.dom .half + .half{ border-left:2px solid var(--line-2); }
+.dom .pip{
+  width:.52rem; height:.52rem; border-radius:99px;
+  background:var(--ink); place-self:center;
+}
+/* Handsteine sind die Tippfläche und deshalb deutlich größer */
+.domhand{ display:flex; gap:.9rem; justify-content:center; flex-wrap:wrap; }
+.domhand .dom{ border-width:3px; border-radius:14px; box-shadow:var(--shadow); }
+.domhand .dom .half{ width:3.7rem; height:3.7rem; padding:.45rem; }
+.domhand .dom .half + .half{ border-left-width:3px; }
+.domhand .dom .pip{ width:.78rem; height:.78rem; }
+.domhand .dom.hint{ animation:glow 1.1s ease infinite; border-color:var(--honey); }
+.openend{
+  display:inline-grid; place-items:center;
+  padding:.15rem .6rem; border-radius:8px;
+  background:var(--honey-soft); color:var(--honey);
+  font-weight:700;
+}
+
+/* Wortkacheln (Sprichwörter, Kategorien) */
+.words{ display:grid; gap:.75rem; grid-template-columns:repeat(auto-fit,minmax(11rem,1fr)); max-width:38rem; margin:0 auto; }
+.word{
+  min-height:var(--tap);
+  padding:1rem .9rem;
+  background:var(--card);
+  border:2px solid var(--line-2);
+  border-radius:14px;
+  font-size:1.25rem; font-weight:620;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.3rem;
+}
+.word .pic{ font-size:2.2rem; line-height:1; }
+.word.hint{ border-color:var(--honey); animation:glow 1.1s ease infinite; }
+.word.ok{ background:var(--akzent-soft); border-color:var(--akzent); }
+.saying{
+  font-size:1.5rem; text-align:center; line-height:1.5;
+  max-width:26ch; margin:0 auto 1.6rem; text-wrap:balance;
+}
+.saying .gap{
+  display:inline-block; min-width:5.5rem;
+  border-bottom:4px solid var(--honey);
+  color:var(--akzent-deep); font-weight:700;
+  text-align:center; white-space:nowrap;
+}
+
+/* Zahlenreihe + Ziele: freies Feld */
+.field{
+  position:relative;
+  width:100%; aspect-ratio:4/3;
+  max-height:62vh;
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.spot{
+  position:absolute;
+  display:grid; place-items:center;
+  border-radius:99px;
+  background:var(--akzent-soft);
+  border:3px solid var(--akzent);
+  color:var(--akzent-deep);
+  font-size:1.6rem; font-weight:700;
+  cursor:pointer;
+  font-variant-numeric:tabular-nums;
+}
+.spot.next{ border-color:var(--honey); }
+.spot.gone{ animation:pop .34s ease forwards; pointer-events:none; }
+.target{
+  position:absolute; border-radius:99px;
+  background:radial-gradient(circle at 34% 30%, var(--akzent-soft), var(--akzent) 62%);
+  border:3px solid var(--akzent-deep);
+  cursor:pointer;
+}
+.target::after{
+  content:""; position:absolute; inset:22%;
+  border:3px solid rgba(255,255,255,.75); border-radius:99px;
+}
+
+/* Linie nachfahren */
+.tracewrap{
+  background:var(--card); border:2px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+  overflow:hidden; touch-action:none;
+}
+.tracewrap svg{ display:block; width:100%; height:auto; }
+
+/* Sortieren */
+.tray{
+  display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center;
+  min-height:7rem; margin-bottom:1.4rem;
+  padding:.8rem; border:2px dashed var(--line-2); border-radius:var(--radius);
+}
+.item{
+  width:4.6rem; height:4.6rem;
+  display:grid; place-items:center;
+  font-size:2.5rem; line-height:1;
+  background:var(--card);
+  border:2px solid var(--line-2);
+  border-radius:14px;
+  cursor:grab;
+  box-shadow:var(--shadow);
+  touch-action:none;
+}
+.item.picked{ border-color:var(--honey); border-width:4px; background:var(--honey-soft); }
+.item.dragging{ position:fixed; z-index:60; pointer-events:none; box-shadow:0 14px 30px -8px rgba(22,32,26,.5); }
+.baskets{ display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap; }
+.basket{
+  flex:1 1 9rem; max-width:15rem; min-height:9rem;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:.4rem;
+  padding:.9rem .6rem;
+  background:var(--paper-deep);
+  border:3px solid var(--line-2);
+  border-radius:var(--radius);
+  cursor:pointer;
+}
+.basket b{ font-size:1.1rem; }
+.basket.over{ border-color:var(--akzent); background:var(--akzent-soft); }
+.basket .in{ display:flex; flex-wrap:wrap; gap:.25rem; justify-content:center; font-size:1.6rem; line-height:1; }
+
+/* Rückmeldung */
+.wrong{ animation:shake .42s ease; }
+@keyframes shake{
+  0%,100%{ transform:translateX(0) }
+  20%{ transform:translateX(-9px) } 40%{ transform:translateX(9px) }
+  60%{ transform:translateX(-5px) } 80%{ transform:translateX(5px) }
+}
+@keyframes pop{ 0%{ transform:scale(1) } 45%{ transform:scale(1.13) } 100%{ transform:scale(1) } }
+@keyframes glow{ 0%,100%{ box-shadow:0 0 0 0 rgba(166,106,21,.45) } 50%{ box-shadow:0 0 0 12px rgba(166,106,21,0) } }
+@keyframes rise{ from{ opacity:0; transform:translateY(14px) } to{ opacity:1; transform:none } }
+
+/* Abschluss */
+.done-screen{ text-align:center; max-width:26rem; margin:1.5rem auto; animation:rise .5s ease both; }
+.done-screen .bloom{ width:9rem; height:9rem; margin:0 auto 1rem; }
+.done-screen h2{ font-size:2rem; margin:0 0 .3rem; letter-spacing:-.015em; }
+.done-screen p{ font-size:1.1rem; color:var(--ink-2); margin:0 0 2rem; }
+
+/* Garten */
+.gardenwrap{
+  background:linear-gradient(180deg, #CFE6F5 0%, #E6F2F7 45%, #E9F3DE 100%);
+  border:2px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  position:relative;
+  min-height:13rem;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding-top:1.4rem;
+}
+/* Sonne oben rechts — der Garten soll nach draußen aussehen, nicht nach Diagramm */
+.gardenwrap::before{
+  content:""; position:absolute; top:1.1rem; right:1.4rem;
+  width:3.6rem; height:3.6rem; border-radius:99px;
+  background:radial-gradient(circle, #FFE08A 55%, #FFD25E 100%);
+  box-shadow:0 0 0 .7rem rgba(255,224,138,.35);
+}
+/* Die Blumenreihen sind exakt so hoch wie eine Blume (4.9rem), damit
+   der wiederholte Grasstreifen genau unter jeder Reihe sitzt — sonst
+   schweben die Blumen der zweiten Reihe in der Luft. */
+.flowers{
+  display:flex; flex-wrap:wrap;
+  column-gap:.15rem; row-gap:0;
+  align-items:flex-end; justify-content:center;
+  padding:0 .7rem;
+  position:relative; z-index:1;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0, transparent 4.45rem,
+    rgba(122,160,96,.38) 4.45rem, rgba(122,160,96,.38) 4.9rem
+  );
+}
+.flowers svg{ width:3.5rem; height:4.9rem; animation:rise .5s ease both; }
+.soil{
+  height:1.5rem; flex:none;
+  background:var(--soil);
+  border-top:3px solid var(--soil-deep);
+}
+.gardencount{ text-align:center; font-size:1.15rem; margin:1.2rem 0 0; color:var(--ink-2); }
+.gardencount b{ color:var(--ink); font-size:1.5rem; }
+.emptygarden{ text-align:center; color:var(--ink-2); padding:2rem 1rem; font-size:1.05rem; }
+
+/* Einstellungen / Verlauf */
+.panel{ max-width:34rem; margin:0 auto; }
+.panel h2{ font-size:1.4rem; margin:1.8rem 0 .8rem; letter-spacing:-.01em; }
+.panel h2:first-child{ margin-top:.2rem; }
+.panel p.note{ color:var(--ink-2); font-size:.98rem; margin:.2rem 0 1rem; }
+.seg{ display:flex; gap:.5rem; }
+.seg button{
+  flex:1; min-height:3.6rem;
+  background:var(--card); border:2px solid var(--line-2);
+  border-radius:12px; font-size:1.05rem; font-weight:600; cursor:pointer;
+}
+.seg button[aria-pressed="true"]{ background:var(--akzent); border-color:var(--akzent-deep); color:#fff; }
+
+table.log{ width:100%; border-collapse:collapse; font-size:1rem; }
+table.log th, table.log td{ text-align:left; padding:.6rem .5rem; border-bottom:1px solid var(--line); }
+table.log th{ font-size:.88rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-2); font-weight:650; }
+table.log td.n{ text-align:right; font-variant-numeric:tabular-nums; }
+.scroller{ overflow-x:auto; }
+
+.danger{ border-color:var(--line-2); color:var(--ink-2); }
+
+/* Noch auszufüllen — fällt absichtlich auf, damit es niemand übersieht */
+.platzhalter{
+  background:var(--honey-soft);
+  border:2px dashed var(--honey);
+  border-radius:12px;
+  padding:.8rem 1rem;
+  margin:.6rem 0 1rem;
+  color:var(--ink);
+  font-size:1rem;
+}
+.platzhalter b{ display:block; color:var(--honey); font-size:.9rem;
+  text-transform:uppercase; letter-spacing:.06em; margin-bottom:.3rem; }
+.panel p.fliess{ font-size:1.02rem; line-height:1.55; margin:.2rem 0 1rem; max-width:60ch; }
+.panel a{ color:var(--akzent-deep); text-underline-offset:.2em; }
+
+/* Auf schmalen Geräten — vor allem bei großer Schrift — stapeln,
+   statt Überschrift und Beschreibung nebeneinander zu quetschen. */
+@media (max-width:34rem){
+  .sectionhead{ flex-direction:column; align-items:flex-start; gap:.15rem; }
+  main{ padding-left:.6rem; padding-right:.6rem; }
+  .bar{ gap:8px; padding:10px; }
+  .bar h1{ font-size:17px; }
+  .iconbtn{ padding:0 13px; gap:6px; }
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <button class="iconbtn" id="back" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      Zurück
+    </button>
+    <h1 id="title">Kopf &amp; Hand</h1>
+    <button class="iconbtn" id="gardenbtn" title="Mein Garten">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21v-7"/><circle cx="12" cy="8" r="3.2"/><path d="M12 4.8V3M15.4 6.2l1.3-1.3M15.4 9.8l1.3 1.3M8.6 6.2L7.3 4.9M8.6 9.8l-1.3 1.3"/></svg>
+      <span id="gcount">0</span>
+    </button>
+  </header>
+  <main id="view"></main>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+/* ==================================================================
+   WIE WIRD DIE SEITE ANGEBOTEN?
+   ------------------------------------------------------------------
+   false = Der Link wird nur persönlich weitergegeben. Die Seite wird
+           nicht beworben, nicht verlinkt und von Suchmaschinen
+           ausgeschlossen. Es wird kein Impressum angezeigt.
+
+   true  = Die Seite wird öffentlich angeboten. Dann muss der Block
+           IMPRESSUM darunter ausgefüllt sein — für öffentlich
+           angebotene Telemedien ist ein Impressum mit ladungsfähiger
+           Anschrift vorgeschrieben (§ 5 DDG), ein Postfach genügt
+           nicht. Fehlen die Angaben, weist die App darauf hin.
+   ================================================================== */
+
+const OEFFENTLICH = false;
+
+const IMPRESSUM = {
+  name:    "",          // z. B. "Jonas Mustermann"
+  strasse: "",          // z. B. "Musterweg 12"
+  ort:     "",          // z. B. "12345 Musterstadt"
+  email:   "",          // z. B. "kontakt@example.de"
+  telefon: ""           // freiwillig, darf leer bleiben
+};
+
+// Wo die Seite liegt — steht in der Datenschutzangabe.
+const HOSTER = "GitHub, Inc. (GitHub Pages)";
+
+
+/* ================================================================== */
+
+const $ = (sel, root = document) => root.querySelector(sel);
+const el = (tag, cls, txt) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+};
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.random() * a.length | 0];
+const rint = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+
+/* Merkt sich je Inhaltstopf, was zuletzt dran war, und meidet es beim
+   nächsten Griff. So bringt auch der dritte Durchgang hintereinander
+   noch Neues. Reicht der Vorrat nicht, wird die Sperre gelockert. */
+const zuletztGenutzt = {};
+function frischeAuswahl(topf, pool, anzahl, gedaechtnis) {
+  const merke = gedaechtnis == null ? anzahl * 2 : gedaechtnis;
+  const alt = zuletztGenutzt[topf] || [];
+  let frei = pool.filter(x => !alt.includes(x));
+  if (frei.length < anzahl) {
+    // Vorrat zu klein: nur noch den letzten Durchgang meiden
+    const kurz = alt.slice(0, anzahl);
+    frei = pool.filter(x => !kurz.includes(x));
+    if (frei.length < anzahl) frei = pool.slice();
+  }
+  const gewaehlt = shuffle(frei).slice(0, anzahl);
+  zuletztGenutzt[topf] = [...gewaehlt, ...alt].slice(0, merke);
+  return gewaehlt;
+}
+
+const view = $("#view"), backBtn = $("#back"), titleEl = $("#title"), gcount = $("#gcount");
+
+/* ================= Speicher ================= */
+
+const KEY = "kopfundhand.v1";
+const store = Object.assign({
+  flowers: 0,
+  text: "normal",
+  kontrast: "normal",
+  ton: true,
+  log: []            // { d:"2026-08-16", spiel:"Bilderpaare", stufe:"Mittel", fehler:3, sek:92 }
+}, load());
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(store)); } catch {}
+}
+function applySettings() {
+  document.documentElement.className = store.text === "normal" ? "" : "t-" + store.text;
+  document.body.classList.toggle("hc", store.kontrast === "stark");
+  gcount.textContent = store.flowers;
+  // Der Hintergrund hängt vom Kontrastmodus ab, also neu setzen
+  if (typeof setAkzent === "function") setAkzent(aktuelleFarbe);
+}
+
+/* ================= Ton ================= */
+
+let ac = null;
+function tone(freq, dur = .16, type = "sine", gain = .16) {
+  if (!store.ton) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === "suspended") ac.resume();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, ac.currentTime);
+    g.gain.linearRampToValueAtTime(gain, ac.currentTime + .02);
+    g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + dur);
+    o.connect(g).connect(ac.destination);
+    o.start(); o.stop(ac.currentTime + dur + .02);
+  } catch {}
+}
+const sndGood = () => { tone(660, .13, "sine"); setTimeout(() => tone(880, .18, "sine"), 90); };
+const sndNope = () => tone(196, .22, "triangle", .11);
+const sndDone = () => { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, .3, "sine", .13), i * 130)); };
+
+/* ================= Navigation ================= */
+
+let onBack = null;
+function screen(title, backTo) {
+  view.innerHTML = "";
+  titleEl.textContent = title;
+  onBack = backTo || null;
+  backBtn.hidden = !backTo;
+  window.scrollTo(0, 0);
+  return view;
+}
+backBtn.addEventListener("click", () => { if (onBack) onBack(); });
+$("#gardenbtn").addEventListener("click", showGarden);
+
+/* ================= Startseite ================= */
+
+const ICONS = {
+  memory: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="6" width="11" height="15" rx="2.5"/><rect x="17" y="10" width="11" height="15" rx="2.5"/><path d="M20 17.5h5" stroke-linecap="round"/></svg>',
+  domino: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="4" width="22" height="24" rx="3"/><path d="M5 16h22"/><circle cx="16" cy="10" r="1.9" fill="currentColor" stroke="none"/><circle cx="11" cy="22" r="1.9" fill="currentColor" stroke="none"/><circle cx="21" cy="22" r="1.9" fill="currentColor" stroke="none"/></svg>',
+  spruch: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8h24M4 14h16"/><path d="M4 20h8" stroke-dasharray="1 4"/><path d="M17 20h11"/><path d="M4 26h14"/></svg>',
+  odd: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="8" cy="9" r="4.4"/><circle cx="24" cy="9" r="4.4"/><circle cx="8" cy="23" r="4.4"/><rect x="19" y="18" width="10" height="10" rx="1.5"/></svg>',
+  reihe: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 24l7-14 6 9 7-11"/><circle cx="6" cy="24" r="2.4" fill="currentColor" stroke="none"/><circle cx="13" cy="10" r="2.4" fill="currentColor" stroke="none"/><circle cx="19" cy="19" r="2.4" fill="currentColor" stroke="none"/><circle cx="26" cy="8" r="2.4" fill="currentColor" stroke="none"/></svg>',
+  ziel: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="5.5"/><circle cx="16" cy="16" r="1.6" fill="currentColor" stroke="none"/></svg>',
+  linie: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 24C4 12 12 6 16 14s10 8 12 -6"/><circle cx="4" cy="24" r="2.6" fill="currentColor" stroke="none"/></svg>',
+  sort: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="18" width="11" height="10" rx="2"/><rect x="18" y="18" width="11" height="10" rx="2"/><circle cx="10" cy="7" r="3.6"/><path d="M19 4l6 6M25 4l-6 6"/></svg>'
+};
+
+/* Jede Übung hat ihre eigene Farbe. Das ist kein Schmuck: eine Farbe
+   wird schneller wiedererkannt als ein Name, und wer sich Wörter
+   schlecht merkt, findet „die blaue Übung“ trotzdem zuverlässig.
+   Alle Töne sind dunkel genug für weiße Symbole darauf. */
+const FARBEN = {
+  petrol:    { akzent:"#14706B", deep:"#0C4F4B", soft:"#D3E9E7", wash:"#EFF7F6" },
+  indigo:    { akzent:"#2F55A0", deep:"#1F3B72", soft:"#D8E1F3", wash:"#F0F4FB" },
+  pflaume:   { akzent:"#8A3A72", deep:"#632851", soft:"#EEDBE8", wash:"#FAF1F7" },
+  ocker:     { akzent:"#965C13", deep:"#6B400A", soft:"#F3E2C8", wash:"#FCF6EB" },
+  altrosa:   { akzent:"#A93B57", deep:"#7C2940", soft:"#F4D9DF", wash:"#FCF0F2" },
+  gruen:     { akzent:"#2A6B4C", deep:"#1D4C36", soft:"#DCEBE2", wash:"#F1F7F3" },
+  stahlblau: { akzent:"#1E6584", deep:"#124559", soft:"#D5E6EE", wash:"#EFF6F9" },
+  terrakotta:{ akzent:"#AB4F2C", deep:"#7C381D", soft:"#F5DDD2", wash:"#FCF2ED" },
+  schiefer:  { akzent:"#4A5A66", deep:"#2F3B44", soft:"#DFE5E9", wash:"#F2F5F6" }
+};
+const STANDARD_WASH = "#EFF2EE";
+
+let aktuelleFarbe = null;
+function setAkzent(name) {
+  aktuelleFarbe = name;
+  const s = document.documentElement.style;
+  const f = FARBEN[name];
+  if (!f) {
+    ["--akzent","--akzent-deep","--akzent-soft","--wash"].forEach(k => s.removeProperty(k));
+    return;
+  }
+  s.setProperty("--akzent", f.akzent);
+  s.setProperty("--akzent-deep", f.deep);
+  s.setProperty("--akzent-soft", f.soft);
+  // Im Starkkontrast bleibt der Hintergrund weiß
+  s.setProperty("--wash", store.kontrast === "stark" ? "#FFFFFF" : f.wash);
+}
+
+const GAMES = [
+  { id:"memory", art:"kopf", icon:"memory", farbe:"petrol",     name:"Bilderpaare",     sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory },
+  { id:"domino", art:"kopf", icon:"domino", farbe:"indigo",     name:"Domino anlegen",  sub:"Den passenden Stein aussuchen",     trainiert:"Aufmerksamkeit", run:playDomino },
+  { id:"spruch", art:"kopf", icon:"spruch", farbe:"pflaume",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
+  { id:"odd",    art:"kopf", icon:"odd",    farbe:"ocker",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd },
+  { id:"reihe",  art:"kopf", icon:"reihe",  farbe:"altrosa",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe },
+  { id:"ziel",   art:"hand", icon:"ziel",   farbe:"gruen",      name:"Ziele treffen",   sub:"Punkte genau antippen",             trainiert:"Zielgenauigkeit", run:playZiel },
+  { id:"linie",  art:"hand", icon:"linie",  farbe:"stahlblau",  name:"Linie nachfahren",sub:"Mit dem Finger der Spur folgen",    trainiert:"Feinmotorik", run:playLinie },
+  { id:"sort",   art:"hand", icon:"sort",   farbe:"terrakotta", name:"Einsortieren",    sub:"Dinge in die richtige Kiste legen", trainiert:"Greifen & Ziehen", run:playSort }
+];
+
+function faerbeKachel(t, farbe) {
+  const f = FARBEN[farbe];
+  if (!f) return;
+  t.style.setProperty("--kachel-farbe", f.akzent);
+  t.style.setProperty("--kachel-bg", f.wash);
+  t.style.setProperty("--kachel-line", f.soft);
+}
+
+function showHome() {
+  setAkzent(null);
+  const v = screen("Kopf & Hand", null);
+  const lede = el("p", "lede", "Kleine Übungen für zwischendurch. Es gibt kein Zeitlimit und nichts, was man verlieren kann.");
+  v.append(lede);
+
+  const kapitel = [
+    ["kopf", "Für den Kopf", "Denken, Merken, Sprache", "petrol"],
+    ["hand", "Für die Hände", "Bewegung und Genauigkeit", "terrakotta"]
+  ];
+  for (const [art, h, sub, kfarbe] of kapitel) {
+    const head = el("div", "sectionhead");
+    const h2 = el("h2", null, h);
+    h2.style.setProperty("--kapitel", FARBEN[kfarbe].deep);
+    head.append(h2, el("span", null, sub));
+    const grid = el("div", "grid");
+    GAMES.filter(g => g.art === art).forEach(g => {
+      const t = el("button", "tile");
+      faerbeKachel(t, g.farbe);
+      const ic = el("div", "ic"); ic.innerHTML = ICONS[g.icon];
+      const box = el("div");
+      box.append(el("b", null, g.name), el("small", null, g.sub));
+      t.append(ic, box);
+      t.addEventListener("click", () => chooseLevel(g));
+      grid.append(t);
+    });
+    v.append(head, grid);
+  }
+
+  const foot = el("div", "sectionhead");
+  const fh = el("h2", null, "Sonstiges");
+  fh.style.setProperty("--kapitel", FARBEN.schiefer.deep);
+  foot.append(fh);
+  const fgrid = el("div", "grid");
+  fgrid.append(
+    simpleTile("Mein Garten", "Für jede Übung eine Blume", "gruen", showGarden),
+    simpleTile("Einstellungen", "Schrift, Farben und Töne", "schiefer", showPanel)
+  );
+  v.append(foot, fgrid);
+}
+
+function simpleTile(name, sub, farbe, fn) {
+  const t = el("button", "tile");
+  faerbeKachel(t, farbe);
+  const ic = el("div", "ic");
+  ic.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>';
+  const box = el("div");
+  box.append(el("b", null, name), el("small", null, sub));
+  t.append(ic, box);
+  t.addEventListener("click", fn);
+  return t;
+}
+
+/* ================= Schwierigkeit ================= */
+
+const LEVELS = ["Leicht", "Mittel", "Schwerer"];
+const LEVEL_HINT = ["Zum Ankommen", "Etwas mehr", "Für gute Tage"];
+
+function chooseLevel(game) {
+  setAkzent(game.farbe);
+  const v = screen(game.name, showHome);
+  const box = el("div", "choose");
+  box.append(el("h2", null, game.name));
+  box.append(el("p", null, "Trainiert: " + game.trainiert + ". Wie soll es heute sein?"));
+  LEVELS.forEach((name, i) => {
+    const b = el("button", "btn");
+    b.append(el("span", null, name), el("em", null, LEVEL_HINT[i]));
+    b.addEventListener("click", () => startRun(game, i));
+    box.append(b);
+  });
+  v.append(box);
+}
+
+/* ================= Spielgerüst ================= */
+
+let run = null;   // aktueller Durchgang
+
+function startRun(game, level) {
+  setAkzent(game.farbe);
+  run = { game, level, fehler: 0, streak: 0, t0: Date.now() };
+  const v = screen(game.name, () => chooseLevel(game));
+  const stage = el("div", "stage");
+  v.append(stage);
+  game.run(stage, level);
+}
+
+/** Fortschrittsanzeige; gibt eine set(n)-Funktion zurück. */
+function progressBar(parent, total, wort = "geschafft") {
+  const wrap = el("div", "progress");
+  const track = el("div", "track"), fill = el("div", "fill");
+  const num = el("div", "num", "0 von " + total);
+  track.append(fill); wrap.append(track, num);
+  parent.append(wrap);
+  return n => {
+    fill.style.width = Math.round(n / total * 100) + "%";
+    num.textContent = n + " von " + total + " " + wort;
+  };
+}
+
+function promptText(parent, text, hint) {
+  const p = el("div", "prompt", text);
+  if (hint) p.append(el("small", null, hint));
+  parent.append(p);
+  return p;
+}
+
+function fehler(node) {
+  run.fehler++; run.streak++;
+  sndNope();
+  if (node) { node.classList.remove("wrong"); void node.offsetWidth; node.classList.add("wrong"); }
+}
+function richtig() { run.streak = 0; sndGood(); }
+
+/** Nach zwei Fehlern in Folge unauffällig helfen. */
+function maybeHint(getNode) {
+  if (run.streak < 2) return;
+  const n = getNode();
+  if (n) n.classList.add("hint");
+}
+
+function finish() {
+  const g = run.game;
+  store.flowers++;
+  store.log.unshift({
+    d: new Date().toISOString().slice(0, 10),
+    spiel: g.name,
+    stufe: LEVELS[run.level],
+    fehler: run.fehler,
+    sek: Math.round((Date.now() - run.t0) / 1000)
+  });
+  store.log = store.log.slice(0, 200);
+  save(); applySettings();
+  sndDone();
+
+  const v = screen(g.name, showHome);
+  const box = el("div", "done-screen");
+  const bloom = el("div", "bloom");
+  bloom.innerHTML = flowerSVG(store.flowers - 1, true);
+  box.append(bloom);
+  box.append(el("h2", null, pick(["Geschafft.", "Fertig.", "Alles gelöst.", "Das war's."])));
+  box.append(el("p", null, "Eine neue Blume für Ihren Garten."));
+
+  const again = el("button", "btn primary", "Noch einmal");
+  again.addEventListener("click", () => startRun(g, run.level));
+  const other = el("button", "btn", "Andere Übung wählen");
+  other.addEventListener("click", showHome);
+  const garden = el("button", "btn", "Meinen Garten ansehen");
+  garden.addEventListener("click", showGarden);
+  box.append(again, other, garden);
+  v.append(box);
+}
+
+/* ================= 1. Bilderpaare ================= */
+
+const MEM_BILDER = [
+  "🍎","🐕","🌻","🚗","☕","🔑","🏠","🐈","🌳","⭐","👓","🎩","🍞","🕰️","☂️","🚲",
+  "🦋","🍐","🌙","🍄","🎈","🐟","🧦","🕯️","🍊","🚌","🌺","🎸","🧸","🍇","🐝","🦉",
+  "🍋","🚂","🐇","🌷","🧢","🥕"
+];
+
+function playMemory(stage, level) {
+  const paare = [3, 6, 8][level];
+  const spalten = [3, 4, 4][level];
+  const setProgress = progressBar(stage, paare, "Paare");
+  promptText(stage, "Finden Sie die gleichen Bilder.", "Tippen Sie zwei Karten an.");
+
+  const bilder = frischeAuswahl("memory", MEM_BILDER, paare);
+  const deck = shuffle([...bilder, ...bilder]);
+
+  const grid = el("div", "memgrid");
+  grid.style.gridTemplateColumns = "repeat(" + spalten + ", 1fr)";
+  stage.append(grid);
+
+  let offen = [], gefunden = 0, sperre = false;
+
+  deck.forEach(bild => {
+    const c = el("button", "card");
+    c.dataset.bild = bild;
+    c.setAttribute("aria-label", "Karte umdrehen");
+    c.innerHTML = '<span class="inner"><span class="face back">?</span><span class="face front"></span></span>';
+    $(".front", c).textContent = bild;
+    c.addEventListener("click", () => {
+      if (sperre || c.classList.contains("open") || c.classList.contains("done")) return;
+      c.classList.add("open");
+      tone(520, .09, "sine", .09);
+      offen.push(c);
+      if (offen.length < 2) return;
+
+      sperre = true;
+      const [a, b] = offen;
+      if (a.dataset.bild === b.dataset.bild) {
+        setTimeout(() => {
+          a.classList.add("done"); b.classList.add("done");
+          a.classList.remove("open"); b.classList.remove("open");
+          gefunden++; setProgress(gefunden); richtig();
+          offen = []; sperre = false;
+          if (gefunden === paare) setTimeout(finish, 700);
+        }, 380);
+      } else {
+        run.fehler++; run.streak++;
+        setTimeout(() => {
+          a.classList.remove("open"); b.classList.remove("open");
+          offen = []; sperre = false;
+          // Hilfe: nach drei Fehlgriffen kurz alles zeigen
+          if (run.streak >= 3) {
+            run.streak = 0;
+            const zu = [...grid.querySelectorAll(".card:not(.done)")];
+            zu.forEach(k => k.classList.add("open"));
+            sperre = true;
+            setTimeout(() => { zu.forEach(k => k.classList.remove("open")); sperre = false; }, 1600);
+          }
+        }, 1300);
+      }
+    });
+    grid.append(c);
+  });
+  setProgress(0);
+}
+
+/* ================= 2. Domino ================= */
+
+const PIP_POS = {
+  0: [], 1: ["2/2"], 2: ["1/1","3/3"], 3: ["1/1","2/2","3/3"],
+  4: ["1/1","1/3","3/1","3/3"], 5: ["1/1","1/3","2/2","3/1","3/3"],
+  6: ["1/1","1/3","2/1","2/3","3/1","3/3"]
+};
+function dominoNode(a, b, klick) {
+  const d = el(klick ? "button" : "div", "dom" + (klick ? "" : " laid"));
+  d.setAttribute("aria-label", "Domino " + a + " und " + b);
+  [a, b].forEach(v => {
+    const h = el("div", "half");
+    PIP_POS[v].forEach(p => {
+      const [r, c] = p.split("/");
+      const pip = el("div", "pip");
+      pip.style.gridArea = r + "/" + c;
+      h.append(pip);
+    });
+    d.append(h);
+  });
+  return d;
+}
+
+function playDomino(stage, level) {
+  const maxWert = [3, 5, 6][level];
+  const handGr = [3, 4, 5][level];
+  const runden = 6;
+  const setProgress = progressBar(stage, runden, "angelegt");
+  const p = promptText(stage, "", "Der Stein muss zur markierten Zahl passen.");
+
+  const reihe = el("div", "domrow");
+  const hand = el("div", "domhand");
+  stage.append(reihe, hand);
+
+  let ende = rint(0, maxWert), gelegt = [[rint(0, maxWert), ende]], runde = 0;
+
+  function zeichneReihe() {
+    reihe.innerHTML = "";
+    const sicht = gelegt.slice(-3);
+    if (gelegt.length > 3) reihe.append(el("div", "lead", "…"));
+    sicht.forEach(([a, b]) => reihe.append(dominoNode(a, b, false)));
+    p.innerHTML = "";
+    p.append(document.createTextNode("Welcher Stein passt an die "));
+    p.append(el("span", "openend", String(ende)));
+    p.append(document.createTextNode("?"));
+    p.append(el("small", null, "Tippen Sie den passenden Stein unten an."));
+  }
+
+  function neueHand() {
+    const richtigStein = [ende, rint(0, maxWert)];
+    const steine = [richtigStein];
+    let schutz = 0;
+    while (steine.length < handGr && schutz++ < 200) {
+      const a = rint(0, maxWert), b = rint(0, maxWert);
+      if (a === ende || b === ende) continue;
+      if (steine.some(s => (s[0] === a && s[1] === b) || (s[0] === b && s[1] === a))) continue;
+      steine.push([a, b]);
+    }
+    shuffle(steine);
+
+    hand.innerHTML = "";
+    steine.forEach(([a, b]) => {
+      // Passende Seite immer links darstellen, das macht das Anlegen sichtbar
+      const zeigA = (a === ende || b === ende) ? ende : a;
+      const zeigB = (a === ende || b === ende) ? (a === ende ? b : a) : b;
+      const d = dominoNode(zeigA, zeigB, true);
+      d.addEventListener("click", () => {
+        if (zeigA !== ende && zeigB !== ende) { fehler(d); maybeHint(() => hand.querySelector('[data-ok="1"]')); return; }
+        richtig();
+        gelegt.push([ende, zeigB]);
+        ende = zeigB;
+        runde++;
+        setProgress(runde);
+        if (runde >= runden) { zeichneReihe(); hand.innerHTML = ""; setTimeout(finish, 650); return; }
+        zeichneReihe(); neueHand();
+      });
+      if (zeigA === ende) d.dataset.ok = "1";
+      hand.append(d);
+    });
+  }
+
+  zeichneReihe(); neueHand(); setProgress(0);
+}
+
+/* ================= 3. Sprichwörter ================= */
+
+const SPRUECHE = [
+  ["Morgenstund hat Gold im", "Mund", ["Haus","Bett","Sack"]],
+  ["Der Apfel fällt nicht weit vom", "Stamm", ["Baum","Zaun","Berg"]],
+  ["Lügen haben kurze", "Beine", ["Ohren","Wege","Haare"]],
+  ["Übung macht den", "Meister", ["Rücken","Anfang","Weg"]],
+  ["Viele Köche verderben den", "Brei", ["Ofen","Tisch","Braten"]],
+  ["Reden ist Silber, Schweigen ist", "Gold", ["Blei","Ruhe","Kupfer"]],
+  ["Alle guten Dinge sind", "drei", ["nah","teuer","selten"]],
+  ["Ende gut, alles", "gut", ["vorbei","neu","still"]],
+  ["Wer rastet, der", "rostet", ["ruht","wartet","träumt"]],
+  ["In der Kürze liegt die", "Würze", ["Ruhe","Stärke","Wahrheit"]],
+  ["Hunde, die bellen,", "beißen nicht", ["laufen weg","schlafen viel","fressen mehr"]],
+  ["Der frühe Vogel fängt den", "Wurm", ["Zug","Fisch","Tag"]],
+  ["Kleider machen", "Leute", ["Falten","Wärme","Arbeit"]],
+  ["Wer anderen eine Grube gräbt, fällt selbst", "hinein", ["daneben","um","zurück"]],
+  ["Man soll den Tag nicht vor dem Abend", "loben", ["planen","zählen","beenden"]],
+  ["Aller Anfang ist", "schwer", ["neu","schön","spät"]],
+  ["Wer zuletzt lacht, lacht am", "besten", ["lautesten","längsten","Ende"]],
+  ["Was Hänschen nicht lernt, lernt Hans", "nimmermehr", ["später","langsam","dennoch"]],
+  ["Der Klügere gibt", "nach", ["auf","acht","Rat"]],
+  ["Eine Hand wäscht die", "andere", ["Wäsche","Seife","Zeit"]],
+  ["Ohne Fleiß kein", "Preis", ["Brot","Lohn","Ziel"]],
+  ["Not macht", "erfinderisch", ["müde","arm","still"]],
+  ["Wo gehobelt wird, da fallen", "Späne", ["Bäume","Blätter","Steine"]],
+  ["Es ist noch kein Meister vom Himmel", "gefallen", ["gekommen","gestiegen","geflogen"]],
+  ["Kommt Zeit, kommt", "Rat", ["Geld","Ruhe","Glück"]],
+  ["Wer die Wahl hat, hat die", "Qual", ["Ruhe","Pflicht","Arbeit"]],
+  ["Man muss das Eisen schmieden, solange es", "heiß ist", ["kalt ist","weich ist","blank ist"]],
+  ["Stille Wasser sind", "tief", ["kalt","klar","selten"]],
+  ["Der Ton macht die", "Musik", ["Melodie","Stimmung","Sache"]],
+  ["Es ist nicht alles Gold, was", "glänzt", ["teuer ist","gelb ist","funkelt"]],
+  ["Wer den Pfennig nicht ehrt, ist des Talers nicht", "wert", ["würdig","sicher","froh"]],
+  ["Auch ein blindes Huhn findet mal ein", "Korn", ["Ei","Nest","Loch"]],
+  ["Der Krug geht so lange zum Brunnen, bis er", "bricht", ["voll ist","leer ist","fällt"]],
+  ["Wie du mir, so ich", "dir", ["auch","gleich","nicht"]],
+  ["Einem geschenkten Gaul schaut man nicht ins", "Maul", ["Auge","Ohr","Fell"]],
+  ["Andere Länder, andere", "Sitten", ["Leute","Zeiten","Wege"]],
+  ["Probieren geht über", "Studieren", ["Warten","Reden","Lernen"]],
+  ["Wer nicht wagt, der nicht", "gewinnt", ["verliert","weiß","fragt"]],
+  ["Aus den Augen, aus dem", "Sinn", ["Herzen","Haus","Weg"]],
+  ["Morgen, morgen, nur nicht", "heute", ["gleich","jetzt","gestern"]],
+  ["Frisch gewagt ist halb", "gewonnen", ["getan","verloren","geschafft"]],
+  ["Ein Unglück kommt selten", "allein", ["spät","recht","zurück"]],
+  ["Was du heute kannst besorgen, das verschiebe nicht auf", "morgen", ["später","Montag","übermorgen"]],
+  ["Liebe geht durch den", "Magen", ["Kopf","Garten","Sinn"]],
+  ["Vier Augen sehen mehr als", "zwei", ["eins","drei","keine"]],
+  ["Wer zuerst kommt, mahlt", "zuerst", ["am besten","allein","zuletzt"]],
+  ["Es führen viele Wege nach", "Rom", ["Hause","Norden","oben"]],
+  ["Jeder ist seines Glückes", "Schmied", ["Herr","Bauer","Meister"]],
+  ["Wer im Glashaus sitzt, soll nicht mit Steinen", "werfen", ["spielen","bauen","klopfen"]],
+  ["Der Fisch stinkt vom", "Kopf", ["Schwanz","Wasser","Netz"]],
+  ["Scherben bringen", "Glück", ["Ärger","Lärm","Arbeit"]],
+  ["Übermut tut selten", "gut", ["weh","not","recht"]],
+  ["Wer den Schaden hat, braucht für den Spott nicht zu", "sorgen", ["zahlen","danken","bitten"]],
+  ["Kleinvieh macht auch", "Mist", ["Lärm","Arbeit","Freude"]],
+  ["Die Hoffnung stirbt", "zuletzt", ["schnell","leise","nie"]],
+  ["Geteiltes Leid ist halbes", "Leid", ["Glück","Los","Werk"]],
+  ["Der Weg ist das", "Ziel", ["Beste","Ende","Leben"]],
+  ["Lachen ist die beste", "Medizin", ["Antwort","Musik","Arbeit"]]
+];
+
+function playSpruch(stage, level) {
+  const runden = 8;
+  const anzahl = [3, 4, 4][level];
+  const setProgress = progressBar(stage, runden, "gelöst");
+  promptText(stage, "Wie geht der Satz weiter?", "Tippen Sie das passende Wort an.");
+
+  const satz = el("div", "saying");
+  const words = el("div", "words");
+  stage.append(satz, words);
+
+  const pool = frischeAuswahl("spruch", SPRUECHE, runden);
+  let i = 0;
+
+  function runde() {
+    const [anfang, loesung, falsch] = pool[i];
+    satz.innerHTML = "";
+    satz.append(document.createTextNode(anfang + " "));
+    const gap = el("span", "gap", " ");
+    satz.append(gap);
+
+    const opts = shuffle([loesung, ...shuffle(falsch.slice()).slice(0, anzahl - 1)]);
+    words.innerHTML = "";
+    opts.forEach(w => {
+      const b = el("button", "word", w);
+      b.addEventListener("click", () => {
+        if (w !== loesung) {
+          fehler(b);
+          maybeHint(() => [...words.children].find(x => x.textContent === loesung));
+          return;
+        }
+        richtig();
+        gap.textContent = loesung;
+        b.classList.add("ok");
+        [...words.children].forEach(x => x.disabled = true);
+        i++; setProgress(i);
+        setTimeout(() => { i >= runden ? finish() : runde(); }, 1100);
+      });
+      words.append(b);
+    });
+  }
+  runde(); setProgress(0);
+}
+
+/* ================= 4. Was passt nicht dazu ================= */
+
+const GRUPPEN = [
+  { thema:"Obst",        gut:[["🍎","Apfel"],["🍐","Birne"],["🍌","Banane"],["🍒","Kirsche"],["🍓","Erdbeere"]], },
+  { thema:"Tiere",       gut:[["🐕","Hund"],["🐈","Katze"],["🐴","Pferd"],["🐄","Kuh"],["🐖","Schwein"]] },
+  { thema:"Werkzeuge",   gut:[["🔨","Hammer"],["🪛","Schraubenzieher"],["🪚","Säge"],["🔧","Zange"]] },
+  { thema:"Fahrzeuge",   gut:[["🚗","Auto"],["🚲","Fahrrad"],["🚌","Bus"],["🚂","Zug"],["✈️","Flugzeug"]] },
+  { thema:"Möbel",       gut:[["🪑","Stuhl"],["🛏️","Bett"],["🚪","Tür"],["🛋️","Sofa"]] },
+  { thema:"Kleidung",    gut:[["👒","Hut"],["🧦","Socke"],["👞","Schuh"],["🧤","Handschuh"],["👓","Brille"]] },
+  { thema:"Geschirr",    gut:[["🍽️","Teller"],["🥄","Löffel"],["🍴","Gabel"],["☕","Tasse"]] },
+  { thema:"Blumen und Pflanzen", gut:[["🌻","Sonnenblume"],["🌷","Tulpe"],["🌳","Baum"],["🌹","Rose"]] },
+  { thema:"Musikinstrumente", gut:[["🎸","Gitarre"],["🎻","Geige"],["🥁","Trommel"],["🎺","Trompete"]] },
+  { thema:"Wetter",      gut:[["☀️","Sonne"],["🌧️","Regen"],["❄️","Schnee"],["⛈️","Gewitter"]] },
+  { thema:"Gemüse",      gut:[["🥕","Karotte"],["🥦","Brokkoli"],["🌽","Mais"],["🥔","Kartoffel"],["🍅","Tomate"]] },
+  { thema:"Getränke",    gut:[["🍵","Tee"],["🥛","Milch"],["🧃","Saft"],["🍺","Bier"],["🍷","Wein"]] },
+  { thema:"Körperteile", gut:[["👁️","Auge"],["👂","Ohr"],["👃","Nase"],["✋","Hand"],["🦶","Fuß"]] },
+  { thema:"Dinge im Bad",gut:[["🛁","Badewanne"],["🚿","Dusche"],["🧼","Seife"],["🪞","Spiegel"]] },
+  { thema:"Vögel",       gut:[["🦅","Adler"],["🦉","Eule"],["🦆","Ente"],["🐓","Hahn"],["🕊️","Taube"]] },
+  { thema:"Meerestiere", gut:[["🐟","Fisch"],["🐬","Delfin"],["🦀","Krabbe"],["🐙","Krake"],["🐳","Wal"]] },
+  { thema:"Backwaren",   gut:[["🍞","Brot"],["🥨","Brezel"],["🥐","Hörnchen"],["🎂","Kuchen"]] },
+  { thema:"Süßigkeiten", gut:[["🍫","Schokolade"],["🍬","Bonbon"],["🍭","Lutscher"],["🍩","Krapfen"]] },
+  { thema:"Sport",       gut:[["⚽","Fußball"],["🎾","Tennis"],["🏀","Basketball"],["🏓","Tischtennis"]] },
+  { thema:"Dinge im Büro",gut:[["✏️","Bleistift"],["📎","Büroklammer"],["📖","Buch"],["✂️","Schere"]] },
+  { thema:"Schmuck",     gut:[["💍","Ring"],["📿","Kette"],["⌚","Uhr"],["👑","Krone"]] },
+  { thema:"Insekten",    gut:[["🐝","Biene"],["🦋","Schmetterling"],["🐞","Marienkäfer"],["🐜","Ameise"]] },
+  { thema:"Dinge im Wald",gut:[["🌲","Tanne"],["🍄","Pilz"],["🦌","Reh"],["🐿️","Eichhörnchen"]] },
+  { thema:"Winter",      gut:[["⛄","Schneemann"],["🧣","Schal"],["🎿","Ski"],["🧤","Handschuh"]] },
+  { thema:"Spielzeug",   gut:[["🧸","Teddy"],["🎈","Luftballon"],["🎲","Würfel"],["🪁","Drachen"]] },
+  { thema:"Am Himmel",   gut:[["🌙","Mond"],["⭐","Stern"],["☁️","Wolke"],["🌈","Regenbogen"]] },
+  { thema:"Küchengeräte",gut:[["🍳","Pfanne"],["🔪","Messer"],["🥣","Schüssel"],["🫖","Kanne"]] }
+];
+
+function playOdd(stage, level) {
+  const runden = 8;
+  const anzahl = [4, 5, 6][level];
+  const setProgress = progressBar(stage, runden, "gelöst");
+  const p = promptText(stage, "Was passt hier nicht dazu?", "Tippen Sie das eine Bild an, das nicht zu den anderen gehört.");
+
+  const words = el("div", "words");
+  stage.append(words);
+  let i = 0;
+
+  // Genug Gruppen für den ganzen Durchgang, jede höchstens einmal
+  const folge = frischeAuswahl("odd", GRUPPEN.filter(g => g.gut.length >= anzahl - 1), runden);
+
+  function runde() {
+    const a = folge[i % folge.length];
+    let b = pick(GRUPPEN);
+    let schutz = 0;
+    while (b.thema === a.thema && schutz++ < 40) b = pick(GRUPPEN);
+
+    const passend = shuffle(a.gut.slice()).slice(0, Math.min(anzahl - 1, a.gut.length));
+    // Der Ausreißer darf nicht zufällig auch in die Zielgruppe gehören
+    const namenA = a.gut.map(x => x[1]);
+    const moeglich = b.gut.filter(x => !namenA.includes(x[1]));
+    const ausreisser = pick(moeglich.length ? moeglich : b.gut);
+    const alle = shuffle([...passend.map(x => ({ x, odd: false })), { x: ausreisser, odd: true }]);
+
+    p.innerHTML = "Was passt hier nicht dazu?";
+    p.append(el("small", null, "Tippen Sie das eine Bild an, das nicht zu den anderen gehört."));
+
+    words.innerHTML = "";
+    alle.forEach(({ x, odd }) => {
+      const b2 = el("button", "word");
+      const pic = el("div", "pic", x[0]);
+      b2.append(pic, el("span", null, x[1]));
+      b2.addEventListener("click", () => {
+        if (!odd) { fehler(b2); maybeHint(() => [...words.children][alle.findIndex(z => z.odd)]); return; }
+        richtig();
+        b2.classList.add("ok");
+        [...words.children].forEach(z => z.disabled = true);
+        p.innerHTML = "";
+        p.append(document.createTextNode("Richtig — alle anderen gehören zu: " + a.thema + "."));
+        i++; setProgress(i);
+        setTimeout(() => { i >= runden ? finish() : runde(); }, 1500);
+      });
+      words.append(b2);
+    });
+  }
+  runde(); setProgress(0);
+}
+
+/* ================= 5. Zahlenreihe ================= */
+
+function playReihe(stage, level) {
+  const n = [5, 8, 12][level];
+  const setProgress = progressBar(stage, n, "getippt");
+  const p = promptText(stage, "Tippen Sie die Zahlen der Reihe nach an.", "Als Nächstes: 1");
+
+  const field = el("div", "field");
+  stage.append(field);
+  let naechste = 1;
+
+  // Positionen ohne Überlappung streuen
+  const punkte = [];
+  const groesse = [22, 18, 15][level];       // % der Feldbreite
+  const abstand = groesse * 1.15;
+  for (let k = 0; k < n; k++) {
+    let pos, versuche = 0;
+    do {
+      pos = { x: rint(4, 96 - groesse), y: rint(4, 96 - groesse) };
+      versuche++;
+    } while (versuche < 400 && punkte.some(q => Math.hypot(q.x - pos.x, (q.y - pos.y) * .75) < abstand));
+    punkte.push(pos);
+  }
+
+  punkte.forEach((pos, k) => {
+    const s = el("button", "spot", String(k + 1));
+    s.style.cssText = `left:${pos.x}%;top:${pos.y}%;width:${groesse}%;aspect-ratio:1/1;`;
+    if (k === 0) s.classList.add("next");
+    s.addEventListener("click", () => {
+      if (k + 1 !== naechste) {
+        fehler(s);
+        if (run.streak >= 2) field.children[naechste - 1].classList.add("next");
+        return;
+      }
+      richtig();
+      s.classList.add("gone");
+      setTimeout(() => { s.style.visibility = "hidden"; }, 320);
+      naechste++;
+      setProgress(naechste - 1);
+      if (naechste > n) { setTimeout(finish, 650); return; }
+      p.innerHTML = "Tippen Sie die Zahlen der Reihe nach an.";
+      p.append(el("small", null, "Als Nächstes: " + naechste));
+    });
+    field.append(s);
+  });
+  setProgress(0);
+}
+
+/* ================= 6. Ziele treffen ================= */
+
+function playZiel(stage, level) {
+  const n = 12;
+  const groesse = [26, 19, 14][level];   // % der Feldbreite
+  const drift = level === 2;
+  const setProgress = progressBar(stage, n, "getroffen");
+  promptText(stage, "Tippen Sie den Punkt an.", "Lassen Sie sich Zeit — es läuft keine Uhr.");
+
+  const field = el("div", "field");
+  stage.append(field);
+
+  let treffer = 0, t = null, animation = null;
+
+  function neu() {
+    if (t) t.remove();
+    t = el("button", "target");
+    const x = rint(2, 98 - groesse), y = rint(2, 98 - groesse);
+    t.style.cssText = `left:${x}%;top:${y}%;width:${groesse}%;aspect-ratio:1/1;`;
+    t.setAttribute("aria-label", "Ziel antippen");
+    t.addEventListener("click", () => {
+      richtig();
+      t.classList.add("gone");
+      treffer++; setProgress(treffer);
+      if (animation) { clearInterval(animation); animation = null; }
+      if (treffer >= n) { setTimeout(() => { t.remove(); finish(); }, 340); return; }
+      setTimeout(neu, 300);
+    });
+    field.append(t);
+
+    if (drift) {
+      let px = x, py = y, dx = (Math.random() - .5) * .55, dy = (Math.random() - .5) * .55;
+      animation = setInterval(() => {
+        px += dx; py += dy;
+        if (px < 2 || px > 98 - groesse) dx *= -1;
+        if (py < 2 || py > 98 - groesse) dy *= -1;
+        px = Math.max(2, Math.min(98 - groesse, px));
+        py = Math.max(2, Math.min(98 - groesse, py));
+        t.style.left = px + "%"; t.style.top = py + "%";
+      }, 40);
+    }
+  }
+  // Fehltipp ins Leere zählt als Ungenauigkeit, hat aber keine Folge
+  field.addEventListener("pointerdown", e => { if (e.target === field) run.fehler++; });
+  neu(); setProgress(0);
+}
+
+/* ================= 7. Linie nachfahren ================= */
+
+/* Die Bahn wird jedes Mal neu gewürfelt, damit die Übung nicht
+   auswendig gelernt wird. Mehr Stützpunkte = engere Kurven. */
+function machePfad(level) {
+  const stuetzen = [3, 4, 6][level];
+  const x0 = 95, x1 = 905;
+  const pts = [];
+  for (let i = 0; i < stuetzen; i++) {
+    pts.push({ x: x0 + (x1 - x0) * i / (stuetzen - 1), y: rint(140, 460) });
+  }
+  // Aufeinanderfolgende Punkte auseinanderziehen, sonst wird die Bahn flach
+  for (let i = 1; i < pts.length; i++) {
+    if (Math.abs(pts[i].y - pts[i - 1].y) < 150) {
+      pts[i].y = pts[i - 1].y < 300 ? rint(370, 460) : rint(140, 230);
+    }
+  }
+  let d = "M " + pts[0].x + " " + pts[0].y;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = (pts[i].x - pts[i - 1].x) * .55;
+    d += " C " + (pts[i - 1].x + dx) + " " + pts[i - 1].y + ", " +
+                 (pts[i].x - dx) + " " + pts[i].y + ", " +
+                 pts[i].x + " " + pts[i].y;
+  }
+  return d;
+}
+
+function playLinie(stage, level) {
+  const punkteZahl = [20, 28, 36][level];
+  const toleranz = [78, 60, 46][level];
+  const setProgress = progressBar(stage, punkteZahl, "der Strecke");
+  promptText(stage, "Fahren Sie mit dem Finger der Linie entlang.", "Absetzen ist erlaubt — es geht dort weiter, wo Sie waren.");
+
+  const d = machePfad(level);
+  const wrap = el("div", "tracewrap");
+  wrap.innerHTML =
+    '<svg viewBox="0 0 1000 600" aria-hidden="true">' +
+      '<path id="spur" d="' + d + '" fill="none" stroke="var(--akzent-soft)" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path id="spur2" d="' + d + '" fill="none" stroke="var(--akzent)" stroke-width="4" stroke-dasharray="14 16" stroke-linecap="round" opacity=".45"/>' +
+      '<path id="fertig" d="' + d + '" fill="none" stroke="var(--akzent)" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<circle id="marke" r="26" fill="var(--honey-soft)" stroke="var(--honey)" stroke-width="6"/>' +
+    '</svg>';
+  stage.append(wrap);
+
+  const svg = $("svg", wrap), spur = $("#spur", wrap), fertig = $("#fertig", wrap), marke = $("#marke", wrap);
+  const laenge = spur.getTotalLength();
+  const ziele = [];
+  for (let k = 0; k < punkteZahl; k++) {
+    ziele.push(spur.getPointAtLength(laenge * (k + 1) / punkteZahl));
+  }
+  const start = spur.getPointAtLength(0);
+  fertig.style.strokeDasharray = laenge;
+  fertig.style.strokeDashoffset = laenge;
+  fertig.style.transition = "stroke-dashoffset .18s linear";
+  marke.setAttribute("cx", start.x); marke.setAttribute("cy", start.y);
+
+  let idx = 0, unten = false;
+
+  const toSvg = e => {
+    const r = svg.getBoundingClientRect();
+    return { x: (e.clientX - r.left) / r.width * 1000, y: (e.clientY - r.top) / r.height * 600 };
+  };
+
+  function bewege(e) {
+    if (!unten || idx >= punkteZahl) return;
+    const p = toSvg(e);
+    // Erlaubt auch etwas schnelleres Fahren: bis zu drei Punkte auf einmal
+    for (let k = 0; k < 3 && idx < punkteZahl; k++) {
+      const z = ziele[idx];
+      if (Math.hypot(p.x - z.x, p.y - z.y) > toleranz) break;
+      idx++;
+      if (idx % 3 === 0) tone(420 + idx * 12, .06, "sine", .07);
+      marke.setAttribute("cx", z.x); marke.setAttribute("cy", z.y);
+      fertig.style.strokeDashoffset = laenge - laenge * idx / punkteZahl;
+      setProgress(idx);
+    }
+    if (idx >= punkteZahl) { unten = false; richtig(); setTimeout(finish, 600); }
+  }
+
+  wrap.addEventListener("pointerdown", e => {
+    unten = true;
+    try { wrap.setPointerCapture(e.pointerId); } catch {}
+    bewege(e);
+  });
+  wrap.addEventListener("pointermove", bewege);
+  wrap.addEventListener("pointerup", () => { unten = false; });
+  wrap.addEventListener("pointercancel", () => { unten = false; });
+  setProgress(0);
+}
+
+/* ================= 8. Einsortieren ================= */
+
+/* Drei Sätze je Stufe, die reihum drankommen: Stufe 1 sortiert nach
+   dem, was man sieht, Stufe 2 und 3 nach dem, was man weiß. */
+const SORTIER = [
+  [
+    { kisten:[["Rot","🔴"],["Blau","🔵"]],
+      dinge:[["🍎",0],["🌹",0],["🍓",0],["🍒",0],["🫐",1],["👖",1],["🐳",1],["💙",1]] },
+    { kisten:[["Gelb","🟡"],["Grün","🟢"]],
+      dinge:[["🍋",0],["🌻",0],["🧀",0],["🌽",0],["🥦",1],["🌳",1],["🥒",1],["🐸",1]] },
+    { kisten:[["Rot","🔴"],["Gelb","🟡"]],
+      dinge:[["🍎",0],["🌹",0],["🍓",0],["🚒",0],["🍋",1],["🌻",1],["🧀",1],["🍌",1]] }
+  ],
+  [
+    { kisten:[["Obst","🍏"],["Gemüse","🥕"]],
+      dinge:[["🍎",0],["🍌",0],["🍐",0],["🍒",0],["🥕",1],["🥦",1],["🌽",1],["🥔",1]] },
+    { kisten:[["Tiere","🐕"],["Fahrzeuge","🚗"]],
+      dinge:[["🐕",0],["🐈",0],["🐴",0],["🐄",0],["🚗",1],["🚲",1],["🚌",1],["🚂",1]] },
+    { kisten:[["Essen","🍞"],["Trinken","🥛"]],
+      dinge:[["🍞",0],["🧀",0],["🍎",0],["🥚",0],["☕",1],["🥛",1],["🍵",1],["🧃",1]] }
+  ],
+  [
+    { kisten:[["Küche","🍽️"],["Werkstatt","🔨"],["Garten","🌱"]],
+      dinge:[["🥄",0],["🍳",0],["☕",0],["🔨",1],["🪛",1],["🔧",1],["🌻",2],["🌳",2],["🪴",2]] },
+    { kisten:[["Anziehen","👕"],["Waschen","🧼"],["Essen","🍽️"]],
+      dinge:[["👕",0],["👖",0],["🧦",0],["🧼",1],["🚿",1],["🛁",1],["🍽️",2],["🥄",2],["🍳",2]] },
+    { kisten:[["Obst","🍏"],["Gemüse","🥕"],["Blumen","🌷"]],
+      dinge:[["🍎",0],["🍌",0],["🍐",0],["🥕",1],["🥦",1],["🌽",1],["🌻",2],["🌷",2],["🌹",2]] }
+  ]
+];
+
+function playSort(stage, level) {
+  const satz = frischeAuswahl("sort" + level, SORTIER[level], 1, 2)[0];
+  const dinge = shuffle(satz.dinge.slice()).slice(0, [6, 8, 9][level]);
+  const setProgress = progressBar(stage, dinge.length, "einsortiert");
+  promptText(stage, "Legen Sie jedes Ding in die richtige Kiste.",
+    "Ziehen Sie es hinüber — oder tippen Sie erst das Ding, dann die Kiste an.");
+
+  const tray = el("div", "tray");
+  const baskets = el("div", "baskets");
+  stage.append(tray, baskets);
+
+  const kisten = satz.kisten.map(([name, sym]) => {
+    const b = el("div", "basket");
+    b.append(el("div", "pic", sym), el("b", null, name), el("div", "in"));
+    b.tabIndex = 0;
+    baskets.append(b);
+    return b;
+  });
+  kisten.forEach(k => { $(".pic", k).style.fontSize = "2rem"; });
+
+  let gewaehlt = null, fertigZahl = 0;
+
+  function ablegen(item, kisteIdx) {
+    const ziel = +item.dataset.ziel;
+    const kiste = kisten[kisteIdx];
+    if (ziel !== kisteIdx) { fehler(kiste); kiste.classList.remove("over"); return false; }
+    richtig();
+    $(".in", kiste).append(el("span", null, item.textContent));
+    item.remove();
+    kiste.classList.remove("over");
+    fertigZahl++; setProgress(fertigZahl);
+    if (fertigZahl >= dinge.length) setTimeout(finish, 650);
+    return true;
+  }
+
+  function waehle(item) {
+    if (gewaehlt) gewaehlt.classList.remove("picked");
+    gewaehlt = gewaehlt === item ? null : item;
+    if (gewaehlt) { gewaehlt.classList.add("picked"); tone(560, .08, "sine", .08); }
+  }
+
+  kisten.forEach((k, i) => {
+    const nimm = () => { if (gewaehlt) { const g = gewaehlt; gewaehlt = null; g.classList.remove("picked"); ablegen(g, i); } };
+    k.addEventListener("click", nimm);
+    k.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); nimm(); } });
+  });
+
+  dinge.forEach(([sym, ziel]) => {
+    const it = el("div", "item", sym);
+    it.dataset.ziel = ziel;
+    it.tabIndex = 0;
+    it.setAttribute("role", "button");
+    it.setAttribute("aria-label", "Gegenstand aufnehmen");
+
+    let ziehen = false, moved = false, dx = 0, dy = 0;
+
+    it.addEventListener("pointerdown", e => {
+      const r = it.getBoundingClientRect();
+      dx = e.clientX - r.left; dy = e.clientY - r.top;
+      ziehen = true; moved = false;
+      it.dataset.w = r.width; it.dataset.h = r.height;
+      try { it.setPointerCapture(e.pointerId); } catch {}
+    });
+
+    it.addEventListener("pointermove", e => {
+      if (!ziehen) return;
+      if (!moved && Math.abs(e.movementX) + Math.abs(e.movementY) < 2) return;
+      if (!moved) {
+        moved = true;
+        it.classList.add("dragging");
+        it.style.width = it.dataset.w + "px";
+        it.style.height = it.dataset.h + "px";
+      }
+      it.style.left = (e.clientX - dx) + "px";
+      it.style.top = (e.clientY - dy) + "px";
+      const unter = kisteUnter(e.clientX, e.clientY);
+      kisten.forEach((k, i) => k.classList.toggle("over", i === unter));
+    });
+
+    const loslassen = e => {
+      if (!ziehen) return;
+      ziehen = false;
+      if (!moved) { waehle(it); return; }
+      it.classList.remove("dragging");
+      it.style.cssText = "";
+      const unter = kisteUnter(e.clientX, e.clientY);
+      kisten.forEach(k => k.classList.remove("over"));
+      if (unter != null) ablegen(it, unter);
+    };
+    it.addEventListener("pointerup", loslassen);
+    it.addEventListener("pointercancel", () => {
+      ziehen = false; it.classList.remove("dragging"); it.style.cssText = "";
+      kisten.forEach(k => k.classList.remove("over"));
+    });
+    it.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); waehle(it); } });
+
+    tray.append(it);
+  });
+
+  function kisteUnter(x, y) {
+    for (let i = 0; i < kisten.length; i++) {
+      const r = kisten[i].getBoundingClientRect();
+      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return i;
+    }
+    return null;
+  }
+  setProgress(0);
+}
+
+/* ================= Garten ================= */
+
+const BLUETEN = [
+  "#C8563C","#D69A2A","#8E5FA8","#2F7DB0","#C4436E","#D9A441","#E0632C","#B8452F",
+  "#7A4FA3","#3D8FBF","#D4457B","#E08A1E","#9B4F8C","#C13B4A","#4E7FC9","#E2A93B"
+];
+
+function flowerSVG(i, gross) {
+  const farbe = BLUETEN[i % BLUETEN.length];
+  const h = 30 + (i * 37 % 22);              // deterministische Höhe
+  const neigung = ((i * 53) % 9) - 4;
+  const bl = 6;
+  let petals = "";
+  for (let k = 0; k < bl; k++) {
+    const a = k * (360 / bl) * Math.PI / 180;
+    petals += `<ellipse cx="${(50 + Math.cos(a) * 13).toFixed(1)}" cy="${(28 + Math.sin(a) * 13).toFixed(1)}" rx="9" ry="9" fill="${farbe}" opacity=".92"/>`;
+  }
+  return `<svg viewBox="0 0 100 ${gross ? 100 : 100}" width="100%" height="100%" role="img" aria-label="Blume">
+    <g transform="rotate(${neigung} 50 100)">
+      <path d="M50 100 C 50 ${100 - h * .6} 46 ${100 - h} 50 ${62 - h * .2}" stroke="#4E8A54" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="38" cy="${78 - h * .18}" rx="11" ry="6" fill="#5A9E5C" transform="rotate(-24 38 ${78 - h * .18})"/>
+      <g transform="translate(0 ${(62 - h * .2) - 28})">${petals}<circle cx="50" cy="28" r="8.5" fill="#E8C33F"/></g>
+    </g>
+  </svg>`;
+}
+
+function showGarden() {
+  setAkzent("gruen");
+  const v = screen("Mein Garten", showHome);
+  const wrap = el("div", "gardenwrap");
+  if (store.flowers === 0) {
+    wrap.append(el("p", "emptygarden", "Hier wächst nach jeder abgeschlossenen Übung eine Blume. Der Garten wird immer nur voller."));
+  } else {
+    const f = el("div", "flowers");
+    const zeigen = Math.min(store.flowers, 80);
+    for (let i = 0; i < zeigen; i++) {
+      const d = el("div");
+      d.innerHTML = flowerSVG(i);
+      const s = d.firstElementChild;
+      s.style.animationDelay = Math.min(i * 22, 900) + "ms";
+      f.append(s);
+    }
+    wrap.append(f);
+  }
+  wrap.append(el("div", "soil"));
+  v.append(wrap);
+
+  const c = el("p", "gardencount");
+  c.append(el("b", null, String(store.flowers)), document.createTextNode(store.flowers === 1 ? " Blume" : " Blumen"));
+  if (store.flowers > 80) c.append(document.createTextNode(" — die ersten 80 sind zu sehen"));
+  v.append(c);
+
+  const b = el("button", "btn primary");
+  b.style.marginTop = "1.4rem";
+  b.textContent = "Eine Übung machen";
+  b.addEventListener("click", showHome);
+  const panel = el("div", "panel");
+  panel.append(b);
+  v.append(panel);
+}
+
+/* ================= Einstellungen ================= */
+
+function showPanel() {
+  setAkzent("schiefer");
+  const v = screen("Einstellungen", showHome);
+  const p = el("div", "panel");
+
+  p.append(el("h2", null, "Darstellung"));
+  p.append(segment("Textgröße", ["normal","gross","sehrgross"], ["Normal","Groß","Sehr groß"], store.text, x => { store.text = x; save(); applySettings(); }));
+  p.append(segment("Kontrast", ["normal","stark"], ["Normal","Stark"], store.kontrast, x => { store.kontrast = x; save(); applySettings(); }));
+  p.append(segment("Töne", [true,false], ["An","Aus"], store.ton, x => { store.ton = x; save(); if (x) sndGood(); }));
+
+  /* Der Verlauf liegt hinter einem eigenen Tipp. Nicht weil er geheim
+     wäre, sondern damit beim Verstellen der Schrift keine Fehlerzahlen
+     ins Blickfeld geraten. Wer sie sehen will, tippt einmal mehr. */
+  p.append(el("h2", null, "Verlauf"));
+  const hinweis = el("p", "note", "Eine Übersicht der abgeschlossenen Übungen — nützlich für Therapie- oder Arzttermine. In den Übungen selbst gibt es bewusst keine Punkte und keine Bewertung.");
+  p.append(hinweis);
+
+  const auf = el("button", "btn", "Verlauf anzeigen");
+  const behaelter = el("div");
+  behaelter.hidden = true;
+  auf.addEventListener("click", () => {
+    behaelter.hidden = !behaelter.hidden;
+    auf.textContent = behaelter.hidden ? "Verlauf anzeigen" : "Verlauf ausblenden";
+    auf.setAttribute("aria-expanded", String(!behaelter.hidden));
+  });
+  auf.setAttribute("aria-expanded", "false");
+
+  if (!store.log.length) {
+    behaelter.append(el("p", "note", "Noch keine Übung abgeschlossen."));
+  } else {
+    const sc = el("div", "scroller");
+    const t = el("table", "log");
+    t.innerHTML = "<thead><tr><th>Datum</th><th>Übung</th><th>Stufe</th><th class='n'>Fehlgriffe</th><th class='n'>Dauer</th></tr></thead>";
+    const tb = el("tbody");
+    store.log.slice(0, 40).forEach(r => {
+      const tr = el("tr");
+      const d = r.d.split("-");
+      tr.append(el("td", null, d[2] + "." + d[1] + "."), el("td", null, r.spiel), el("td", null, r.stufe));
+      tr.append(el("td", "n", String(r.fehler)), el("td", "n", Math.floor(r.sek / 60) + ":" + String(r.sek % 60).padStart(2, "0")));
+      tb.append(tr);
+    });
+    t.append(tb); sc.append(t); behaelter.append(sc);
+  }
+  p.append(auf, behaelter);
+
+  p.append(el("h2", null, "Daten"));
+  p.append(el("p", "note", "Alles bleibt auf diesem Gerät gespeichert. Es werden keine Daten übertragen."));
+  const reset = el("button", "btn danger", "Verlauf und Garten löschen");
+  reset.addEventListener("click", () => {
+    if (!confirm("Wirklich alles löschen? Der Garten und der Verlauf gehen verloren.")) return;
+    store.flowers = 0; store.log = []; save(); applySettings(); showPanel();
+  });
+  p.append(reset);
+
+  const ueber = el("button", "btn", "Über diese App");
+  ueber.addEventListener("click", showAbout);
+  p.append(ueber);
+
+  v.append(p);
+}
+
+/* ================= Über diese App =================
+   Impressum und Datenschutz. Für eine öffentlich erreichbare Seite in
+   Deutschland ist ein Impressum Pflicht; die eckigen Klammern müssen
+   vor der Veröffentlichung ersetzt werden. */
+
+function showAbout() {
+  setAkzent("schiefer");
+  const v = screen("Über diese App", showPanel);
+  const p = el("div", "panel");
+
+  p.append(el("h2", null, "Was diese App ist"));
+  p.append(el("p", "fliess", "Kopf & Hand ist eine Sammlung kleiner Übungen für Gedächtnis, "
+    + "Sprache, Aufmerksamkeit und Handgeschicklichkeit. Sie ist für Menschen gemacht, "
+    + "die nach einem Schlaganfall oder bei einer Demenzerkrankung im Alltag üben möchten."));
+  p.append(el("p", "fliess", "Sie ist ausdrücklich kein Medizinprodukt und ersetzt keine "
+    + "Ergotherapie, Logopädie oder ärztliche Behandlung. Die Übungen stellen keine Diagnose "
+    + "und erlauben keinen Rückschluss auf den Krankheitsverlauf. Sprechen Sie die Nutzung "
+    + "im Zweifel mit der behandelnden Praxis ab."));
+
+  p.append(el("h2", null, "Datenschutz"));
+  p.append(el("p", "fliess", "Diese App sendet keine Daten. Es gibt keine Nutzerkonten, "
+    + "keine Anmeldung, keine Werbung und keine Analysedienste. Der Garten, der Verlauf und "
+    + "die Einstellungen werden ausschließlich im Speicher Ihres eigenen Browsers abgelegt "
+    + "und verlassen dieses Gerät nicht. Über „Verlauf und Garten löschen“ in den "
+    + "Einstellungen entfernen Sie alles wieder."));
+  if (HOSTER) {
+    p.append(el("p", "fliess", "Diese Seite wird bei " + HOSTER + " gehostet. Beim Aufruf "
+      + "verarbeitet der Anbieter technisch bedingt Ihre IP-Adresse, wie bei jedem "
+      + "Seitenaufruf im Internet."));
+  } else {
+    p.append(el("p", "fliess", "Beim Aufruf der Seite verarbeitet der Anbieter des "
+      + "Webspeichers technisch bedingt Ihre IP-Adresse, wie bei jedem Seitenaufruf "
+      + "im Internet."));
+    const anbieter = el("div", "platzhalter");
+    anbieter.append(el("b", null, "Noch auszufüllen"));
+    anbieter.append(document.createTextNode("Im Quelltext ganz oben bei HOSTER eintragen, "
+      + "wo die Seite liegt."));
+    p.append(anbieter);
+  }
+
+  const vollstaendig = IMPRESSUM.name && IMPRESSUM.strasse && IMPRESSUM.ort && IMPRESSUM.email;
+
+  if (!OEFFENTLICH && !vollstaendig) {
+    // Nur persönlich weitergegeben — kein Impressumsabschnitt, aber gesagt,
+    // woher die App kommt und an wen man sich wendet.
+    p.append(el("h2", null, "Woher diese App kommt"));
+    p.append(el("p", "fliess", "Diese Seite wird nicht öffentlich angeboten. Sie erreichen "
+      + "sie über einen Link, den Sie persönlich bekommen haben. Wenn etwas nicht "
+      + "funktioniert oder Sie einen Vorschlag haben, wenden Sie sich bitte an die Person, "
+      + "von der Sie den Link erhalten haben."));
+    const zurueck0 = el("button", "btn primary", "Zurück zu den Einstellungen");
+    zurueck0.addEventListener("click", showPanel);
+    p.append(zurueck0);
+    v.append(p);
+    return;
+  }
+
+  p.append(el("h2", null, "Impressum"));
+  p.append(el("p", "fliess", "Angaben gemäß § 5 Digitale-Dienste-Gesetz:"));
+
+  if (vollstaendig) {
+    const a = el("p", "fliess");
+    [IMPRESSUM.name, IMPRESSUM.strasse, IMPRESSUM.ort].forEach((zeile, i) => {
+      if (i) a.append(el("br"));
+      a.append(document.createTextNode(zeile));
+    });
+    p.append(a);
+    const k = el("p", "fliess");
+    k.append(document.createTextNode("E-Mail: "));
+    const link = el("a", null, IMPRESSUM.email);
+    link.href = "mailto:" + IMPRESSUM.email;
+    k.append(link);
+    if (IMPRESSUM.telefon) {
+      k.append(el("br"));
+      k.append(document.createTextNode("Telefon: " + IMPRESSUM.telefon));
+    }
+    p.append(k);
+    p.append(el("p", "note", "Verantwortlich für den Inhalt: " + IMPRESSUM.name + "."));
+  } else {
+    const impressum = el("div", "platzhalter");
+    impressum.append(el("b", null, "Noch auszufüllen"));
+    impressum.append(document.createTextNode(
+      "Im Quelltext ganz oben den Block IMPRESSUM ausfüllen: Vor- und Nachname, "
+      + "Straße und Hausnummer, Postleitzahl und Ort, E-Mail-Adresse. "
+      + "Danach erscheint hier automatisch ein vollständiges Impressum."));
+    p.append(impressum);
+    p.append(el("p", "note", "Eine ladungsfähige Anschrift ist vorgeschrieben; ein Postfach "
+      + "genügt nicht. Wer das nicht öffentlich machen möchte, kann die Seite stattdessen "
+      + "unveröffentlicht lassen und den Link nur gezielt weitergeben."));
+  }
+
+  const zurueck = el("button", "btn primary", "Zurück zu den Einstellungen");
+  zurueck.addEventListener("click", showPanel);
+  p.append(zurueck);
+
+  v.append(p);
+}
+
+function segment(label, werte, namen, aktiv, fn) {
+  const box = el("div");
+  box.style.marginBottom = "1.3rem";
+  const l = el("p", "note", label);
+  l.style.margin = "0 0 .45rem";
+  const seg = el("div", "seg");
+  werte.forEach((w, i) => {
+    const b = el("button", null, namen[i]);
+    b.setAttribute("aria-pressed", String(w === aktiv));
+    b.addEventListener("click", () => { fn(w); [...seg.children].forEach((c, j) => c.setAttribute("aria-pressed", String(werte[j] === w))); });
+    seg.append(b);
+  });
+  box.append(l, seg);
+  return box;
+}
+
+/* ================= Start ================= */
+
+document.documentElement.lang = "de";   // damit Vorlesefunktionen deutsch sprechen
+applySettings();
+showHome();
+
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

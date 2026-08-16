@@ -1,0 +1,16 @@
+{
+  "name": "Kopf & Hand",
+  "short_name": "Kopf & Hand",
+  "description": "Kleine Übungen für Gedächtnis, Sprache und Handgeschicklichkeit — für Menschen nach einem Schlaganfall oder mit einer Demenzerkrankung. Ohne Zeitdruck und ohne Punkte.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#EFF2EE",
+  "theme_color": "#EFF2EE",
+  "lang": "de",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
