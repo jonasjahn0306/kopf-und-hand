@@ -419,6 +419,15 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   content:""; position:absolute; inset:22%;
   border:3px solid rgba(255,255,255,.75); border-radius:99px;
 }
+/* Ablenker auf der schwersten Stufe — klar andere Farbe, nicht nur
+   ein anderer Ton, damit auch bei Farbsehschwäche unterscheidbar */
+.target.stoerer{
+  background:radial-gradient(circle at 34% 30%, #E8A08D, #B03A28 70%);
+  border-color:#7C2416;
+}
+.target.stoerer::after{
+  inset:30%; border-style:dashed;
+}
 
 /* Linie nachfahren */
 .tracewrap{
@@ -435,9 +444,13 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   padding:.8rem; border:2px dashed var(--line-2); border-radius:var(--radius);
 }
 .item{
-  width:4.6rem; height:4.6rem;
+  /* Bewusst kleiner als die übrigen Tippflächen: bei zwölf Dingen und
+     großer Schrift müsste man sonst zwischen Ding und Kiste scrollen,
+     was das Ziehen unmöglich macht. 3.6rem sind auch bei kleinster
+     Einstellung noch deutlich über der empfohlenen Mindestgröße. */
+  width:3.6rem; height:3.6rem;
   display:grid; place-items:center;
-  font-size:2.5rem; line-height:1;
+  font-size:2rem; line-height:1;
   background:var(--card);
   border:2px solid var(--line-2);
   border-radius:14px;
@@ -478,48 +491,86 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 .done-screen h2{ font-size:2rem; margin:0 0 .3rem; letter-spacing:-.015em; }
 .done-screen p{ font-size:1.1rem; color:var(--ink-2); margin:0 0 2rem; }
 
-/* Garten */
-.gardenwrap{
-  background:linear-gradient(180deg, #CFE6F5 0%, #E6F2F7 45%, #E9F3DE 100%);
-  border:2px solid var(--line); border-radius:var(--radius);
+/* Übungskalender — die Belohnung ist der sichtbare Nachweis, dass man
+   drangeblieben ist. Kein Punktestand, keine Serie, kein Vergleich:
+   ein abgehakter Tag verschwindet nie wieder, ein ausgelassener wird
+   nirgends angemahnt. */
+.kalender{
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:var(--radius);
   box-shadow:var(--shadow);
-  overflow:hidden;
+  padding:1.2rem 1rem 1.4rem;
+  max-width:34rem; margin:0 auto;
+}
+.kalender .monat{
+  font-size:1.05rem; font-weight:650; color:var(--ink-2);
+  margin:0 0 .8rem; text-align:center;
+}
+.wochentage, .wochen{
+  display:grid; grid-template-columns:repeat(7, 1fr); gap:.35rem;
+}
+.wochentage{ margin-bottom:.45rem; }
+.wochentage span{
+  text-align:center; font-size:.82rem; font-weight:650;
+  color:var(--ink-2); letter-spacing:.04em;
+}
+.tag{
+  aspect-ratio:1/1;
+  display:grid; place-items:center;
+  border-radius:10px;
+  border:2px solid var(--line);
+  background:var(--paper-deep);
+  font-size:.95rem; font-weight:600;
+  color:var(--ink-2);
+  font-variant-numeric:tabular-nums;
   position:relative;
-  min-height:13rem;
-  display:flex; flex-direction:column; justify-content:flex-end;
-  padding-top:1.4rem;
 }
-/* Sonne oben rechts — der Garten soll nach draußen aussehen, nicht nach Diagramm */
-.gardenwrap::before{
-  content:""; position:absolute; top:1.1rem; right:1.4rem;
-  width:3.6rem; height:3.6rem; border-radius:99px;
-  background:radial-gradient(circle, #FFE08A 55%, #FFD25E 100%);
-  box-shadow:0 0 0 .7rem rgba(255,224,138,.35);
+.tag.leer{ background:transparent; border-color:transparent; color:var(--line-2); font-weight:500; }
+.tag.geuebt{
+  background:var(--akzent); border-color:var(--akzent-deep); color:#fff;
 }
-/* Die Blumenreihen sind exakt so hoch wie eine Blume (4.9rem), damit
-   der wiederholte Grasstreifen genau unter jeder Reihe sitzt — sonst
-   schweben die Blumen der zweiten Reihe in der Luft. */
-.flowers{
-  display:flex; flex-wrap:wrap;
-  column-gap:.15rem; row-gap:0;
-  align-items:flex-end; justify-content:center;
-  padding:0 .7rem;
-  position:relative; z-index:1;
-  background:repeating-linear-gradient(
-    to bottom,
-    transparent 0, transparent 4.45rem,
-    rgba(122,160,96,.38) 4.45rem, rgba(122,160,96,.38) 4.9rem
-  );
+.tag.geuebt.viel{ box-shadow:inset 0 0 0 3px rgba(255,255,255,.45); }
+.tag.heute{ outline:3px solid var(--honey); outline-offset:2px; }
+.tag.kuenftig{ visibility:hidden; }
+
+.bilanz{
+  display:flex; gap:.7rem; flex-wrap:wrap;
+  max-width:34rem; margin:1.1rem auto 0;
 }
-.flowers svg{ width:3.5rem; height:4.9rem; animation:rise .5s ease both; }
-.soil{
-  height:1.5rem; flex:none;
-  background:var(--soil);
-  border-top:3px solid var(--soil-deep);
+.bilanz .zahlkarte{
+  flex:1 1 8rem;
+  background:var(--card); border:2px solid var(--line);
+  border-radius:14px; padding:.9rem 1rem;
+  box-shadow:var(--shadow);
 }
-.gardencount{ text-align:center; font-size:1.15rem; margin:1.2rem 0 0; color:var(--ink-2); }
-.gardencount b{ color:var(--ink); font-size:1.5rem; }
-.emptygarden{ text-align:center; color:var(--ink-2); padding:2rem 1rem; font-size:1.05rem; }
+.bilanz .zahlkarte b{
+  display:block; font-size:1.9rem; line-height:1.1;
+  color:var(--akzent-deep); font-variant-numeric:tabular-nums;
+}
+.bilanz .zahlkarte span{ font-size:.94rem; color:var(--ink-2); }
+.kalendertext{
+  text-align:center; font-size:1.05rem; color:var(--ink-2);
+  max-width:34rem; margin:1.2rem auto 0; text-wrap:balance;
+}
+.legende{
+  display:flex; gap:1.1rem; justify-content:center; flex-wrap:wrap;
+  margin-top:1rem; font-size:.9rem; color:var(--ink-2);
+}
+.legende i{
+  display:inline-block; width:1rem; height:1rem; border-radius:5px;
+  vertical-align:-.15em; margin-right:.35rem; border:2px solid var(--line);
+}
+.legende i.voll{ background:var(--akzent); border-color:var(--akzent-deep); }
+
+/* Abschluss */
+.haken{
+  width:6.5rem; height:6.5rem; margin:0 auto 1.2rem;
+  border-radius:99px; background:var(--akzent);
+  display:grid; place-items:center;
+  animation:pop .5s ease;
+}
+.haken svg{ width:3.4rem; height:3.4rem; stroke:#fff; }
 
 /* Einstellungen / Verlauf */
 .panel{ max-width:34rem; margin:0 auto; }
@@ -580,8 +631,8 @@ table.log td.n{ text-align:right; font-variant-numeric:tabular-nums; }
       Zurück
     </button>
     <h1 id="title">Kopf &amp; Hand</h1>
-    <button class="iconbtn" id="gardenbtn" title="Mein Garten">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21v-7"/><circle cx="12" cy="8" r="3.2"/><path d="M12 4.8V3M15.4 6.2l1.3-1.3M15.4 9.8l1.3 1.3M8.6 6.2L7.3 4.9M8.6 9.8l-1.3 1.3"/></svg>
+    <button class="iconbtn" id="gardenbtn" title="Meine Übungen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/><path d="M8.5 14.5l2.5 2.5 4.5-4.5"/></svg>
       <span id="gcount">0</span>
     </button>
   </header>
@@ -658,7 +709,8 @@ const view = $("#view"), backBtn = $("#back"), titleEl = $("#title"), gcount = $
 
 const KEY = "kopfundhand.v1";
 const store = Object.assign({
-  flowers: 0,
+  gesamt: 0,          // abgeschlossene Übungen insgesamt
+  tage: {},           // "2026-08-16" -> Anzahl an diesem Tag
   text: "normal",
   kontrast: "normal",
   ton: true,
@@ -668,13 +720,26 @@ const store = Object.assign({
 function load() {
   try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; }
 }
+
+/* Übergang von der früheren Gartenfassung: die gesammelten Blumen
+   waren nichts anderes als die Zahl abgeschlossener Übungen, und die
+   Tage lassen sich aus dem Verlauf nachbilden. Niemand verliert also
+   seinen bisherigen Stand. */
+function migriere() {
+  if (typeof store.tage !== "object" || store.tage === null) store.tage = {};
+  if (!store.gesamt && store.flowers) store.gesamt = store.flowers;
+  if (!Object.keys(store.tage).length && Array.isArray(store.log)) {
+    store.log.forEach(r => { if (r && r.d) store.tage[r.d] = (store.tage[r.d] || 0) + 1; });
+  }
+  if ("flowers" in store) delete store.flowers;
+}
 function save() {
   try { localStorage.setItem(KEY, JSON.stringify(store)); } catch {}
 }
 function applySettings() {
   document.documentElement.className = store.text === "normal" ? "" : "t-" + store.text;
   document.body.classList.toggle("hc", store.kontrast === "stark");
-  gcount.textContent = store.flowers;
+  gcount.textContent = store.gesamt;
   // Der Hintergrund hängt vom Kontrastmodus ab, also neu setzen
   if (typeof setAkzent === "function") setAkzent(aktuelleFarbe);
 }
@@ -712,7 +777,7 @@ function screen(title, backTo) {
   return view;
 }
 backBtn.addEventListener("click", () => { if (onBack) onBack(); });
-$("#gardenbtn").addEventListener("click", showGarden);
+$("#gardenbtn").addEventListener("click", showKalender);
 
 /* ================= Startseite ================= */
 
@@ -814,7 +879,7 @@ function showHome() {
   foot.append(fh);
   const fgrid = el("div", "grid");
   fgrid.append(
-    simpleTile("Mein Garten", "Für jede Übung eine Blume", "gruen", showGarden),
+    simpleTile("Meine Übungen", "Kalender der geübten Tage", "gruen", showKalender),
     simpleTile("Einstellungen", "Schrift, Farben und Töne", "schiefer", showPanel)
   );
   v.append(foot, fgrid);
@@ -899,11 +964,15 @@ function maybeHint(getNode) {
   if (n) n.classList.add("hint");
 }
 
+function heuteAlsText() { return alsText(new Date()); }
+
 function finish() {
   const g = run.game;
-  store.flowers++;
+  const heute = heuteAlsText();
+  store.gesamt++;
+  store.tage[heute] = (store.tage[heute] || 0) + 1;
   store.log.unshift({
-    d: new Date().toISOString().slice(0, 10),
+    d: heute,
     spiel: g.name,
     stufe: LEVELS[run.level],
     fehler: run.fehler,
@@ -915,19 +984,34 @@ function finish() {
 
   const v = screen(g.name, showHome);
   const box = el("div", "done-screen");
-  const bloom = el("div", "bloom");
-  bloom.innerHTML = flowerSVG(store.flowers - 1, true);
-  box.append(bloom);
+
+  const haken = el("div", "haken");
+  haken.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke-width="3" '
+    + 'stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 7"/></svg>';
+  box.append(haken);
+
   box.append(el("h2", null, pick(["Geschafft.", "Fertig.", "Alles gelöst.", "Das war's."])));
-  box.append(el("p", null, "Eine neue Blume für Ihren Garten."));
+
+  /* Sachliche Rückmeldung statt Lob: was heute und diese Woche
+     zusammengekommen ist. Beides kann nur wachsen. */
+  const heuteZahl = store.tage[heute] || 1;
+  const tageWoche = tageInDenLetzten(7);
+  const zeilen = [];
+  zeilen.push(heuteZahl === 1
+    ? "Ihre erste Übung heute."
+    : "Ihre " + heuteZahl + ". Übung heute.");
+  zeilen.push(tageWoche === 1
+    ? "In den letzten sieben Tagen an einem Tag geübt."
+    : "In den letzten sieben Tagen an " + tageWoche + " Tagen geübt.");
+  box.append(el("p", null, zeilen.join(" ")));
 
   const again = el("button", "btn primary", "Noch einmal");
   again.addEventListener("click", () => startRun(g, run.level));
   const other = el("button", "btn", "Andere Übung wählen");
   other.addEventListener("click", showHome);
-  const garden = el("button", "btn", "Meinen Garten ansehen");
-  garden.addEventListener("click", showGarden);
-  box.append(again, other, garden);
+  const kal = el("button", "btn", "Meine Übungen ansehen");
+  kal.addEventListener("click", showKalender);
+  box.append(again, other, kal);
   v.append(box);
 }
 
@@ -940,8 +1024,14 @@ const MEM_BILDER = [
 ];
 
 function playMemory(stage, level) {
-  const paare = [3, 6, 8][level];
-  const spalten = [3, 4, 4][level];
+  const paare = [3, 8, 12][level];
+  /* Auf schmalen Geräten lieber mehr Reihen als mehr Spalten: sechs
+     Spalten ergäben bei großer Schrift Karten unter der Mindestgröße
+     für sicheres Treffen. */
+  const schmal = window.innerWidth < 560;
+  const spalten = level === 2 ? (schmal ? 4 : 6) : [3, 4][level];
+  // Auf den hoeheren Stufen faellt die Aufdeckhilfe seltener
+  const hilfeAb = [3, 4, 6][level];
   const setProgress = progressBar(stage, paare, "Paare");
   promptText(stage, "Finden Sie die gleichen Bilder.", "Tippen Sie zwei Karten an.");
 
@@ -983,7 +1073,7 @@ function playMemory(stage, level) {
           a.classList.remove("open"); b.classList.remove("open");
           offen = []; sperre = false;
           // Hilfe: nach drei Fehlgriffen kurz alles zeigen
-          if (run.streak >= 3) {
+          if (run.streak >= hilfeAb) {
             run.streak = 0;
             const zu = [...grid.querySelectorAll(".card:not(.done)")];
             zu.forEach(k => k.classList.add("open"));
@@ -1000,10 +1090,16 @@ function playMemory(stage, level) {
 
 /* ================= 2. Domino ================= */
 
+/* Bis Doppel-Sechs sind die Muster vertraut und werden auf einen Blick
+   erkannt. Sieben bis Neun muss man wirklich zählen — genau das macht
+   die schwerste Stufe schwer. */
 const PIP_POS = {
   0: [], 1: ["2/2"], 2: ["1/1","3/3"], 3: ["1/1","2/2","3/3"],
   4: ["1/1","1/3","3/1","3/3"], 5: ["1/1","1/3","2/2","3/1","3/3"],
-  6: ["1/1","1/3","2/1","2/3","3/1","3/3"]
+  6: ["1/1","1/3","2/1","2/3","3/1","3/3"],
+  7: ["1/1","1/3","2/1","2/2","2/3","3/1","3/3"],
+  8: ["1/1","1/2","1/3","2/1","2/2","2/3","3/1","3/3"],
+  9: ["1/1","1/2","1/3","2/1","2/2","2/3","3/1","3/2","3/3"]
 };
 function dominoNode(a, b, klick) {
   const d = el(klick ? "button" : "div", "dom" + (klick ? "" : " laid"));
@@ -1022,9 +1118,9 @@ function dominoNode(a, b, klick) {
 }
 
 function playDomino(stage, level) {
-  const maxWert = [3, 5, 6][level];
-  const handGr = [3, 4, 5][level];
-  const runden = 6;
+  const maxWert = [3, 6, 9][level];
+  const handGr = [3, 5, 6][level];
+  const runden = [6, 7, 8][level];
   const setProgress = progressBar(stage, runden, "angelegt");
   const p = promptText(stage, "", "Der Stein muss zur markierten Zahl passen.");
 
@@ -1061,20 +1157,29 @@ function playDomino(stage, level) {
     hand.innerHTML = "";
     steine.forEach(([a, b]) => {
       // Passende Seite immer links darstellen, das macht das Anlegen sichtbar
-      const zeigA = (a === ende || b === ende) ? ende : a;
-      const zeigB = (a === ende || b === ende) ? (a === ende ? b : a) : b;
+      let zeigA = a, zeigB = b;
+      if (a === ende || b === ende) {
+        const rest = (a === ende) ? b : a;
+        // Passende Haelfte mal links, mal rechts — sonst verraet die
+        // Anordnung selbst die Loesung
+        if (Math.random() < .5) { zeigA = ende; zeigB = rest; }
+        else { zeigA = rest; zeigB = ende; }
+      }
       const d = dominoNode(zeigA, zeigB, true);
       d.addEventListener("click", () => {
         if (zeigA !== ende && zeigB !== ende) { fehler(d); maybeHint(() => hand.querySelector('[data-ok="1"]')); return; }
         richtig();
-        gelegt.push([ende, zeigB]);
-        ende = zeigB;
+        const neuesEnde = (zeigA === ende) ? zeigB : zeigA;
+        gelegt.push([ende, neuesEnde]);
+        ende = neuesEnde;
         runde++;
         setProgress(runde);
         if (runde >= runden) { zeichneReihe(); hand.innerHTML = ""; setTimeout(finish, 650); return; }
         zeichneReihe(); neueHand();
       });
-      if (zeigA === ende) d.dataset.ok = "1";
+      // Seit der Stein zufällig gedreht wird, kann die passende Hälfte
+      // auf beiden Seiten liegen — sonst findet die Hilfe ihn nicht
+      if (zeigA === ende || zeigB === ende) d.dataset.ok = "1";
       hand.append(d);
     });
   }
@@ -1147,7 +1252,7 @@ const SPRUECHE = [
 
 function playSpruch(stage, level) {
   const runden = 8;
-  const anzahl = [3, 4, 4][level];
+  const anzahl = [3, 5, 6][level];
   const setProgress = progressBar(stage, runden, "gelöst");
   promptText(stage, "Wie geht der Satz weiter?", "Tippen Sie das passende Wort an.");
 
@@ -1165,7 +1270,26 @@ function playSpruch(stage, level) {
     const gap = el("span", "gap", " ");
     satz.append(gap);
 
-    const opts = shuffle([loesung, ...shuffle(falsch.slice()).slice(0, anzahl - 1)]);
+    /* Die mitgelieferten falschen Wörter sind bewusst harmlos. Ab Stufe 2
+       werden sie mit Lösungen ANDERER Sprichwörter aufgefüllt — lauter
+       Wörter, die in einer Redewendung stehen könnten. Damit hilft das
+       Sprachgefühl allein nicht mehr weiter, man muss den Spruch wirklich
+       kennen. */
+    let ablenker = shuffle(falsch.slice());
+    if (level >= 1) {
+      /* Nur Wörter derselben grammatischen Gestalt: Ein Verb neben einem
+         Hauptwort („Liebe geht durch den rostet") schließt sich von
+         selbst aus und wäre ein geschenkter Treffer. Groß- gegen
+         Kleinschreibung ist im Deutschen dafür ein brauchbarer Test. */
+      const istHauptwort = w => /^[A-ZÄÖÜ]/.test(w);
+      const gestalt = istHauptwort(loesung);
+      const fremd = shuffle(SPRUECHE.map(x => x[1]).filter(w =>
+        w !== loesung && !falsch.includes(w) && istHauptwort(w) === gestalt
+        && w.split(" ").length === loesung.split(" ").length));
+      const anteil = level === 1 ? 2 : 4;
+      ablenker = shuffle([...fremd.slice(0, anteil), ...ablenker]);
+    }
+    const opts = shuffle([loesung, ...ablenker.slice(0, anzahl - 1)]);
     words.innerHTML = "";
     opts.forEach(w => {
       const b = el("button", "word", w);
@@ -1191,38 +1315,72 @@ function playSpruch(stage, level) {
 /* ================= 4. Was passt nicht dazu ================= */
 
 const GRUPPEN = [
-  { thema:"Obst",        gut:[["🍎","Apfel"],["🍐","Birne"],["🍌","Banane"],["🍒","Kirsche"],["🍓","Erdbeere"]], },
-  { thema:"Tiere",       gut:[["🐕","Hund"],["🐈","Katze"],["🐴","Pferd"],["🐄","Kuh"],["🐖","Schwein"]] },
-  { thema:"Werkzeuge",   gut:[["🔨","Hammer"],["🪛","Schraubenzieher"],["🪚","Säge"],["🔧","Zange"]] },
-  { thema:"Fahrzeuge",   gut:[["🚗","Auto"],["🚲","Fahrrad"],["🚌","Bus"],["🚂","Zug"],["✈️","Flugzeug"]] },
-  { thema:"Möbel",       gut:[["🪑","Stuhl"],["🛏️","Bett"],["🚪","Tür"],["🛋️","Sofa"]] },
-  { thema:"Kleidung",    gut:[["👒","Hut"],["🧦","Socke"],["👞","Schuh"],["🧤","Handschuh"],["👓","Brille"]] },
-  { thema:"Geschirr",    gut:[["🍽️","Teller"],["🥄","Löffel"],["🍴","Gabel"],["☕","Tasse"]] },
-  { thema:"Blumen und Pflanzen", gut:[["🌻","Sonnenblume"],["🌷","Tulpe"],["🌳","Baum"],["🌹","Rose"]] },
-  { thema:"Musikinstrumente", gut:[["🎸","Gitarre"],["🎻","Geige"],["🥁","Trommel"],["🎺","Trompete"]] },
-  { thema:"Wetter",      gut:[["☀️","Sonne"],["🌧️","Regen"],["❄️","Schnee"],["⛈️","Gewitter"]] },
-  { thema:"Gemüse",      gut:[["🥕","Karotte"],["🥦","Brokkoli"],["🌽","Mais"],["🥔","Kartoffel"],["🍅","Tomate"]] },
-  { thema:"Getränke",    gut:[["🍵","Tee"],["🥛","Milch"],["🧃","Saft"],["🍺","Bier"],["🍷","Wein"]] },
-  { thema:"Körperteile", gut:[["👁️","Auge"],["👂","Ohr"],["👃","Nase"],["✋","Hand"],["🦶","Fuß"]] },
-  { thema:"Dinge im Bad",gut:[["🛁","Badewanne"],["🚿","Dusche"],["🧼","Seife"],["🪞","Spiegel"]] },
-  { thema:"Vögel",       gut:[["🦅","Adler"],["🦉","Eule"],["🦆","Ente"],["🐓","Hahn"],["🕊️","Taube"]] },
-  { thema:"Meerestiere", gut:[["🐟","Fisch"],["🐬","Delfin"],["🦀","Krabbe"],["🐙","Krake"],["🐳","Wal"]] },
-  { thema:"Backwaren",   gut:[["🍞","Brot"],["🥨","Brezel"],["🥐","Hörnchen"],["🎂","Kuchen"]] },
-  { thema:"Süßigkeiten", gut:[["🍫","Schokolade"],["🍬","Bonbon"],["🍭","Lutscher"],["🍩","Krapfen"]] },
-  { thema:"Sport",       gut:[["⚽","Fußball"],["🎾","Tennis"],["🏀","Basketball"],["🏓","Tischtennis"]] },
-  { thema:"Dinge im Büro",gut:[["✏️","Bleistift"],["📎","Büroklammer"],["📖","Buch"],["✂️","Schere"]] },
-  { thema:"Schmuck",     gut:[["💍","Ring"],["📿","Kette"],["⌚","Uhr"],["👑","Krone"]] },
-  { thema:"Insekten",    gut:[["🐝","Biene"],["🦋","Schmetterling"],["🐞","Marienkäfer"],["🐜","Ameise"]] },
-  { thema:"Dinge im Wald",gut:[["🌲","Tanne"],["🍄","Pilz"],["🦌","Reh"],["🐿️","Eichhörnchen"]] },
-  { thema:"Winter",      gut:[["⛄","Schneemann"],["🧣","Schal"],["🎿","Ski"],["🧤","Handschuh"]] },
-  { thema:"Spielzeug",   gut:[["🧸","Teddy"],["🎈","Luftballon"],["🎲","Würfel"],["🪁","Drachen"]] },
-  { thema:"Am Himmel",   gut:[["🌙","Mond"],["⭐","Stern"],["☁️","Wolke"],["🌈","Regenbogen"]] },
-  { thema:"Küchengeräte",gut:[["🍳","Pfanne"],["🔪","Messer"],["🥣","Schüssel"],["🫖","Kanne"]] }
+  { thema:"Obst",            gut:[["🍎","Apfel"],["🍐","Birne"],["🍌","Banane"],["🍒","Kirsche"],["🍓","Erdbeere"],["🍇","Traube"],["🍊","Orange"]] },
+  { thema:"Tiere",           gut:[["🐕","Hund"],["🐈","Katze"],["🐴","Pferd"],["🐄","Kuh"],["🐖","Schwein"],["🐑","Schaf"],["🐐","Ziege"]] },
+  { thema:"Werkzeuge",       gut:[["🔨","Hammer"],["🪛","Schraubenzieher"],["🪚","Säge"],["🔧","Zange"],["📏","Lineal"],["🔩","Schraube"]] },
+  { thema:"Fahrzeuge",       gut:[["🚗","Auto"],["🚲","Fahrrad"],["🚌","Bus"],["🚂","Zug"],["✈️","Flugzeug"],["🚕","Taxi"],["🛵","Roller"]] },
+  { thema:"Möbel",           gut:[["🪑","Stuhl"],["🛏️","Bett"],["🚪","Tür"],["🛋️","Sofa"],["🗄️","Schrank"],["🕰️","Standuhr"]] },
+  { thema:"Kleidung",        gut:[["👒","Hut"],["🧦","Socke"],["👞","Schuh"],["🧤","Handschuh"],["👓","Brille"],["👔","Krawatte"],["🧥","Mantel"]] },
+  { thema:"Geschirr",        gut:[["🍽️","Teller"],["🥄","Löffel"],["🍴","Gabel"],["☕","Tasse"],["🧂","Salzstreuer"],["🍶","Karaffe"]] },
+  { thema:"Blumen",          gut:[["🌻","Sonnenblume"],["🌷","Tulpe"],["🌹","Rose"],["🌺","Hibiskus"],["🌼","Gänseblümchen"],["🍀","Klee"]] },
+  { thema:"Musikinstrumente",gut:[["🎸","Gitarre"],["🎻","Geige"],["🥁","Trommel"],["🎺","Trompete"],["🎹","Klavier"],["🎷","Saxofon"]] },
+  { thema:"Wetter",          gut:[["☀️","Sonne"],["🌧️","Regen"],["❄️","Schnee"],["⛈️","Gewitter"],["🌫️","Nebel"],["🌪️","Sturm"]] },
+  { thema:"Gemüse",          gut:[["🥕","Karotte"],["🥦","Brokkoli"],["🌽","Mais"],["🥔","Kartoffel"],["🍅","Tomate"],["🥒","Gurke"],["🧅","Zwiebel"]] },
+  { thema:"Getränke",        gut:[["🍵","Tee"],["🥛","Milch"],["🧃","Saft"],["🍺","Bier"],["🍷","Wein"],["☕","Kaffee"],["🥤","Limonade"]] },
+  { thema:"Körperteile",     gut:[["👁️","Auge"],["👂","Ohr"],["👃","Nase"],["✋","Hand"],["🦶","Fuß"],["👄","Mund"],["🦵","Bein"]] },
+  { thema:"Dinge im Bad",    gut:[["🛁","Badewanne"],["🚿","Dusche"],["🧼","Seife"],["🪞","Spiegel"],["🧴","Shampoo"],["🧻","Papier"]] },
+  { thema:"Vögel",           gut:[["🦅","Adler"],["🦉","Eule"],["🦆","Ente"],["🐓","Hahn"],["🕊️","Taube"],["🦢","Schwan"],["🐧","Pinguin"]] },
+  { thema:"Meerestiere",     gut:[["🐟","Fisch"],["🐬","Delfin"],["🦀","Krabbe"],["🐙","Krake"],["🐳","Wal"],["🦈","Hai"],["🦞","Hummer"]] },
+  { thema:"Backwaren",       gut:[["🍞","Brot"],["🥨","Brezel"],["🥐","Hörnchen"],["🎂","Kuchen"],["🥖","Baguette"],["🧁","Törtchen"]] },
+  { thema:"Süßigkeiten",     gut:[["🍫","Schokolade"],["🍬","Bonbon"],["🍭","Lutscher"],["🍩","Krapfen"],["🍪","Keks"],["🍮","Pudding"]] },
+  { thema:"Sport",           gut:[["⚽","Fußball"],["🎾","Tennis"],["🏀","Basketball"],["🏓","Tischtennis"],["🏐","Volleyball"],["⚾","Baseball"]] },
+  { thema:"Dinge im Büro",   gut:[["✏️","Bleistift"],["📎","Büroklammer"],["📖","Buch"],["✂️","Schere"],["📌","Reißzwecke"],["📐","Geodreieck"]] },
+  { thema:"Schmuck",         gut:[["💍","Ring"],["📿","Kette"],["⌚","Uhr"],["👑","Krone"],["💎","Edelstein"],["🥇","Medaille"]] },
+  { thema:"Insekten",        gut:[["🐝","Biene"],["🦋","Schmetterling"],["🐞","Marienkäfer"],["🐜","Ameise"],["🦟","Mücke"],["🦗","Grille"]] },
+  { thema:"Dinge im Wald",   gut:[["🌲","Tanne"],["🍄","Pilz"],["🦌","Reh"],["🐿️","Eichhörnchen"],["🦊","Fuchs"],["🍂","Laub"]] },
+  { thema:"Winter",          gut:[["⛄","Schneemann"],["🧣","Schal"],["🎿","Ski"],["🧤","Handschuh"],["⛸️","Schlittschuh"],["🛷","Schlitten"]] },
+  { thema:"Spielzeug",       gut:[["🧸","Teddy"],["🎈","Luftballon"],["🎲","Würfel"],["🪁","Drachen"],["🧩","Puzzle"],["🃏","Spielkarte"]] },
+  { thema:"Am Himmel",       gut:[["🌙","Mond"],["⭐","Stern"],["☁️","Wolke"],["🌈","Regenbogen"],["🌠","Sternschnuppe"],["🛰️","Satellit"]] },
+  { thema:"Küchengeräte",    gut:[["🍳","Pfanne"],["🔪","Messer"],["🥣","Schüssel"],["🫖","Kanne"],["🍲","Topf"],["⏲️","Küchenuhr"]] }
 ];
+
+/* Für die schwerste Stufe: aus welcher Nachbarkategorie darf der
+   Ausreißer kommen? Nur eindeutige Paare — bei „Obst gegen Gemüse"
+   etwa nie die Tomate, sonst wird die Aufgabe strittig statt schwer. */
+const NACHBARN = {
+  "Obst":            ["Gemüse"],
+  "Gemüse":          ["Obst"],
+  "Backwaren":       ["Süßigkeiten"],
+  "Süßigkeiten":     ["Backwaren"],
+  "Vögel":           ["Meerestiere", "Insekten"],
+  "Meerestiere":     ["Vögel", "Insekten"],
+  "Insekten":        ["Vögel", "Meerestiere"],
+  "Tiere":           ["Vögel", "Meerestiere"],
+  "Kleidung":        ["Schmuck"],
+  "Schmuck":         ["Kleidung"],
+  "Wetter":          ["Am Himmel"],
+  "Am Himmel":       ["Wetter"],
+  "Musikinstrumente":["Spielzeug"],
+  "Sport":           ["Spielzeug"],
+  "Geschirr":        ["Küchengeräte"],
+  "Küchengeräte":    ["Geschirr"],
+  "Getränke":        ["Geschirr"],
+  "Möbel":           ["Dinge im Bad"],
+  "Dinge im Bad":    ["Möbel"],
+  "Werkzeuge":       ["Dinge im Büro"],
+  "Dinge im Büro":   ["Werkzeuge"],
+  "Fahrzeuge":       ["Am Himmel"],
+  "Körperteile":     ["Kleidung"],
+  "Winter":          ["Sport"],
+  "Dinge im Wald":   ["Blumen"],
+  "Blumen":          ["Dinge im Wald"],
+  "Spielzeug":       ["Sport", "Musikinstrumente"]
+};
+const STRITTIG = ["Tomate"];   // taugt nie als Ausreißer
 
 function playOdd(stage, level) {
   const runden = 8;
-  const anzahl = [4, 5, 6][level];
+  const anzahl = [4, 6, 7][level];
   const setProgress = progressBar(stage, runden, "gelöst");
   const p = promptText(stage, "Was passt hier nicht dazu?", "Tippen Sie das eine Bild an, das nicht zu den anderen gehört.");
 
@@ -1235,15 +1393,28 @@ function playOdd(stage, level) {
 
   function runde() {
     const a = folge[i % folge.length];
-    let b = pick(GRUPPEN);
-    let schutz = 0;
-    while (b.thema === a.thema && schutz++ < 40) b = pick(GRUPPEN);
+
+    /* Stufe 1 und 2 nehmen eine weit entfernte Kategorie — der Ausreißer
+       springt ins Auge. Stufe 3 nimmt eine benachbarte: Obst gegen
+       Gemüse, Vogel gegen Fisch. Dann muss man die Kategorie erst
+       benennen, bevor man den Ausreißer sieht. */
+    const nahThemen = NACHBARN[a.thema] || [];
+    let b = null;
+    if (level === 2 && nahThemen.length) {
+      const kandidaten = GRUPPEN.filter(g => nahThemen.includes(g.thema));
+      if (kandidaten.length) b = pick(kandidaten);
+    }
+    if (!b) {
+      b = pick(GRUPPEN);
+      let schutz = 0;
+      while ((b.thema === a.thema || nahThemen.includes(b.thema)) && schutz++ < 40) b = pick(GRUPPEN);
+    }
 
     const passend = shuffle(a.gut.slice()).slice(0, Math.min(anzahl - 1, a.gut.length));
     // Der Ausreißer darf nicht zufällig auch in die Zielgruppe gehören
     const namenA = a.gut.map(x => x[1]);
-    const moeglich = b.gut.filter(x => !namenA.includes(x[1]));
-    const ausreisser = pick(moeglich.length ? moeglich : b.gut);
+    const moeglich = b.gut.filter(x => !namenA.includes(x[1]) && !STRITTIG.includes(x[1]));
+    const ausreisser = pick(moeglich.length ? moeglich : b.gut.filter(x => !namenA.includes(x[1])));
     const alle = shuffle([...passend.map(x => ({ x, odd: false })), { x: ausreisser, odd: true }]);
 
     p.innerHTML = "Was passt hier nicht dazu?";
@@ -1273,45 +1444,67 @@ function playOdd(stage, level) {
 /* ================= 5. Zahlenreihe ================= */
 
 function playReihe(stage, level) {
-  const n = [5, 8, 12][level];
+  /* Stufe 3 ist bewusst ein anderes Spiel: abwechselnd Zahl und
+     Buchstabe. Das ist die Form, die in der Neuropsychologie das
+     Umschalten zwischen zwei Regeln prüft — deutlich fordernder als
+     bloßes Durchzählen, weil man zwei Reihen gleichzeitig im Kopf
+     behalten muss. */
+  const wechsel = level === 2;
+  const paare = 8;                               // nur für Stufe 3
+  const n = wechsel ? paare * 2 : [6, 12][level];
+
+  // Reihenfolge der Beschriftungen aufbauen
+  const folge = [];
+  if (wechsel) {
+    for (let k = 0; k < paare; k++) {
+      folge.push(String(k + 1));
+      folge.push(String.fromCharCode(65 + k));   // A, B, C ...
+    }
+  } else {
+    for (let k = 0; k < n; k++) folge.push(String(k + 1));
+  }
+
   const setProgress = progressBar(stage, n, "getippt");
-  const p = promptText(stage, "Tippen Sie die Zahlen der Reihe nach an.", "Als Nächstes: 1");
+  const anleitung = wechsel
+    ? "Abwechselnd Zahl und Buchstabe: 1, A, 2, B, 3, C …"
+    : "Tippen Sie die Zahlen der Reihe nach an.";
+  const p = promptText(stage, anleitung, "Als Nächstes: " + folge[0]);
 
   const field = el("div", "field");
   stage.append(field);
-  let naechste = 1;
+  let naechste = 0;                              // Index in folge
 
   // Positionen ohne Überlappung streuen
   const punkte = [];
-  const groesse = [22, 18, 15][level];       // % der Feldbreite
-  const abstand = groesse * 1.15;
+  const groesse = [22, 15, 13][level];           // % der Feldbreite
+  const abstand = groesse * 1.12;
   for (let k = 0; k < n; k++) {
     let pos, versuche = 0;
     do {
-      pos = { x: rint(4, 96 - groesse), y: rint(4, 96 - groesse) };
+      pos = { x: rint(3, 97 - groesse), y: rint(3, 97 - groesse) };
       versuche++;
-    } while (versuche < 400 && punkte.some(q => Math.hypot(q.x - pos.x, (q.y - pos.y) * .75) < abstand));
+    } while (versuche < 500 && punkte.some(q => Math.hypot(q.x - pos.x, (q.y - pos.y) * .75) < abstand));
     punkte.push(pos);
   }
 
   punkte.forEach((pos, k) => {
-    const s = el("button", "spot", String(k + 1));
+    const s = el("button", "spot", folge[k]);
     s.style.cssText = `left:${pos.x}%;top:${pos.y}%;width:${groesse}%;aspect-ratio:1/1;`;
     if (k === 0) s.classList.add("next");
     s.addEventListener("click", () => {
-      if (k + 1 !== naechste) {
+      if (k !== naechste) {
         fehler(s);
-        if (run.streak >= 2) field.children[naechste - 1].classList.add("next");
+        if (run.streak >= 2) field.children[naechste].classList.add("next");
         return;
       }
       richtig();
       s.classList.add("gone");
       setTimeout(() => { s.style.visibility = "hidden"; }, 320);
       naechste++;
-      setProgress(naechste - 1);
-      if (naechste > n) { setTimeout(finish, 650); return; }
-      p.innerHTML = "Tippen Sie die Zahlen der Reihe nach an.";
-      p.append(el("small", null, "Als Nächstes: " + naechste));
+      setProgress(naechste);
+      if (naechste >= n) { setTimeout(finish, 650); return; }
+      p.innerHTML = anleitung;
+      p.append(el("small", null, "Als Nächstes: " + folge[naechste]));
     });
     field.append(s);
   });
@@ -1321,35 +1514,64 @@ function playReihe(stage, level) {
 /* ================= 6. Ziele treffen ================= */
 
 function playZiel(stage, level) {
-  const n = 12;
-  const groesse = [26, 19, 14][level];   // % der Feldbreite
-  const drift = level === 2;
+  const n = [12, 14, 16][level];
+  const groesse = [26, 17, 12][level];       // % der Feldbreite
+  const tempo = [0, .5, 1.1][level];         // Wanderung des Ziels
+  const stoerer = [0, 0, 3][level];          // Ablenker, die nicht gehören
   const setProgress = progressBar(stage, n, "getroffen");
-  promptText(stage, "Tippen Sie den Punkt an.", "Lassen Sie sich Zeit — es läuft keine Uhr.");
+  promptText(stage,
+    stoerer ? "Tippen Sie nur den grünen Punkt an."
+            : "Tippen Sie den Punkt an.",
+    stoerer ? "Die roten Punkte gehören nicht dazu. Es läuft keine Uhr."
+            : "Lassen Sie sich Zeit — es läuft keine Uhr.");
 
   const field = el("div", "field");
   stage.append(field);
 
   let treffer = 0, t = null, animation = null;
 
+  function streuePosition() {
+    return { x: rint(2, 98 - groesse), y: rint(2, 98 - groesse) };
+  }
+
+  /* Störer zwingen dazu, vor dem Tippen hinzusehen, statt blind auf
+     jede Bewegung zu reagieren. Ein Fehlgriff wird nur quittiert,
+     nicht bestraft. */
+  function setzeStoerer() {
+    field.querySelectorAll(".stoerer").forEach(x => x.remove());
+    for (let k = 0; k < stoerer; k++) {
+      const d = el("button", "target stoerer");
+      const pos = streuePosition();
+      d.style.cssText = `left:${pos.x}%;top:${pos.y}%;width:${groesse}%;aspect-ratio:1/1;`;
+      d.setAttribute("aria-label", "Dieser Punkt gehört nicht dazu");
+      d.addEventListener("click", () => fehler(d));
+      field.append(d);
+    }
+  }
+
   function neu() {
     if (t) t.remove();
+    if (stoerer) setzeStoerer();
     t = el("button", "target");
-    const x = rint(2, 98 - groesse), y = rint(2, 98 - groesse);
-    t.style.cssText = `left:${x}%;top:${y}%;width:${groesse}%;aspect-ratio:1/1;`;
+    const pos = streuePosition();
+    t.style.cssText = `left:${pos.x}%;top:${pos.y}%;width:${groesse}%;aspect-ratio:1/1;`;
     t.setAttribute("aria-label", "Ziel antippen");
     t.addEventListener("click", () => {
       richtig();
       t.classList.add("gone");
       treffer++; setProgress(treffer);
       if (animation) { clearInterval(animation); animation = null; }
-      if (treffer >= n) { setTimeout(() => { t.remove(); finish(); }, 340); return; }
+      if (treffer >= n) {
+        setTimeout(() => { t.remove(); field.querySelectorAll(".stoerer").forEach(x => x.remove()); finish(); }, 340);
+        return;
+      }
       setTimeout(neu, 300);
     });
     field.append(t);
 
-    if (drift) {
-      let px = x, py = y, dx = (Math.random() - .5) * .55, dy = (Math.random() - .5) * .55;
+    if (tempo > 0) {
+      let px = pos.x, py = pos.y;
+      let dx = (Math.random() - .5) * tempo, dy = (Math.random() - .5) * tempo;
       animation = setInterval(() => {
         px += dx; py += dy;
         if (px < 2 || px > 98 - groesse) dx *= -1;
@@ -1393,8 +1615,9 @@ function machePfad(level) {
 }
 
 function playLinie(stage, level) {
-  const punkteZahl = [20, 28, 36][level];
-  const toleranz = [78, 60, 46][level];
+  const punkteZahl = [20, 30, 40][level];
+  const toleranz = [78, 46, 28][level];
+  const bahnbreite = [54, 40, 26][level];   // die Bahn ist so breit wie erlaubt
   const setProgress = progressBar(stage, punkteZahl, "der Strecke");
   promptText(stage, "Fahren Sie mit dem Finger der Linie entlang.", "Absetzen ist erlaubt — es geht dort weiter, wo Sie waren.");
 
@@ -1402,10 +1625,10 @@ function playLinie(stage, level) {
   const wrap = el("div", "tracewrap");
   wrap.innerHTML =
     '<svg viewBox="0 0 1000 600" aria-hidden="true">' +
-      '<path id="spur" d="' + d + '" fill="none" stroke="var(--akzent-soft)" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>' +
-      '<path id="spur2" d="' + d + '" fill="none" stroke="var(--akzent)" stroke-width="4" stroke-dasharray="14 16" stroke-linecap="round" opacity=".45"/>' +
-      '<path id="fertig" d="' + d + '" fill="none" stroke="var(--akzent)" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>' +
-      '<circle id="marke" r="26" fill="var(--honey-soft)" stroke="var(--honey)" stroke-width="6"/>' +
+      '<path id="spur" d="' + d + '" fill="none" stroke="var(--akzent-soft)" stroke-width="' + bahnbreite + '" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path id="spur2" d="' + d + '" fill="none" stroke="var(--akzent)" stroke-width="3" stroke-dasharray="12 14" stroke-linecap="round" opacity=".45"/>' +
+      '<path id="fertig" d="' + d + '" fill="none" stroke="var(--akzent)" stroke-width="' + bahnbreite + '" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<circle id="marke" r="' + Math.round(bahnbreite * .46) + '" fill="var(--honey-soft)" stroke="var(--honey)" stroke-width="5"/>' +
     '</svg>';
   stage.append(wrap);
 
@@ -1469,26 +1692,26 @@ const SORTIER = [
       dinge:[["🍎",0],["🌹",0],["🍓",0],["🚒",0],["🍋",1],["🌻",1],["🧀",1],["🍌",1]] }
   ],
   [
-    { kisten:[["Obst","🍏"],["Gemüse","🥕"]],
-      dinge:[["🍎",0],["🍌",0],["🍐",0],["🍒",0],["🥕",1],["🥦",1],["🌽",1],["🥔",1]] },
-    { kisten:[["Tiere","🐕"],["Fahrzeuge","🚗"]],
-      dinge:[["🐕",0],["🐈",0],["🐴",0],["🐄",0],["🚗",1],["🚲",1],["🚌",1],["🚂",1]] },
-    { kisten:[["Essen","🍞"],["Trinken","🥛"]],
-      dinge:[["🍞",0],["🧀",0],["🍎",0],["🥚",0],["☕",1],["🥛",1],["🍵",1],["🧃",1]] }
+    { kisten:[["Obst","🍏"],["Gemüse","🥕"],["Blumen","🌷"]],
+      dinge:[["🍎",0],["🍌",0],["🍐",0],["🍇",0],["🥕",1],["🥦",1],["🌽",1],["🥔",1],["🌻",2],["🌷",2]] },
+    { kisten:[["Tiere","🐕"],["Fahrzeuge","🚗"],["Werkzeug","🔨"]],
+      dinge:[["🐕",0],["🐈",0],["🐴",0],["🐄",0],["🚗",1],["🚲",1],["🚌",1],["🔨",2],["🔧",2],["🪛",2]] },
+    { kisten:[["Essen","🍞"],["Trinken","🥛"],["Anziehen","👕"]],
+      dinge:[["🍞",0],["🧀",0],["🥚",0],["🍎",0],["☕",1],["🥛",1],["🍵",1],["👕",2],["🧦",2],["🧥",2]] }
   ],
   [
-    { kisten:[["Küche","🍽️"],["Werkstatt","🔨"],["Garten","🌱"]],
-      dinge:[["🥄",0],["🍳",0],["☕",0],["🔨",1],["🪛",1],["🔧",1],["🌻",2],["🌳",2],["🪴",2]] },
-    { kisten:[["Anziehen","👕"],["Waschen","🧼"],["Essen","🍽️"]],
-      dinge:[["👕",0],["👖",0],["🧦",0],["🧼",1],["🚿",1],["🛁",1],["🍽️",2],["🥄",2],["🍳",2]] },
-    { kisten:[["Obst","🍏"],["Gemüse","🥕"],["Blumen","🌷"]],
-      dinge:[["🍎",0],["🍌",0],["🍐",0],["🥕",1],["🥦",1],["🌽",1],["🌻",2],["🌷",2],["🌹",2]] }
+    { kisten:[["Küche","🍽️"],["Werkstatt","🔨"],["Garten","🌱"],["Bad","🛁"]],
+      dinge:[["🥄",0],["🍳",0],["🫖",0],["🔨",1],["🪛",1],["🔧",1],["🌻",2],["🌳",2],["🪴",2],["🧼",3],["🚿",3],["🧴",3]] },
+    { kisten:[["Frühstück","🥐"],["Werkzeug","🔧"],["Musik","🎺"],["Sport","⚽"]],
+      dinge:[["🥐",0],["🍞",0],["☕",0],["🔧",1],["📏",1],["🔩",1],["🎸",2],["🥁",2],["🎻",2],["⚽",3],["🎾",3],["🏀",3]] },
+    { kisten:[["Fliegt","🦅"],["Schwimmt","🐟"],["Fährt","🚗"],["Wächst","🌳"]],
+      dinge:[["🦅",0],["🦆",0],["🦋",0],["🐟",1],["🐬",1],["🐳",1],["🚗",2],["🚌",2],["🚲",2],["🌳",3],["🌻",3],["🍄",3]] }
   ]
 ];
 
 function playSort(stage, level) {
   const satz = frischeAuswahl("sort" + level, SORTIER[level], 1, 2)[0];
-  const dinge = shuffle(satz.dinge.slice()).slice(0, [6, 8, 9][level]);
+  const dinge = shuffle(satz.dinge.slice()).slice(0, [6, 10, 12][level]);
   const setProgress = progressBar(stage, dinge.length, "einsortiert");
   promptText(stage, "Legen Sie jedes Ding in die richtige Kiste.",
     "Ziehen Sie es hinüber — oder tippen Sie erst das Ding, dann die Kiste an.");
@@ -1595,63 +1818,115 @@ function playSort(stage, level) {
   setProgress(0);
 }
 
-/* ================= Garten ================= */
+/* ================= Übungskalender ================= */
 
-const BLUETEN = [
-  "#C8563C","#D69A2A","#8E5FA8","#2F7DB0","#C4436E","#D9A441","#E0632C","#B8452F",
-  "#7A4FA3","#3D8FBF","#D4457B","#E08A1E","#9B4F8C","#C13B4A","#4E7FC9","#E2A93B"
-];
+const WOCHENTAGE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+const MONATE = ["Januar","Februar","März","April","Mai","Juni",
+                "Juli","August","September","Oktober","November","Dezember"];
 
-function flowerSVG(i, gross) {
-  const farbe = BLUETEN[i % BLUETEN.length];
-  const h = 30 + (i * 37 % 22);              // deterministische Höhe
-  const neigung = ((i * 53) % 9) - 4;
-  const bl = 6;
-  let petals = "";
-  for (let k = 0; k < bl; k++) {
-    const a = k * (360 / bl) * Math.PI / 180;
-    petals += `<ellipse cx="${(50 + Math.cos(a) * 13).toFixed(1)}" cy="${(28 + Math.sin(a) * 13).toFixed(1)}" rx="9" ry="9" fill="${farbe}" opacity=".92"/>`;
-  }
-  return `<svg viewBox="0 0 100 ${gross ? 100 : 100}" width="100%" height="100%" role="img" aria-label="Blume">
-    <g transform="rotate(${neigung} 50 100)">
-      <path d="M50 100 C 50 ${100 - h * .6} 46 ${100 - h} 50 ${62 - h * .2}" stroke="#4E8A54" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="38" cy="${78 - h * .18}" rx="11" ry="6" fill="#5A9E5C" transform="rotate(-24 38 ${78 - h * .18})"/>
-      <g transform="translate(0 ${(62 - h * .2) - 28})">${petals}<circle cx="50" cy="28" r="8.5" fill="#E8C33F"/></g>
-    </g>
-  </svg>`;
+function alsText(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0")
+         + "-" + String(d.getDate()).padStart(2, "0");
 }
 
-function showGarden() {
-  setAkzent("gruen");
-  const v = screen("Mein Garten", showHome);
-  const wrap = el("div", "gardenwrap");
-  if (store.flowers === 0) {
-    wrap.append(el("p", "emptygarden", "Hier wächst nach jeder abgeschlossenen Übung eine Blume. Der Garten wird immer nur voller."));
-  } else {
-    const f = el("div", "flowers");
-    const zeigen = Math.min(store.flowers, 80);
-    for (let i = 0; i < zeigen; i++) {
-      const d = el("div");
-      d.innerHTML = flowerSVG(i);
-      const s = d.firstElementChild;
-      s.style.animationDelay = Math.min(i * 22, 900) + "ms";
-      f.append(s);
-    }
-    wrap.append(f);
+/* An wie vielen der letzten n Tage wurde geübt? Zählt Tage, nicht
+   Übungen — wer an einem Tag fünfmal übt, hat trotzdem einen Tag. */
+function tageInDenLetzten(n) {
+  const heute = new Date();
+  let zahl = 0;
+  for (let i = 0; i < n; i++) {
+    const d = new Date(heute);
+    d.setDate(heute.getDate() - i);
+    if (store.tage[alsText(d)]) zahl++;
   }
-  wrap.append(el("div", "soil"));
-  v.append(wrap);
+  return zahl;
+}
 
-  const c = el("p", "gardencount");
-  c.append(el("b", null, String(store.flowers)), document.createTextNode(store.flowers === 1 ? " Blume" : " Blumen"));
-  if (store.flowers > 80) c.append(document.createTextNode(" — die ersten 80 sind zu sehen"));
-  v.append(c);
+function showKalender() {
+  setAkzent("gruen");
+  const v = screen("Meine Übungen", showHome);
 
-  const b = el("button", "btn primary");
-  b.style.marginTop = "1.4rem";
-  b.textContent = "Eine Übung machen";
-  b.addEventListener("click", showHome);
+  const wochen = 6;
+  const heute = new Date();
+  heute.setHours(0, 0, 0, 0);
+
+  // Auf den Montag der laufenden Woche zurückgehen, dann sieben Wochen davor
+  const versatz = (heute.getDay() + 6) % 7;          // Mo = 0
+  const start = new Date(heute);
+  start.setDate(heute.getDate() - versatz - (wochen - 1) * 7);
+
+  const kal = el("div", "kalender");
+
+  const bis = new Date(start);
+  bis.setDate(start.getDate() + wochen * 7 - 1);
+  const spanne = start.getMonth() === bis.getMonth()
+    ? MONATE[bis.getMonth()] + " " + bis.getFullYear()
+    : MONATE[start.getMonth()] + " bis " + MONATE[bis.getMonth()] + " " + bis.getFullYear();
+  kal.append(el("p", "monat", spanne));
+
+  const kopf = el("div", "wochentage");
+  WOCHENTAGE.forEach(t => kopf.append(el("span", null, t)));
+  kal.append(kopf);
+
+  const gitter = el("div", "wochen");
+  const heuteText = alsText(heute);
+  for (let i = 0; i < wochen * 7; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    const text = alsText(d);
+    const zahl = store.tage[text] || 0;
+
+    const zelle = el("div", "tag", String(d.getDate()));
+    if (d > heute) {
+      zelle.className = "tag kuenftig";
+    } else if (zahl > 0) {
+      zelle.className = "tag geuebt" + (zahl >= 3 ? " viel" : "");
+      zelle.title = zahl === 1 ? "1 Übung" : zahl + " Übungen";
+      zelle.setAttribute("aria-label", d.getDate() + ". " + MONATE[d.getMonth()]
+        + ": " + zelle.title);
+    } else {
+      zelle.className = "tag leer";
+    }
+    if (text === heuteText) zelle.classList.add("heute");
+    gitter.append(zelle);
+  }
+  kal.append(gitter);
+
+  const legende = el("div", "legende");
+  const l1 = el("span"); l1.innerHTML = '<i class="voll"></i>geübt';
+  const l2 = el("span"); l2.innerHTML = '<i style="border-style:dashed"></i>nichts eingetragen';
+  legende.append(l1, l2);
+  kal.append(legende);
+
+  v.append(kal);
+
+  // Zahlen darunter — nur Dinge, die wachsen können
+  const geuebteTage = Object.keys(store.tage).filter(k => store.tage[k] > 0).length;
+  const bilanz = el("div", "bilanz");
+  [[store.gesamt, store.gesamt === 1 ? "Übung insgesamt" : "Übungen insgesamt"],
+   [geuebteTage, geuebteTage === 1 ? "Tag geübt" : "Tage geübt"],
+   [tageInDenLetzten(7), "davon in den letzten 7 Tagen"]
+  ].forEach(([zahl, wort]) => {
+    const k = el("div", "zahlkarte");
+    k.append(el("b", null, String(zahl)), el("span", null, wort));
+    bilanz.append(k);
+  });
+  v.append(bilanz);
+
+  if (store.gesamt === 0) {
+    v.append(el("p", "kalendertext",
+      "Sobald Sie eine Übung abschließen, wird der Tag hier eingetragen. "
+      + "Einträge verschwinden nicht wieder."));
+  } else {
+    v.append(el("p", "kalendertext",
+      "Jeder abgeschlossene Tag bleibt stehen. Es gibt nichts zu verlieren "
+      + "und keine Serie, die reißen kann."));
+  }
+
   const panel = el("div", "panel");
+  const b = el("button", "btn primary", "Eine Übung machen");
+  b.style.marginTop = "1.4rem";
+  b.addEventListener("click", showHome);
   panel.append(b);
   v.append(panel);
 }
@@ -1705,10 +1980,10 @@ function showPanel() {
 
   p.append(el("h2", null, "Daten"));
   p.append(el("p", "note", "Alles bleibt auf diesem Gerät gespeichert. Es werden keine Daten übertragen."));
-  const reset = el("button", "btn danger", "Verlauf und Garten löschen");
+  const reset = el("button", "btn danger", "Alle Einträge löschen");
   reset.addEventListener("click", () => {
-    if (!confirm("Wirklich alles löschen? Der Garten und der Verlauf gehen verloren.")) return;
-    store.flowers = 0; store.log = []; save(); applySettings(); showPanel();
+    if (!confirm("Wirklich alles löschen? Kalender und Verlauf gehen verloren.")) return;
+    store.gesamt = 0; store.tage = {}; store.log = []; save(); applySettings(); showPanel();
   });
   p.append(reset);
 
@@ -1740,9 +2015,9 @@ function showAbout() {
 
   p.append(el("h2", null, "Datenschutz"));
   p.append(el("p", "fliess", "Diese App sendet keine Daten. Es gibt keine Nutzerkonten, "
-    + "keine Anmeldung, keine Werbung und keine Analysedienste. Der Garten, der Verlauf und "
+    + "keine Anmeldung, keine Werbung und keine Analysedienste. Der Kalender, der Verlauf und "
     + "die Einstellungen werden ausschließlich im Speicher Ihres eigenen Browsers abgelegt "
-    + "und verlassen dieses Gerät nicht. Über „Verlauf und Garten löschen“ in den "
+    + "und verlassen dieses Gerät nicht. Über „Alle Einträge löschen“ in den "
     + "Einstellungen entfernen Sie alles wieder."));
   if (HOSTER) {
     p.append(el("p", "fliess", "Diese Seite wird bei " + HOSTER + " gehostet. Beim Aufruf "
@@ -1836,6 +2111,7 @@ function segment(label, werte, namen, aktiv, fn) {
 /* ================= Start ================= */
 
 document.documentElement.lang = "de";   // damit Vorlesefunktionen deutsch sprechen
+migriere();
 applySettings();
 showHome();
 
