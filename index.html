@@ -358,6 +358,40 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   font-weight:700;
 }
 
+/* Domino-Kette mit zwei offenen Enden */
+.kettenzeile{
+  display:flex; align-items:center; gap:.5rem;
+  margin-bottom:1.4rem;
+}
+.kettenzeile .domrow{ flex:1; margin-bottom:0; min-height:4.6rem; }
+.endzone{
+  flex:none;
+  min-width:3.6rem; min-height:4.6rem;
+  padding:.2rem .5rem;
+  border:3px dashed var(--line-2);
+  border-radius:12px;
+  background:var(--card);
+  font-size:1.6rem; font-weight:700;
+  color:var(--ink-2);
+  font-variant-numeric:tabular-nums;
+  cursor:pointer;
+}
+.endzone.aktiv{
+  border-style:solid; border-color:var(--akzent);
+  background:var(--akzent-soft); color:var(--akzent-deep);
+  animation:glow 1.2s ease infinite;
+}
+.domhand .dom.gewaehlt{
+  border-color:var(--honey); border-width:4px;
+  background:var(--honey-soft);
+}
+.zuruecknehmen{
+  display:block; margin:0 auto 1.2rem;
+  min-height:3.4rem; padding:0 1.2rem;
+  background:var(--card); border:2px solid var(--line-2);
+  border-radius:12px; font-size:1.02rem; font-weight:600; cursor:pointer;
+}
+
 /* Wortkacheln (Sprichwörter, Kategorien) */
 .words{ display:grid; gap:.75rem; grid-template-columns:repeat(auto-fit,minmax(11rem,1fr)); max-width:38rem; margin:0 auto; }
 .word{
@@ -490,6 +524,95 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 .done-screen .bloom{ width:9rem; height:9rem; margin:0 auto 1rem; }
 .done-screen h2{ font-size:2rem; margin:0 0 .3rem; letter-spacing:-.015em; }
 .done-screen p{ font-size:1.1rem; color:var(--ink-2); margin:0 0 2rem; }
+
+/* Folge merken */
+.spannegitter{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:.8rem;
+  max-width:26rem; margin:0 auto;
+}
+.spannefeld{
+  aspect-ratio:1/1;
+  border:3px solid var(--line-2);
+  border-radius:16px;
+  background:var(--card);
+  cursor:pointer;
+  transition:background .12s, transform .12s;
+}
+.spannefeld.an{
+  background:var(--akzent); border-color:var(--akzent-deep);
+  transform:scale(1.04);
+}
+.spannefeld.getippt{ background:var(--akzent-soft); border-color:var(--akzent); }
+.spannefeld:disabled{ cursor:default; }
+
+/* Was fehlt */
+.schau{
+  display:grid; gap:.7rem; justify-content:center;
+  grid-template-columns:repeat(auto-fit, minmax(4.6rem, 5.6rem));
+  max-width:30rem; margin:0 auto 1.4rem;
+}
+.schau div{
+  aspect-ratio:1/1;
+  display:grid; place-items:center;
+  font-size:2.6rem; line-height:1;
+  background:var(--card);
+  border:2px solid var(--line-2);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  animation:rise .3s ease both;
+}
+
+/* Kopfrechnen */
+.aufgabe{
+  font-size:2.6rem; font-weight:700; text-align:center;
+  letter-spacing:.01em; margin:.4rem auto 1.6rem;
+  font-variant-numeric:tabular-nums;
+  color:var(--akzent-deep);
+}
+
+/* Geld abzählen */
+.betrag{
+  text-align:center; margin:0 auto 1.2rem;
+}
+.betrag .soll{
+  font-size:2.4rem; font-weight:700; color:var(--akzent-deep);
+  font-variant-numeric:tabular-nums; display:block;
+}
+.betrag .ist{
+  font-size:1.1rem; color:var(--ink-2); font-variant-numeric:tabular-nums;
+}
+.gelegt{
+  display:flex; flex-wrap:wrap; gap:.4rem; justify-content:center;
+  min-height:4.4rem; padding:.7rem;
+  border:2px dashed var(--line-2); border-radius:var(--radius);
+  margin-bottom:1.2rem;
+}
+.gelegt:empty::after{
+  content:"";
+}
+.kasse{
+  display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center;
+}
+.muenze, .schein{
+  display:grid; place-items:center;
+  border:3px solid;
+  font-weight:700; font-variant-numeric:tabular-nums;
+  cursor:pointer; line-height:1;
+  box-shadow:var(--shadow);
+}
+.muenze{
+  width:4.2rem; height:4.2rem; border-radius:99px;
+  font-size:1rem;
+  background:#F0E3C2; border-color:#B99B58; color:#5C4A20;
+}
+.muenze.silber{ background:#E6E8EA; border-color:#A8AEB4; color:#3A4046; }
+.schein{
+  width:5.4rem; height:3.2rem; border-radius:8px;
+  font-size:1.1rem;
+  background:#DCE9DA; border-color:#7FA37A; color:#2C4A28;
+}
+.schein.blau{ background:#D9E4F2; border-color:#7C97BE; color:#22405F; }
+.gelegt .muenze, .gelegt .schein{ transform:scale(.72); margin:-.5rem; }
 
 /* Übungskalender — die Belohnung ist der sichtbare Nachweis, dass man
    drangeblieben ist. Kein Punktestand, keine Serie, kein Vergleich:
@@ -789,6 +912,10 @@ const ICONS = {
   reihe: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 24l7-14 6 9 7-11"/><circle cx="6" cy="24" r="2.4" fill="currentColor" stroke="none"/><circle cx="13" cy="10" r="2.4" fill="currentColor" stroke="none"/><circle cx="19" cy="19" r="2.4" fill="currentColor" stroke="none"/><circle cx="26" cy="8" r="2.4" fill="currentColor" stroke="none"/></svg>',
   ziel: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="5.5"/><circle cx="16" cy="16" r="1.6" fill="currentColor" stroke="none"/></svg>',
   linie: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 24C4 12 12 6 16 14s10 8 12 -6"/><circle cx="4" cy="24" r="2.6" fill="currentColor" stroke="none"/></svg>',
+  spanne: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="4" width="10" height="10" rx="2"/><rect x="18" y="4" width="10" height="10" rx="2" fill="currentColor"/><rect x="4" y="18" width="10" height="10" rx="2" fill="currentColor"/><rect x="18" y="18" width="10" height="10" rx="2"/></svg>',
+  fehlt: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="9" r="5"/><circle cx="23" cy="9" r="5"/><circle cx="9" cy="23" r="5"/><circle cx="23" cy="23" r="5" stroke-dasharray="3 3"/></svg>',
+  rechnen: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 10h9M9.5 5.5v9"/><path d="M18 10h9"/><path d="M5 22h9"/><path d="M18 19h9M18 25h9"/></svg>',
+  geld: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="8"/><circle cx="20" cy="20" r="8"/><path d="M12 8.5v7M10 10.5h3.4M10 13.5h3.4" stroke-linecap="round"/></svg>',
   sort: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="18" width="11" height="10" rx="2"/><rect x="18" y="18" width="11" height="10" rx="2"/><circle cx="10" cy="7" r="3.6"/><path d="M19 4l6 6M25 4l-6 6"/></svg>'
 };
 
@@ -805,7 +932,11 @@ const FARBEN = {
   gruen:     { akzent:"#2A6B4C", deep:"#1D4C36", soft:"#DCEBE2", wash:"#F1F7F3" },
   stahlblau: { akzent:"#1E6584", deep:"#124559", soft:"#D5E6EE", wash:"#EFF6F9" },
   terrakotta:{ akzent:"#AB4F2C", deep:"#7C381D", soft:"#F5DDD2", wash:"#FCF2ED" },
-  schiefer:  { akzent:"#4A5A66", deep:"#2F3B44", soft:"#DFE5E9", wash:"#F2F5F6" }
+  schiefer:  { akzent:"#4A5A66", deep:"#2F3B44", soft:"#DFE5E9", wash:"#F2F5F6" },
+  moos:      { akzent:"#55701F", deep:"#3A4E13", soft:"#E0E8CE", wash:"#F5F8EE" },
+  violett:   { akzent:"#6A4C9C", deep:"#4A3370", soft:"#E2DAF0", wash:"#F5F2FB" },
+  bordeaux:  { akzent:"#8C2F3E", deep:"#65202C", soft:"#F0D6DA", wash:"#FCF1F2" },
+  bronze:    { akzent:"#7C6428", deep:"#57451A", soft:"#EBE2C8", wash:"#F9F6EC" }
 };
 const STANDARD_WASH = "#EFF2EE";
 
@@ -826,14 +957,18 @@ function setAkzent(name) {
 }
 
 const GAMES = [
-  { id:"memory", art:"kopf", icon:"memory", farbe:"petrol",     name:"Bilderpaare",     sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory },
-  { id:"domino", art:"kopf", icon:"domino", farbe:"indigo",     name:"Domino anlegen",  sub:"Den passenden Stein aussuchen",     trainiert:"Aufmerksamkeit", run:playDomino },
-  { id:"spruch", art:"kopf", icon:"spruch", farbe:"pflaume",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
-  { id:"odd",    art:"kopf", icon:"odd",    farbe:"ocker",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd },
-  { id:"reihe",  art:"kopf", icon:"reihe",  farbe:"altrosa",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe },
+  { id:"memory", art:"merken", icon:"memory", farbe:"petrol",     name:"Bilderpaare",     sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory },
+  { id:"domino", art:"zahlen", icon:"domino", farbe:"indigo",     name:"Domino legen",    sub:"Alle Steine zu einer Kette",     trainiert:"Aufmerksamkeit", run:playDomino },
+  { id:"spruch", art:"sprache", icon:"spruch", farbe:"pflaume",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
+  { id:"odd",    art:"sprache", icon:"odd",    farbe:"ocker",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd },
+  { id:"reihe",  art:"zahlen", icon:"reihe",  farbe:"altrosa",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe },
   { id:"ziel",   art:"hand", icon:"ziel",   farbe:"gruen",      name:"Ziele treffen",   sub:"Punkte genau antippen",             trainiert:"Zielgenauigkeit", run:playZiel },
   { id:"linie",  art:"hand", icon:"linie",  farbe:"stahlblau",  name:"Linie nachfahren",sub:"Mit dem Finger der Spur folgen",    trainiert:"Feinmotorik", run:playLinie },
-  { id:"sort",   art:"hand", icon:"sort",   farbe:"terrakotta", name:"Einsortieren",    sub:"Dinge in die richtige Kiste legen", trainiert:"Greifen & Ziehen", run:playSort }
+  { id:"sort",   art:"hand", icon:"sort",   farbe:"terrakotta", name:"Einsortieren",    sub:"Nach Merkmalen ordnen", trainiert:"Greifen & Ziehen", run:playSort },
+  { id:"spanne", art:"merken", icon:"spanne", farbe:"moos",       name:"Folge merken",    sub:"Aufleuchtende Felder nachtippen",   trainiert:"Merkspanne", run:playSpanne },
+  { id:"fehlt",  art:"merken", icon:"fehlt",  farbe:"violett",    name:"Was fehlt?",      sub:"Ein Ding verschwindet",             trainiert:"Bildgedächtnis", run:playFehlt },
+  { id:"rechnen",art:"zahlen", icon:"rechnen",farbe:"bordeaux",   name:"Kopfrechnen",     sub:"Ohne Papier ausrechnen",            trainiert:"Zahlenverständnis", run:playRechnen },
+  { id:"geld",   art:"zahlen", icon:"geld",   farbe:"bronze",     name:"Geld abzählen",   sub:"Einen Betrag passend legen",        trainiert:"Rechnen & Planen", run:playGeld }
 ];
 
 function faerbeKachel(t, farbe) {
@@ -850,9 +985,14 @@ function showHome() {
   const lede = el("p", "lede", "Kleine Übungen für zwischendurch. Es gibt kein Zeitlimit und nichts, was man verlieren kann.");
   v.append(lede);
 
+  /* Vier kleinere Gruppen statt zweier großer: Bei zwölf Übungen ist
+     eine Liste aus neun Kacheln unter einer Überschrift zu viel auf
+     einmal — gerade für die Zielgruppe. */
   const kapitel = [
-    ["kopf", "Für den Kopf", "Denken, Merken, Sprache", "petrol"],
-    ["hand", "Für die Hände", "Bewegung und Genauigkeit", "terrakotta"]
+    ["merken",  "Merken",           "Behalten und Wiederfinden", "petrol"],
+    ["sprache", "Sprache & Wissen", "Wörter und Begriffe",       "pflaume"],
+    ["zahlen",  "Zahlen",           "Rechnen und Ordnen",        "bordeaux"],
+    ["hand",    "Für die Hände",    "Bewegung und Genauigkeit",  "terrakotta"]
   ];
   for (const [art, h, sub, kfarbe] of kapitel) {
     const head = el("div", "sectionhead");
@@ -1117,74 +1257,160 @@ function dominoNode(a, b, klick) {
   return d;
 }
 
+/* Aus dem Zuordnen wird ein Legespiel: Alle Steine der Hand müssen an
+   eine Kette mit ZWEI offenen Enden. Wer unbedacht anlegt, verbaut sich
+   das passende Ende — also muss man vorausdenken statt nur vergleichen.
+   Die Kette wird rückwärts erzeugt, damit sie garantiert lösbar ist. */
+
+function macheKette(handGr, maxWert) {
+  const folge = [];
+  let b = rint(0, maxWert);
+  folge.push([rint(0, maxWert), b]);
+  for (let i = 0; i < handGr; i++) {
+    const c = rint(0, maxWert);
+    folge.push([b, c]);
+    b = c;
+  }
+  return folge;                      // [0] liegt schon, der Rest ist die Hand
+}
+
 function playDomino(stage, level) {
-  const maxWert = [3, 6, 9][level];
-  const handGr = [3, 5, 6][level];
-  const runden = [6, 7, 8][level];
-  const setProgress = progressBar(stage, runden, "angelegt");
-  const p = promptText(stage, "", "Der Stein muss zur markierten Zahl passen.");
+  const maxWert = [4, 6, 6][level];
+  const handGr = [4, 6, 8][level];
+  const ketten = 3;
+  const gesamt = ketten * handGr;
 
+  const setProgress = progressBar(stage, gesamt, "Steine gelegt");
+  const p = promptText(stage, "", " ");
+
+  const zeile = el("div", "kettenzeile");
+  const links = el("button", "endzone");
+  const rechts = el("button", "endzone");
   const reihe = el("div", "domrow");
+  zeile.append(links, reihe, rechts);
+
+  const zurueck = el("button", "zuruecknehmen", "Letzten Stein zurücknehmen");
   const hand = el("div", "domhand");
-  stage.append(reihe, hand);
+  stage.append(zeile, zurueck, hand);
 
-  let ende = rint(0, maxWert), gelegt = [[rint(0, maxWert), ende]], runde = 0;
+  let kette = [], steine = [], verlauf = [], gewaehlt = null;
+  let gelegt = 0, kettenNr = 0;
 
-  function zeichneReihe() {
-    reihe.innerHTML = "";
-    const sicht = gelegt.slice(-3);
-    if (gelegt.length > 3) reihe.append(el("div", "lead", "…"));
-    sicht.forEach(([a, b]) => reihe.append(dominoNode(a, b, false)));
-    p.innerHTML = "";
-    p.append(document.createTextNode("Welcher Stein passt an die "));
-    p.append(el("span", "openend", String(ende)));
-    p.append(document.createTextNode("?"));
-    p.append(el("small", null, "Tippen Sie den passenden Stein unten an."));
+  const linksWert = () => kette[0][0];
+  const rechtsWert = () => kette[kette.length - 1][1];
+  const passt = (st, wert) => st[0] === wert || st[1] === wert;
+
+  function neueKette() {
+    const folge = macheKette(handGr, maxWert);
+    kette = [folge[0]];
+    steine = shuffle(folge.slice(1).map(st => Math.random() < .5 ? st : [st[1], st[0]]));
+    verlauf = []; gewaehlt = null;
+    kettenNr++;
+    zeichne();
   }
 
-  function neueHand() {
-    const richtigStein = [ende, rint(0, maxWert)];
-    const steine = [richtigStein];
-    let schutz = 0;
-    while (steine.length < handGr && schutz++ < 200) {
-      const a = rint(0, maxWert), b = rint(0, maxWert);
-      if (a === ende || b === ende) continue;
-      if (steine.some(s => (s[0] === a && s[1] === b) || (s[0] === b && s[1] === a))) continue;
-      steine.push([a, b]);
-    }
-    shuffle(steine);
+  function zeichne() {
+    // Kette
+    reihe.innerHTML = "";
+    kette.forEach(([a, b]) => reihe.append(dominoNode(a, b, false)));
+    links.textContent = String(linksWert());
+    rechts.textContent = String(rechtsWert());
+    const st = gewaehlt == null ? null : steine[gewaehlt];
+    links.classList.toggle("aktiv", !!st && passt(st, linksWert()));
+    rechts.classList.toggle("aktiv", !!st && passt(st, rechtsWert()));
+    links.setAttribute("aria-label", "Links anlegen, offene Zahl " + linksWert());
+    rechts.setAttribute("aria-label", "Rechts anlegen, offene Zahl " + rechtsWert());
 
+    // Hand
     hand.innerHTML = "";
-    steine.forEach(([a, b]) => {
-      // Passende Seite immer links darstellen, das macht das Anlegen sichtbar
-      let zeigA = a, zeigB = b;
-      if (a === ende || b === ende) {
-        const rest = (a === ende) ? b : a;
-        // Passende Haelfte mal links, mal rechts — sonst verraet die
-        // Anordnung selbst die Loesung
-        if (Math.random() < .5) { zeigA = ende; zeigB = rest; }
-        else { zeigA = rest; zeigB = ende; }
-      }
-      const d = dominoNode(zeigA, zeigB, true);
+    steine.forEach(([a, b], k) => {
+      const d = dominoNode(a, b, true);
+      if (k === gewaehlt) d.classList.add("gewaehlt");
       d.addEventListener("click", () => {
-        if (zeigA !== ende && zeigB !== ende) { fehler(d); maybeHint(() => hand.querySelector('[data-ok="1"]')); return; }
-        richtig();
-        const neuesEnde = (zeigA === ende) ? zeigB : zeigA;
-        gelegt.push([ende, neuesEnde]);
-        ende = neuesEnde;
-        runde++;
-        setProgress(runde);
-        if (runde >= runden) { zeichneReihe(); hand.innerHTML = ""; setTimeout(finish, 650); return; }
-        zeichneReihe(); neueHand();
+        gewaehlt = (gewaehlt === k) ? null : k;
+        zeichne();
       });
-      // Seit der Stein zufällig gedreht wird, kann die passende Hälfte
-      // auf beiden Seiten liegen — sonst findet die Hilfe ihn nicht
-      if (zeigA === ende || zeigB === ende) d.dataset.ok = "1";
       hand.append(d);
     });
+
+    zurueck.hidden = verlauf.length === 0;
+    text();
   }
 
-  zeichneReihe(); neueHand(); setProgress(0);
+  function text() {
+    const st = gewaehlt == null ? null : steine[gewaehlt];
+    p.innerHTML = "";
+    if (steine.length === 0) {
+      p.append(document.createTextNode("Kette fertig."));
+      p.append(el("small", null, "Gleich kommt die nächste."));
+      return;
+    }
+    const festgefahren = !steine.some(x => passt(x, linksWert()) || passt(x, rechtsWert()));
+    if (festgefahren) {
+      p.append(document.createTextNode("Kein Stein passt mehr."));
+      p.append(el("small", null, "Nehmen Sie den letzten Stein zurück und legen Sie ihn anders an."));
+      return;
+    }
+    if (!st) {
+      p.append(document.createTextNode("Legen Sie alle Steine an die Kette."));
+      p.append(el("small", null, "Kette " + kettenNr + " von " + ketten
+        + " — noch " + steine.length + (steine.length === 1 ? " Stein" : " Steine")
+        + ". Erst einen Stein antippen, dann ein Ende."));
+      return;
+    }
+    const wohin = [];
+    if (passt(st, linksWert())) wohin.push("links");
+    if (passt(st, rechtsWert())) wohin.push("rechts");
+    p.append(document.createTextNode(wohin.length
+      ? "Wohin damit?"
+      : "Dieser Stein passt an kein Ende."));
+    p.append(el("small", null, wohin.length
+      ? "Das passende Ende ist hervorgehoben."
+      : "Tippen Sie einen anderen Stein an."));
+  }
+
+  function lege(seite) {
+    if (gewaehlt == null) return;
+    const st = steine[gewaehlt];
+    const wert = seite === "links" ? linksWert() : rechtsWert();
+    if (!passt(st, wert)) { fehler(seite === "links" ? links : rechts); return; }
+
+    if (seite === "links") {
+      kette.unshift(st[1] === wert ? [st[0], st[1]] : [st[1], st[0]]);
+    } else {
+      kette.push(st[0] === wert ? [st[0], st[1]] : [st[1], st[0]]);
+    }
+    verlauf.push({ seite, stein: st });
+    steine.splice(gewaehlt, 1);
+    gewaehlt = null;
+    richtig();
+    gelegt++; setProgress(gelegt);
+
+    if (steine.length === 0) {
+      zeichne();
+      if (kettenNr >= ketten) { setTimeout(finish, 750); return; }
+      setTimeout(() => { if (run && run.game.id === "domino") neueKette(); }, 1100);
+      return;
+    }
+    zeichne();
+  }
+
+  links.addEventListener("click", () => lege("links"));
+  rechts.addEventListener("click", () => lege("rechts"));
+
+  zurueck.addEventListener("click", () => {
+    const letzt = verlauf.pop();
+    if (!letzt) return;
+    if (letzt.seite === "links") kette.shift(); else kette.pop();
+    steine.push(letzt.stein);
+    gelegt = Math.max(0, gelegt - 1); setProgress(gelegt);
+    gewaehlt = null;
+    tone(300, .1, "sine", .09);
+    zeichne();
+  });
+
+  setProgress(0);
+  neueKette();
 }
 
 /* ================= 3. Sprichwörter ================= */
@@ -1254,7 +1480,9 @@ function playSpruch(stage, level) {
   const runden = 8;
   const anzahl = [3, 5, 6][level];
   const setProgress = progressBar(stage, runden, "gelöst");
-  promptText(stage, "Wie geht der Satz weiter?", "Tippen Sie das passende Wort an.");
+  promptText(stage,
+    level === 2 ? "Wie fängt dieses Sprichwort an?" : "Wie geht der Satz weiter?",
+    level === 2 ? "Tippen Sie den passenden Anfang an." : "Tippen Sie das passende Wort an.");
 
   const satz = el("div", "saying");
   const words = el("div", "words");
@@ -1263,8 +1491,45 @@ function playSpruch(stage, level) {
   const pool = frischeAuswahl("spruch", SPRUECHE, runden);
   let i = 0;
 
+  function rundeRueckwaerts(anfang, loesung) {
+    satz.innerHTML = "";
+    const gap = el("span", "gap", "…");
+    satz.append(gap);
+    satz.append(document.createTextNode(" " + loesung + "."));
+
+    // Die falschen Anfänge stammen aus anderen Sprichwörtern
+    const fremd = shuffle(SPRUECHE.map(x => x[0]).filter(a => a !== anfang));
+    const opts = shuffle([anfang, ...fremd.slice(0, anzahl - 1)]);
+    words.innerHTML = "";
+    opts.forEach(a => {
+      const b = el("button", "word", a);
+      b.style.fontSize = "1.05rem";
+      b.addEventListener("click", () => {
+        if (a !== anfang) {
+          fehler(b);
+          maybeHint(() => [...words.children].find(x => x.textContent === anfang));
+          return;
+        }
+        richtig();
+        gap.textContent = anfang;
+        gap.style.whiteSpace = "normal";
+        b.classList.add("ok");
+        [...words.children].forEach(x => x.disabled = true);
+        i++; setProgress(i);
+        setTimeout(() => { i >= runden ? finish() : runde(); }, 1300);
+      });
+      words.append(b);
+    });
+  }
+
   function runde() {
     const [anfang, loesung, falsch] = pool[i];
+
+    /* Stufe 3 dreht die Aufgabe um: das Ende steht da, der Anfang wird
+       gesucht. Vorwärts läuft der Abruf fast von selbst — rückwärts
+       muss man die Redewendung wirklich aufrufen und prüfen. */
+    if (level === 2) return rundeRueckwaerts(anfang, loesung);
+
     satz.innerHTML = "";
     satz.append(document.createTextNode(anfang + " "));
     const gap = el("span", "gap", " ");
@@ -1616,10 +1881,15 @@ function machePfad(level) {
 
 function playLinie(stage, level) {
   const punkteZahl = [20, 30, 40][level];
-  const toleranz = [78, 46, 28][level];
-  const bahnbreite = [54, 40, 26][level];   // die Bahn ist so breit wie erlaubt
+  const bahnbreite = [54, 40, 26][level];
+  /* Der erlaubte Abstand ist jetzt an die sichtbare Bahn gekoppelt:
+     Wer den grauen Streifen verlässt, ist draußen — vorher durfte man
+     weit daneben fahren und es zählte trotzdem. */
+  const bahnRand = bahnbreite / 2 + 7;
+  const rueckschritt = [1, 3, 6][level];      // verlorene Punkte beim Abkommen
+
   const setProgress = progressBar(stage, punkteZahl, "der Strecke");
-  promptText(stage, "Fahren Sie mit dem Finger der Linie entlang.", "Absetzen ist erlaubt — es geht dort weiter, wo Sie waren.");
+  const p = promptText(stage, "Fahren Sie mit dem Finger der Linie entlang.", " ");
 
   const d = machePfad(level);
   const wrap = el("div", "tracewrap");
@@ -1634,42 +1904,113 @@ function playLinie(stage, level) {
 
   const svg = $("svg", wrap), spur = $("#spur", wrap), fertig = $("#fertig", wrap), marke = $("#marke", wrap);
   const laenge = spur.getTotalLength();
+
+  // Zielpunkte entlang der Strecke
   const ziele = [];
-  for (let k = 0; k < punkteZahl; k++) {
-    ziele.push(spur.getPointAtLength(laenge * (k + 1) / punkteZahl));
-  }
+  for (let k = 0; k < punkteZahl; k++) ziele.push(spur.getPointAtLength(laenge * (k + 1) / punkteZahl));
+
+  /* Dichtes Raster der Bahn, um den Abstand zur Linie zu messen.
+     Gesucht wird nur in einem Fenster um den aktuellen Fortschritt —
+     sonst würde eine weit entfernte Schleife der Bahn fälschlich als
+     „drauf" gelten. */
+  const RASTER = 400;
+  const proben = [];
+  for (let i = 0; i <= RASTER; i++) proben.push(spur.getPointAtLength(laenge * i / RASTER));
+
+  const reichweite = laenge / punkteZahl * 1.35;   // wie weit der nächste Punkt greift
+
   const start = spur.getPointAtLength(0);
   fertig.style.strokeDasharray = laenge;
   fertig.style.strokeDashoffset = laenge;
   fertig.style.transition = "stroke-dashoffset .18s linear";
   marke.setAttribute("cx", start.x); marke.setAttribute("cy", start.y);
 
-  let idx = 0, unten = false;
+  let idx = 0, unten = false, ausrutscher = 0, draussen = false;
+
+  function stand(zusatz) {
+    p.innerHTML = "Fahren Sie mit dem Finger der Linie entlang.";
+    const t = zusatz ? zusatz
+      : (ausrutscher === 0
+          ? "Bleiben Sie auf dem breiten Streifen. Absetzen ist erlaubt."
+          : "Bleiben Sie auf dem breiten Streifen. Abgekommen: " + ausrutscher + "×");
+    p.append(el("small", null, t));
+  }
+  stand();
 
   const toSvg = e => {
     const r = svg.getBoundingClientRect();
     return { x: (e.clientX - r.left) / r.width * 1000, y: (e.clientY - r.top) / r.height * 600 };
   };
 
+  function abstandZurBahn(pkt) {
+    const mitte = Math.round(idx / punkteZahl * RASTER);
+    const von = Math.max(0, mitte - 25), bis = Math.min(RASTER, mitte + 55);
+    let min = Infinity;
+    for (let i = von; i <= bis; i++) {
+      const dx = pkt.x - proben[i].x, dy = pkt.y - proben[i].y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < min) min = dist;
+    }
+    return min;
+  }
+
+  function setzeMarke(punkt) {
+    marke.setAttribute("cx", punkt.x); marke.setAttribute("cy", punkt.y);
+  }
+
+  function abgekommen() {
+    draussen = true;
+    unten = false;                       // absetzen und neu ansetzen
+    ausrutscher++; run.fehler++; run.streak++;
+    sndNope();
+    idx = Math.max(0, idx - rueckschritt);
+    fertig.style.strokeDashoffset = laenge - laenge * idx / punkteZahl;
+    setProgress(idx);
+    setzeMarke(idx === 0 ? start : ziele[idx - 1]);
+    marke.setAttribute("stroke", "#B03A28");
+    setTimeout(() => marke.setAttribute("stroke", "var(--honey)"), 700);
+    stand("Von der Bahn abgekommen. Setzen Sie am Punkt neu an.");
+  }
+
   function bewege(e) {
     if (!unten || idx >= punkteZahl) return;
-    const p = toSvg(e);
-    // Erlaubt auch etwas schnelleres Fahren: bis zu drei Punkte auf einmal
+    const pkt = toSvg(e);
+
+    if (abstandZurBahn(pkt) > bahnRand) { abgekommen(); return; }
+    if (draussen) { draussen = false; stand(); }
+
+    // Etwas schnelleres Fahren erlauben: bis zu drei Punkte auf einmal
     for (let k = 0; k < 3 && idx < punkteZahl; k++) {
       const z = ziele[idx];
-      if (Math.hypot(p.x - z.x, p.y - z.y) > toleranz) break;
+      if (Math.hypot(pkt.x - z.x, pkt.y - z.y) > reichweite) break;
       idx++;
       if (idx % 3 === 0) tone(420 + idx * 12, .06, "sine", .07);
-      marke.setAttribute("cx", z.x); marke.setAttribute("cy", z.y);
+      setzeMarke(z);
       fertig.style.strokeDashoffset = laenge - laenge * idx / punkteZahl;
       setProgress(idx);
     }
-    if (idx >= punkteZahl) { unten = false; richtig(); setTimeout(finish, 600); }
+    if (idx >= punkteZahl) {
+      unten = false;
+      richtig();
+      p.innerHTML = "Geschafft.";
+      p.append(el("small", null, ausrutscher === 0
+        ? "Ohne einen einzigen Ausrutscher."
+        : "Abgekommen: " + ausrutscher + "×"));
+      setTimeout(finish, 700);
+    }
   }
 
   wrap.addEventListener("pointerdown", e => {
-    unten = true;
+    // Nur dort ansetzen, wo man stehengeblieben ist
+    const pkt = toSvg(e);
+    const hier = idx === 0 ? start : ziele[idx - 1];
+    if (Math.hypot(pkt.x - hier.x, pkt.y - hier.y) > bahnRand * 2.2) {
+      stand("Setzen Sie am hellen Punkt an.");
+      return;
+    }
+    unten = true; draussen = false;
     try { wrap.setPointerCapture(e.pointerId); } catch {}
+    stand();
     bewege(e);
   });
   wrap.addEventListener("pointermove", bewege);
@@ -1700,12 +2041,21 @@ const SORTIER = [
       dinge:[["🍞",0],["🧀",0],["🥚",0],["🍎",0],["☕",1],["🥛",1],["🍵",1],["👕",2],["🧦",2],["🧥",2]] }
   ],
   [
-    { kisten:[["Küche","🍽️"],["Werkstatt","🔨"],["Garten","🌱"],["Bad","🛁"]],
-      dinge:[["🥄",0],["🍳",0],["🫖",0],["🔨",1],["🪛",1],["🔧",1],["🌻",2],["🌳",2],["🪴",2],["🧼",3],["🚿",3],["🧴",3]] },
-    { kisten:[["Frühstück","🥐"],["Werkzeug","🔧"],["Musik","🎺"],["Sport","⚽"]],
-      dinge:[["🥐",0],["🍞",0],["☕",0],["🔧",1],["📏",1],["🔩",1],["🎸",2],["🥁",2],["🎻",2],["⚽",3],["🎾",3],["🏀",3]] },
-    { kisten:[["Fliegt","🦅"],["Schwimmt","🐟"],["Fährt","🚗"],["Wächst","🌳"]],
-      dinge:[["🦅",0],["🦆",0],["🦋",0],["🐟",1],["🐬",1],["🐳",1],["🚗",2],["🚌",2],["🚲",2],["🌳",3],["🌻",3],["🍄",3]] }
+    /* Zwei Merkmale gleichzeitig: Man kann nicht mehr auf einen Blick
+       einordnen („das ist ein Vogel → Vogelkiste"), sondern muss für
+       jedes Ding beide Eigenschaften prüfen und kombinieren. */
+    { kisten:[["Tier · fliegt","🕊️"],["Tier · fliegt nicht","🐾"],
+              ["Ding · fliegt","🛩️"],["Ding · fliegt nicht","⚙️"]],
+      dinge:[["🦅",0],["🦋",0],["🐝",0],
+             ["🐕",1],["🐟",1],["🐄",1],
+             ["✈️",2],["🚁",2],["🎈",2],
+             ["🚗",3],["🪑",3],["🔨",3]] },
+    { kisten:[["Tier · im Wasser","🐚"],["Tier · an Land","🐾"],
+              ["Fahrzeug · im Wasser","⚓"],["Fahrzeug · an Land","🛣️"]],
+      dinge:[["🐟",0],["🐬",0],["🦀",0],
+             ["🐕",1],["🐈",1],["🐄",1],
+             ["🚢",2],["⛵",2],["🛶",2],
+             ["🚗",3],["🚌",3],["🚲",3]] }
   ]
 ];
 
@@ -1816,6 +2166,381 @@ function playSort(stage, level) {
     return null;
   }
   setProgress(0);
+}
+
+/* ================= 9. Folge merken =================
+   Die Merkspanne ist der Kern kognitiver Schwierigkeit: Man muss
+   etwas halten, während man nichts sieht. Deshalb wächst die Folge
+   mit jedem Erfolg — und rückwärts ist sie noch einmal deutlich
+   schwerer, weil das Gehaltene zusätzlich umgedreht werden muss. */
+
+const warte = ms => new Promise(r => setTimeout(r, ms));
+
+function playSpanne(stage, level) {
+  const rueckwaerts = level === 2;
+  const runden = 6;
+  let laenge = [3, 4, 3][level];
+
+  const setProgress = progressBar(stage, runden, "Folgen");
+  const p = promptText(stage, "Gleich geht es los.", " ");
+
+  const gitter = el("div", "spannegitter");
+  const felder = [];
+  for (let i = 0; i < 9; i++) {
+    const f = el("button", "spannefeld");
+    f.setAttribute("aria-label", "Feld " + (i + 1));
+    gitter.append(f); felder.push(f);
+  }
+  stage.append(gitter);
+
+  const meinLauf = run;
+  let folge = [], eingabe = [], geloest = 0, misserfolge = 0, sperre = true;
+
+  function sichtbar() { return run === meinLauf && document.body.contains(gitter); }
+
+  function neueFolge() {
+    folge = [];
+    for (let i = 0; i < laenge; i++) {
+      let k = rint(0, 8);
+      if (i > 0 && k === folge[i - 1]) k = (k + 1 + rint(0, 6)) % 9;   // nie zweimal dasselbe Feld
+      folge.push(k);
+    }
+    zeigeFolge();
+  }
+
+  async function zeigeFolge() {
+    sperre = true;
+    felder.forEach(f => { f.disabled = true; f.className = "spannefeld"; });
+    p.innerHTML = "Merken Sie sich die Reihenfolge.";
+    p.append(el("small", null, laenge + " Felder"
+      + (rueckwaerts ? " — nachher rückwärts eingeben" : "")));
+    await warte(700);
+    for (const k of folge) {
+      if (!sichtbar()) return;
+      felder[k].classList.add("an");
+      tone(360 + k * 55, .32, "sine", .13);
+      await warte(560);
+      felder[k].classList.remove("an");
+      await warte(240);
+    }
+    if (!sichtbar()) return;
+    eingabe = [];
+    sperre = false;
+    felder.forEach(f => { f.disabled = false; });
+    zeigeAufforderung();
+  }
+
+  function zeigeAufforderung() {
+    p.innerHTML = rueckwaerts ? "Jetzt rückwärts nachtippen." : "Jetzt nachtippen.";
+    p.append(el("small", null, eingabe.length + " von " + laenge));
+  }
+
+  felder.forEach((f, k) => {
+    f.addEventListener("click", async () => {
+      if (sperre) return;
+      const soll = rueckwaerts ? folge[folge.length - 1 - eingabe.length] : folge[eingabe.length];
+      if (k !== soll) {
+        fehler(f);
+        sperre = true;
+        misserfolge++;
+        // Nach zwei Fehlversuchen wird die Folge wieder kürzer — die
+        // Übung soll fordern, nicht blockieren.
+        if (misserfolge >= 2 && laenge > 2) { laenge--; misserfolge = 0; }
+        await warte(900);
+        if (sichtbar()) neueFolge();
+        return;
+      }
+      f.classList.add("getippt");
+      tone(360 + k * 55, .2, "sine", .1);
+      eingabe.push(k);
+      if (eingabe.length < laenge) { zeigeAufforderung(); return; }
+
+      // Folge vollständig
+      richtig();
+      sperre = true;
+      geloest++; misserfolge = 0;
+      setProgress(geloest);
+      if (geloest >= runden) { await warte(600); if (sichtbar()) finish(); return; }
+      laenge++;
+      await warte(800);
+      if (sichtbar()) neueFolge();
+    });
+  });
+
+  setProgress(0);
+  neueFolge();
+}
+
+/* ================= 10. Was fehlt? ================= */
+
+const FEHLT_DINGE = [
+  "🍎","🔑","🌻","🚗","☕","🏠","🐈","🌳","⭐","👓","🎩","🍞","🕰️","☂️","🚲","🦋",
+  "🍐","🌙","🍄","🎈","🐟","🧦","🕯️","🍊","🚌","🐇","🎸","🧸","🍇","🐝","🦉","🧢",
+  "🔨","🪑","🧀","🥕","📖","✂️","🎻","🥨","🧤","🐕","🌷","⚽","🍫","🛁"
+];
+
+function playFehlt(stage, level) {
+  const anzahl = [4, 6, 8][level];
+  const runden = 6;
+  const setProgress = progressBar(stage, runden, "gelöst");
+  const p = promptText(stage, "", "");
+
+  const schau = el("div", "schau");
+  const words = el("div", "words");
+  const weiter = el("button", "btn primary", "Ich habe es mir gemerkt");
+  weiter.style.maxWidth = "22rem";
+  weiter.style.margin = "0 auto";
+  stage.append(schau, weiter, words);
+
+  const meinLauf = run;
+  let i = 0, satz = [], weg = null;
+
+  function sichtbar() { return run === meinLauf && document.body.contains(schau); }
+
+  function merkenPhase() {
+    satz = frischeAuswahl("fehlt", FEHLT_DINGE, anzahl);
+    p.innerHTML = "Prägen Sie sich diese Dinge ein.";
+    p.append(el("small", null, "Lassen Sie sich Zeit — es läuft keine Uhr."));
+    schau.innerHTML = "";
+    satz.forEach(d => schau.append(el("div", null, d)));
+    words.innerHTML = "";
+    weiter.hidden = false;
+  }
+
+  weiter.addEventListener("click", () => {
+    weiter.hidden = true;
+    // Alles verschwindet kurz, dann kommt es ohne ein Ding zurück
+    schau.innerHTML = "";
+    p.innerHTML = "Einen Augenblick …";
+    p.append(el("small", null, " "));
+    setTimeout(() => { if (sichtbar()) ratenPhase(); }, 850);
+  });
+
+  function ratenPhase() {
+    weg = pick(satz);
+    const rest = shuffle(satz.filter(d => d !== weg));
+    schau.innerHTML = "";
+    rest.forEach(d => schau.append(el("div", null, d)));
+
+    p.innerHTML = "Welches Ding fehlt jetzt?";
+    p.append(el("small", null, "Es ist oben nicht mehr dabei."));
+
+    // Auswahl: das fehlende Ding und drei, die noch oben liegen
+    const opts = shuffle([weg, ...rest.slice(0, 3)]);
+    words.innerHTML = "";
+    opts.forEach(d => {
+      const b = el("button", "word");
+      b.append(el("div", "pic", d));
+      b.addEventListener("click", () => {
+        if (d !== weg) {
+          fehler(b);
+          maybeHint(() => [...words.children].find(x => x.textContent === weg));
+          return;
+        }
+        richtig();
+        b.classList.add("ok");
+        [...words.children].forEach(x => x.disabled = true);
+        i++; setProgress(i);
+        setTimeout(() => {
+          if (!sichtbar()) return;
+          i >= runden ? finish() : merkenPhase();
+        }, 1200);
+      });
+      words.append(b);
+    });
+  }
+
+  setProgress(0);
+  merkenPhase();
+}
+
+/* ================= 11. Kopfrechnen =================
+   Die Ablenker sind bewusst knapp daneben — typische Rechenfehler wie
+   vergessener Übertrag oder vertauschte Ziffern. Zufallszahlen wären
+   durch bloßes Überschlagen auszuschließen. */
+
+function macheRechnung(level) {
+  let text, loesung;
+  if (level === 0) {
+    const art = pick(["plus", "minus"]);
+    if (art === "plus") {
+      const a = rint(2, 9), b = rint(2, 9);
+      text = a + " + " + b; loesung = a + b;
+    } else {
+      const a = rint(6, 19), b = rint(2, a - 1);
+      text = a + " − " + b; loesung = a - b;
+    }
+  } else if (level === 1) {
+    const art = pick(["plus", "minus", "mal"]);
+    if (art === "plus") {
+      const a = rint(18, 79), b = rint(13, 49);
+      text = a + " + " + b; loesung = a + b;
+    } else if (art === "minus") {
+      const a = rint(41, 98), b = rint(13, 39);
+      text = a + " − " + b; loesung = a - b;
+    } else {
+      const a = rint(3, 9), b = rint(3, 9);
+      text = a + " × " + b; loesung = a * b;
+    }
+  } else {
+    const art = pick(["zweischritt", "prozent", "geteilt", "malgross"]);
+    if (art === "zweischritt") {
+      const a = rint(4, 9), b = rint(4, 9), c = rint(7, 29);
+      text = a + " × " + b + " − " + c; loesung = a * b - c;
+    } else if (art === "prozent") {
+      const p = pick([5, 10, 15, 20, 25, 40, 75]);
+      const g = pick([40, 60, 80, 120, 160, 200, 240]);
+      text = p + " % von " + g; loesung = Math.round(g * p / 100);
+    } else if (art === "geteilt") {
+      const b = rint(3, 9), erg = rint(4, 19);
+      text = (b * erg) + " ÷ " + b; loesung = erg;
+    } else {
+      const a = rint(12, 29), b = rint(4, 9);
+      text = a + " × " + b; loesung = a * b;
+    }
+  }
+
+  // Typische Fehlerergebnisse als Ablenker
+  const kandidaten = new Set();
+  [loesung + 1, loesung - 1, loesung + 10, loesung - 10,
+   loesung + 2, loesung - 2, loesung + 9, loesung - 9,
+   Math.round(loesung * 1.1), Math.round(loesung / 2) * 2 + 4
+  ].forEach(x => { if (x !== loesung && x > 0) kandidaten.add(x); });
+  const ablenker = shuffle([...kandidaten]).slice(0, 5);
+  return { text, loesung, ablenker };
+}
+
+function playRechnen(stage, level) {
+  const runden = 10;
+  const anzahl = [3, 4, 6][level];
+  const setProgress = progressBar(stage, runden, "gerechnet");
+  promptText(stage, "Wie viel ist das?", "Im Kopf rechnen, nichts aufschreiben.");
+
+  const aufgabe = el("div", "aufgabe");
+  const words = el("div", "words");
+  stage.append(aufgabe, words);
+  let i = 0;
+
+  function runde() {
+    const { text, loesung, ablenker } = macheRechnung(level);
+    aufgabe.textContent = text + " =";
+    const opts = shuffle([loesung, ...ablenker.slice(0, anzahl - 1)]);
+    words.innerHTML = "";
+    opts.forEach(z => {
+      const b = el("button", "word", String(z));
+      b.addEventListener("click", () => {
+        if (z !== loesung) {
+          fehler(b);
+          maybeHint(() => [...words.children].find(x => x.textContent === String(loesung)));
+          return;
+        }
+        richtig();
+        b.classList.add("ok");
+        [...words.children].forEach(x => x.disabled = true);
+        i++; setProgress(i);
+        setTimeout(() => { i >= runden ? finish() : runde(); }, 850);
+      });
+      words.append(b);
+    });
+  }
+  runde(); setProgress(0);
+}
+
+/* ================= 12. Geld abzählen =================
+   Rechnen plus Planen, und zugleich eine Alltagsfähigkeit, die nach
+   einem Schlaganfall oft gezielt wieder geübt wird. */
+
+const GELDWERTE = [
+  { c:1,    txt:"1 ct",  art:"muenze" },
+  { c:2,    txt:"2 ct",  art:"muenze" },
+  { c:5,    txt:"5 ct",  art:"muenze" },
+  { c:10,   txt:"10 ct", art:"muenze silber" },
+  { c:20,   txt:"20 ct", art:"muenze silber" },
+  { c:50,   txt:"50 ct", art:"muenze silber" },
+  { c:100,  txt:"1 €",   art:"muenze silber" },
+  { c:200,  txt:"2 €",   art:"muenze silber" },
+  { c:500,  txt:"5 €",   art:"schein" },
+  { c:1000, txt:"10 €",  art:"schein blau" },
+  { c:2000, txt:"20 €",  art:"schein blau" }
+];
+
+function alsEuro(cent) {
+  return (cent / 100).toFixed(2).replace(".", ",") + " €";
+}
+
+function playGeld(stage, level) {
+  const runden = 5;
+  // Stufe 1 nur volle Euro, Stufe 2 halbe Schritte, Stufe 3 krumme Beträge
+  const werte = [
+    GELDWERTE.filter(g => g.c >= 100),
+    GELDWERTE.filter(g => g.c >= 10),
+    GELDWERTE
+  ][level];
+
+  const setProgress = progressBar(stage, runden, "gelegt");
+  promptText(stage, "Legen Sie den Betrag passend hin.",
+    "Antippen legt hin. Im Feld darunter antippen nimmt zurück.");
+
+  const anzeige = el("div", "betrag");
+  const soll = el("span", "soll");
+  const ist = el("span", "ist");
+  anzeige.append(soll, ist);
+
+  const gelegt = el("div", "gelegt");
+  const kasse = el("div", "kasse");
+  stage.append(anzeige, gelegt, kasse);
+
+  let ziel = 0, summe = 0, i = 0, fertig = false;
+
+  function neueAufgabe() {
+    fertig = false;
+    summe = 0;
+    gelegt.innerHTML = "";
+    if (level === 0)      ziel = rint(3, 28) * 100;
+    else if (level === 1) ziel = rint(6, 56) * 50;
+    else                  ziel = rint(137, 4863);
+    soll.textContent = alsEuro(ziel);
+    zeigeStand();
+  }
+
+  function zeigeStand() {
+    const rest = ziel - summe;
+    ist.textContent = summe === 0
+      ? "noch nichts gelegt"
+      : "gelegt: " + alsEuro(summe) + (rest > 0 ? " — es fehlen " + alsEuro(rest)
+                                                : rest < 0 ? " — " + alsEuro(-rest) + " zu viel" : "");
+  }
+
+  function pruefe() {
+    if (summe !== ziel || fertig) return;
+    fertig = true;
+    richtig();
+    i++; setProgress(i);
+    ist.textContent = "Genau richtig.";
+    setTimeout(() => { i >= runden ? finish() : neueAufgabe(); }, 1100);
+  }
+
+  werte.forEach(g => {
+    const b = el("button", g.art, g.txt);
+    b.addEventListener("click", () => {
+      if (fertig) return;
+      if (summe + g.c > ziel) { fehler(b); return; }   // Überzahlen wird sanft abgewiesen
+      summe += g.c;
+      const kopie = el("button", g.art, g.txt);
+      kopie.addEventListener("click", () => {
+        if (fertig) return;
+        summe -= g.c; kopie.remove(); tone(300, .08, "sine", .08); zeigeStand();
+      });
+      gelegt.append(kopie);
+      tone(520 + Math.min(g.c, 400), .09, "sine", .09);
+      zeigeStand();
+      pruefe();
+    });
+    kasse.append(b);
+  });
+
+  setProgress(0);
+  neueAufgabe();
 }
 
 /* ================= Übungskalender ================= */
