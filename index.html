@@ -240,6 +240,35 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 }
 .btn.primary em{ color:rgba(255,255,255,.85); }
 
+/* Spielerklärung vor dem ersten Zug */
+.regeln{ max-width:32rem; margin:.5rem auto; }
+.regeln h2{ font-size:1.5rem; margin:0 0 1.2rem; letter-spacing:-.01em; }
+.regeln ol{
+  margin:0 0 1.6rem; padding:0; list-style:none;
+  counter-reset:schritt;
+}
+.regeln li{
+  counter-increment:schritt;
+  position:relative;
+  padding:.1rem 0 1.1rem 3.1rem;
+  font-size:1.08rem; line-height:1.5;
+}
+.regeln li::before{
+  content:counter(schritt);
+  position:absolute; left:0; top:0;
+  width:2.2rem; height:2.2rem; border-radius:99px;
+  background:var(--akzent); color:#fff;
+  display:grid; place-items:center;
+  font-weight:700; font-size:1.05rem;
+}
+.regeln li:last-of-type{ padding-bottom:.6rem; }
+.regeln .merksatz{
+  background:var(--akzent-soft);
+  border:2px solid var(--akzent);
+  border-radius:12px; padding:.9rem 1.1rem; margin:0 0 1.6rem;
+  font-size:1.05rem; line-height:1.5;
+}
+
 /* ---------------- Spielfläche ---------------- */
 
 .stage{ max-width:52rem; margin:0 auto; }
@@ -360,21 +389,35 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 
 /* Domino-Kette mit zwei offenen Enden */
 .kettenzeile{
-  display:flex; align-items:center; gap:.5rem;
-  margin-bottom:1.4rem;
+  display:flex; align-items:center; justify-content:center;
+  gap:.35rem; margin-bottom:1.4rem;
+  max-width:100%;
 }
-.kettenzeile .domrow{ flex:1; margin-bottom:0; min-height:4.6rem; }
+/* Die Kette darf schrumpfen und rollen, die Enden bleiben stehen —
+   so kleben die offenen Zahlen immer sichtbar an der Kette. */
+.kettenzeile .domrow{ flex:0 1 auto; margin-bottom:0; min-height:4.6rem; }
 .endzone{
   flex:none;
-  min-width:3.6rem; min-height:4.6rem;
-  padding:.2rem .5rem;
+  display:flex; flex-direction:column; align-items:center; gap:.15rem;
+  min-width:4.2rem; padding:.4rem .45rem;
   border:3px dashed var(--line-2);
   border-radius:12px;
   background:var(--card);
-  font-size:1.6rem; font-weight:700;
   color:var(--ink-2);
-  font-variant-numeric:tabular-nums;
   cursor:pointer;
+}
+.endzone .augen{
+  width:2.6rem; height:2.6rem;
+  display:grid; grid-template:repeat(3,1fr)/repeat(3,1fr);
+  padding:.28rem;
+}
+.endzone .augen .pip{
+  width:.5rem; height:.5rem; border-radius:99px;
+  background:currentColor; place-self:center;
+}
+.endzone .wort{
+  font-size:.76rem; font-weight:700; letter-spacing:.03em;
+  text-transform:uppercase;
 }
 .endzone.aktiv{
   border-style:solid; border-color:var(--akzent);
@@ -958,13 +1001,26 @@ function setAkzent(name) {
 
 const GAMES = [
   { id:"memory", art:"merken", icon:"memory", farbe:"petrol",     name:"Bilderpaare",     sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory },
-  { id:"domino", art:"zahlen", icon:"domino", farbe:"indigo",     name:"Domino legen",    sub:"Alle Steine zu einer Kette",     trainiert:"Aufmerksamkeit", run:playDomino },
+  { id:"domino", art:"zahlen", icon:"domino", farbe:"indigo",     name:"Domino legen",    sub:"Alle Steine zu einer Kette",     trainiert:"Vorausdenken", run:playDomino,
+    regeln: [
+      "In der Mitte liegt die Kette. Ganz links und ganz rechts sehen Sie, welche Augenzahl dort offen ist.",
+      "Suchen Sie unten einen Stein, der dieselbe Augenzahl zeigt wie eines der beiden Enden.",
+      "Tippen Sie erst den Stein an, dann das Ende, an das er passt. Das passende Ende leuchtet auf.",
+      "Alle Steine müssen an die Kette."
+    ],
+    merksatz: "Überlegen Sie, bevor Sie legen: Wer nur an einem Ende anbaut, hat am Schluss Steine übrig, die nirgends mehr passen. Verlegt? Mit „Letzten Stein zurücknehmen“ geht es zurück." },
   { id:"spruch", art:"sprache", icon:"spruch", farbe:"pflaume",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
   { id:"odd",    art:"sprache", icon:"odd",    farbe:"ocker",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd },
   { id:"reihe",  art:"zahlen", icon:"reihe",  farbe:"altrosa",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe },
   { id:"ziel",   art:"hand", icon:"ziel",   farbe:"gruen",      name:"Ziele treffen",   sub:"Punkte genau antippen",             trainiert:"Zielgenauigkeit", run:playZiel },
   { id:"linie",  art:"hand", icon:"linie",  farbe:"stahlblau",  name:"Linie nachfahren",sub:"Mit dem Finger der Spur folgen",    trainiert:"Feinmotorik", run:playLinie },
-  { id:"sort",   art:"hand", icon:"sort",   farbe:"terrakotta", name:"Einsortieren",    sub:"Nach Merkmalen ordnen", trainiert:"Greifen & Ziehen", run:playSort },
+  { id:"sort",   art:"hand", icon:"sort",   farbe:"terrakotta", name:"Einsortieren",    sub:"Nach Merkmalen ordnen", trainiert:"Greifen & Ziehen", run:playSort,
+    regeln: [
+      "Oben liegen die Dinge, unten stehen die Kisten.",
+      "Ziehen Sie ein Ding in die passende Kiste — oder tippen Sie erst das Ding an und dann die Kiste.",
+      "Auf der schwersten Stufe steht auf jeder Kiste zweierlei, zum Beispiel „Tier · fliegt“. Dann müssen beide Angaben stimmen."
+    ],
+    merksatz: "Ein Schmetterling ist ein Tier und er fliegt — er gehört also in „Tier · fliegt“. Ein Hubschrauber fliegt auch, ist aber kein Tier." },
   { id:"spanne", art:"merken", icon:"spanne", farbe:"moos",       name:"Folge merken",    sub:"Aufleuchtende Felder nachtippen",   trainiert:"Merkspanne", run:playSpanne },
   { id:"fehlt",  art:"merken", icon:"fehlt",  farbe:"violett",    name:"Was fehlt?",      sub:"Ein Ding verschwindet",             trainiert:"Bildgedächtnis", run:playFehlt },
   { id:"rechnen",art:"zahlen", icon:"rechnen",farbe:"bordeaux",   name:"Kopfrechnen",     sub:"Ohne Papier ausrechnen",            trainiert:"Zahlenverständnis", run:playRechnen },
@@ -1051,7 +1107,7 @@ function chooseLevel(game) {
   LEVELS.forEach((name, i) => {
     const b = el("button", "btn");
     b.append(el("span", null, name), el("em", null, LEVEL_HINT[i]));
-    b.addEventListener("click", () => startRun(game, i));
+    b.addEventListener("click", () => game.regeln ? zeigeRegeln(game, i) : startRun(game, i));
     box.append(b);
   });
   v.append(box);
@@ -1060,6 +1116,24 @@ function chooseLevel(game) {
 /* ================= Spielgerüst ================= */
 
 let run = null;   // aktueller Durchgang
+
+/* Wo die Bedienung nicht selbsterklärend ist, kommt vor dem ersten Zug
+   eine kurze Anleitung. Sie lässt sich im Spiel jederzeit wieder
+   aufrufen — wer den Faden verliert, soll nicht raten müssen. */
+function zeigeRegeln(game, level) {
+  setAkzent(game.farbe);
+  const v = screen(game.name, () => chooseLevel(game));
+  const box = el("div", "regeln");
+  box.append(el("h2", null, "So wird gespielt"));
+  const ol = el("ol");
+  game.regeln.forEach(r => ol.append(el("li", null, r)));
+  box.append(ol);
+  if (game.merksatz) box.append(el("p", "merksatz", game.merksatz));
+  const los = el("button", "btn primary", "Los geht's");
+  los.addEventListener("click", () => startRun(game, level));
+  box.append(los);
+  v.append(box);
+}
 
 function startRun(game, level) {
   setAkzent(game.farbe);
@@ -1313,13 +1387,25 @@ function playDomino(stage, level) {
     // Kette
     reihe.innerHTML = "";
     kette.forEach(([a, b]) => reihe.append(dominoNode(a, b, false)));
-    links.textContent = String(linksWert());
-    rechts.textContent = String(rechtsWert());
     const st = gewaehlt == null ? null : steine[gewaehlt];
-    links.classList.toggle("aktiv", !!st && passt(st, linksWert()));
-    rechts.classList.toggle("aktiv", !!st && passt(st, rechtsWert()));
-    links.setAttribute("aria-label", "Links anlegen, offene Zahl " + linksWert());
-    rechts.setAttribute("aria-label", "Rechts anlegen, offene Zahl " + rechtsWert());
+    /* Das offene Ende wird als Augenbild gezeigt, nicht als Ziffer:
+       Dann heißt die Aufgabe sichtbar „gleiches Muster suchen“ statt
+       „Zahl im Kopf vergleichen“. */
+    [[links, linksWert()], [rechts, rechtsWert()]].forEach(([zone, wert]) => {
+      zone.innerHTML = "";
+      const augen = el("div", "augen");
+      PIP_POS[wert].forEach(pos => {
+        const [r, c] = pos.split("/");
+        const pip = el("div", "pip");
+        pip.style.gridArea = r + "/" + c;
+        augen.append(pip);
+      });
+      const passend = !!st && passt(st, wert);
+      zone.append(augen, el("div", "wort", passend ? "anlegen" : String(wert)));
+      zone.classList.toggle("aktiv", passend);
+      zone.setAttribute("aria-label", "Offenes Ende mit " + wert
+        + (passend ? " — hier anlegen" : ""));
+    });
 
     // Hand
     hand.innerHTML = "";
