@@ -185,7 +185,9 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(15.5rem, 1fr));
+  /* min() verhindert, dass die Mindestbreite bei großer Schrift breiter
+     wird als der Bildschirm — sonst läuft die Startseite seitlich über. */
+  grid-template-columns:repeat(auto-fill, minmax(min(15.5rem, 100%), 1fr));
   gap:.85rem;
 }
 
@@ -694,6 +696,37 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   box-shadow:var(--shadow);
 }
 
+/* Alles finden — Explorationstraining */
+.suchfeld{
+  background:var(--card); border:2px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+  padding:.6rem .6rem .6rem 0;
+  max-width:52rem; margin:0 auto;
+}
+.suchzeile{
+  display:flex; align-items:center; gap:.5rem;
+  padding:.35rem 0;
+}
+.suchzeile + .suchzeile{ border-top:1px solid var(--line); }
+/* Der Anker ist der ganze Zweck der Übung: ein fester Punkt links,
+   den man jedes Mal zuerst ansteuert. */
+.anker{
+  flex:none; width:.75rem; align-self:stretch; min-height:3rem;
+  border-radius:99px; background:#C0392B;
+}
+.suchinhalt{
+  flex:1; min-width:0;
+  display:flex; align-items:center;
+  justify-content:space-around; gap:.15rem; flex-wrap:nowrap;
+}
+.zeichen{
+  background:none; border:none; padding:.2rem;
+  line-height:1; cursor:default; border-radius:10px;
+}
+.zeichen.ziel{ cursor:pointer; }
+.zeichen.weg{ opacity:.25; }
+.zeichen.ziel:not(.weg){ outline:none; }
+
 /* Übungskalender — die Belohnung ist der sichtbare Nachweis, dass man
    drangeblieben ist. Kein Punktestand, keine Serie, kein Vergleich:
    ein abgehakter Tag verschwindet nie wieder, ein ausgelassener wird
@@ -795,6 +828,30 @@ table.log td.n{ text-align:right; font-variant-numeric:tabular-nums; }
 .scroller{ overflow-x:auto; }
 
 .danger{ border-color:var(--line-2); color:var(--ink-2); }
+.sicherungsfeld{
+  width:100%; margin:0 0 .75rem;
+  font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size:.85rem; line-height:1.4;
+  padding:.7rem; border:2px solid var(--line-2); border-radius:12px;
+  background:var(--card); color:var(--ink); resize:vertical;
+}
+
+/* Tagesrunde — der kürzeste Weg zum Üben */
+.rundenknopf{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  width:100%; text-align:left;
+  padding:1.2rem 1.2rem;
+  margin:0 0 1.8rem;
+  background:var(--green); border:2px solid var(--green-deep);
+  border-radius:var(--radius); color:#fff;
+  box-shadow:var(--shadow); cursor:pointer;
+}
+.rundenknopf:active{ transform:translateY(1px); }
+.rundenknopf b{ display:block; font-size:1.3rem; font-weight:680; }
+.rundenknopf small{ display:block; font-size:.97rem; opacity:.9; margin-top:.2rem; }
+.rundenknopf .pfeil{ flex:none; width:2rem; height:2rem; }
+.rundenknopf .pfeil svg{ width:100%; height:100%; }
+
 
 /* Noch auszufüllen — fällt absichtlich auf, damit es niemand übersieht */
 .platzhalter{
@@ -914,6 +971,8 @@ const KEY = "kopfundhand.v1";
 const store = Object.assign({
   gesamt: 0,          // abgeschlossene Übungen insgesamt
   tage: {},           // "2026-08-16" -> Anzahl an diesem Tag
+  sprache: true,      // sprachlastige Übungen anzeigen? (bei Aphasie aus)
+  letzteRunde: [],    // welche Übungen die letzte Tagesrunde hatte
   text: "normal",
   kontrast: "normal",
   ton: true,
@@ -996,6 +1055,7 @@ const ICONS = {
   fehlt: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="9" r="5"/><circle cx="23" cy="9" r="5"/><circle cx="9" cy="23" r="5"/><circle cx="23" cy="23" r="5" stroke-dasharray="3 3"/></svg>',
   rechnen: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 10h9M9.5 5.5v9"/><path d="M18 10h9"/><path d="M5 22h9"/><path d="M18 19h9M18 25h9"/></svg>',
   geld: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="8"/><circle cx="20" cy="20" r="8"/><path d="M12 8.5v7M10 10.5h3.4M10 13.5h3.4" stroke-linecap="round"/></svg>',
+  suchen: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 5v22" stroke-width="3.4"/><circle cx="13" cy="10" r="2.6" fill="currentColor" stroke="none"/><circle cx="24" cy="14" r="2.6" fill="currentColor" stroke="none"/><circle cx="11" cy="22" r="2.6" fill="currentColor" stroke="none"/><circle cx="22" cy="25" r="2.6" fill="currentColor" stroke="none"/><path d="M9 10h18M9 22h18" opacity=".35"/></svg>',
   liste: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M11 8h17M11 16h17M11 24h17"/><path d="M4 8l2 2 3-4M4 16l2 2 3-4M4 24l2 2 3-4"/></svg>',
   spaeter: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="16" cy="17" r="11"/><path d="M16 11v6l4 3"/><path d="M6 6l4-3M26 6l-4-3"/></svg>',
   auftrag: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 5a7 7 0 00-7 7c0 6-3 8-3 8h20s-3-2-3-8a7 7 0 00-7-7z"/><path d="M13.5 25a3 3 0 005 0"/><path d="M16 5V2.5"/></svg>',
@@ -1044,7 +1104,8 @@ function setAkzent(name) {
 }
 
 const GAMES = [
-  { id:"memory", art:"merken", icon:"memory", farbe:"petrol",     name:"Memory",          sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory },
+  { id:"memory", art:"merken", icon:"memory", farbe:"petrol",     name:"Memory",          sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory,
+    tipp:"Sprechen Sie innerlich mit: „Der Hund liegt oben links.\u201c Benannte Bilder merkt man besser als nur angeschaute." },
   { id:"domino", art:"zahlen", icon:"domino", farbe:"indigo",     name:"Domino legen",    sub:"Alle Steine zu einer Kette",     trainiert:"Vorausdenken", run:playDomino,
     regeln: [
       "In der Mitte liegt die Kette. Ganz links und ganz rechts sehen Sie, welche Augenzahl dort offen ist.",
@@ -1053,7 +1114,7 @@ const GAMES = [
       "Alle Steine müssen an die Kette."
     ],
     merksatz: "Überlegen Sie, bevor Sie legen: Wer nur an einem Ende anbaut, hat am Schluss Steine übrig, die nirgends mehr passen. Verlegt? Mit „Letzten Stein zurücknehmen“ geht es zurück." },
-  { id:"spruch", art:"sprache", icon:"spruch", farbe:"pflaume",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
+  { id:"spruch", art:"sprache", sprachlastig:true, icon:"spruch", farbe:"pflaume",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
   { id:"odd",    art:"sprache", icon:"odd",    farbe:"ocker",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd },
   { id:"reihe",  art:"zahlen", icon:"reihe",  farbe:"altrosa",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe },
   { id:"ziel",   art:"hand", icon:"ziel",   farbe:"gruen",      name:"Ziele treffen",   sub:"Punkte genau antippen",             trainiert:"Zielgenauigkeit", run:playZiel },
@@ -1065,12 +1126,15 @@ const GAMES = [
       "Auf der schwersten Stufe steht auf jeder Kiste zweierlei, zum Beispiel „Tier · fliegt“. Dann müssen beide Angaben stimmen."
     ],
     merksatz: "Ein Schmetterling ist ein Tier und er fliegt — er gehört also in „Tier · fliegt“. Ein Hubschrauber fliegt auch, ist aber kein Tier." },
-  { id:"spanne", art:"merken", icon:"spanne", farbe:"moos",       name:"Folge merken",    sub:"Aufleuchtende Felder nachtippen",   trainiert:"Merkspanne", run:playSpanne },
-  { id:"fehlt",  art:"merken", icon:"fehlt",  farbe:"violett",    name:"Was fehlt?",      sub:"Ein Ding verschwindet",             trainiert:"Bildgedächtnis", run:playFehlt },
+  { id:"spanne", art:"merken", icon:"spanne", farbe:"moos",       name:"Folge merken",    sub:"Aufleuchtende Felder nachtippen",   trainiert:"Merkspanne", run:playSpanne,
+    tipp:"Teilen Sie die Folge in Häppchen: erst drei Felder, dann die nächsten drei. Am Stück ist sie kaum zu behalten." },
+  { id:"fehlt",  art:"merken", icon:"fehlt",  farbe:"violett",    name:"Was fehlt?",      sub:"Ein Ding verschwindet",             trainiert:"Bildgedächtnis", run:playFehlt,
+    tipp:"Gehen Sie die Dinge in fester Reihenfolge durch, immer von links oben nach rechts unten. Mit einem festen Weg merkt man mehr." },
   { id:"rechnen",art:"zahlen", icon:"rechnen",farbe:"bordeaux",   name:"Kopfrechnen",     sub:"Ohne Papier ausrechnen",            trainiert:"Zahlenverständnis", run:playRechnen },
   { id:"geld",   art:"zahlen", icon:"geld",   farbe:"bronze",     name:"Geld abzählen",   sub:"Einen Betrag passend legen",        trainiert:"Rechnen & Planen", run:playGeld },
 
-  { id:"liste",   art:"merken",  icon:"liste",   farbe:"waldgruen", name:"Liste merken",   sub:"Wörter über mehrere Durchgänge",  trainiert:"Lernen durch Wiederholung", run:playListe },
+  { id:"liste",   art:"merken",  sprachlastig:true, icon:"liste",   farbe:"waldgruen", name:"Liste merken",
+    tipp:"Fassen Sie die Wörter zu Paaren zusammen, die zusammenpassen — zwei Paare merkt man leichter als vier einzelne Wörter.",   sub:"Wörter über mehrere Durchgänge",  trainiert:"Lernen durch Wiederholung", run:playListe },
   { id:"spaeter", art:"spaeter", icon:"spaeter", farbe:"stahlblau", name:"Später abrufen", sub:"Merken, ablenken, erinnern",      trainiert:"Behalten über Zeit", run:playSpaeter,
     regeln: [
       "Zuerst sehen Sie ein paar Dinge, die Sie sich merken sollen.",
@@ -1085,8 +1149,17 @@ const GAMES = [
       "Irgendwann taucht die Glocke auf — dann müssen Sie von selbst daran denken. Erinnert wird Sie niemand."
     ],
     merksatz: "Das ist die Fähigkeit, die im Alltag am meisten kostet, wenn sie fehlt: an die Tabletten denken, an den Termin, an den Topf auf dem Herd." },
-  { id:"namen",   art:"spaeter", icon:"namen",   farbe:"nachtblau", name:"Namen merken",   sub:"Gesichter und Namen zuordnen",    trainiert:"Namensgedächtnis", run:playNamen },
-  { id:"text",    art:"sprache", icon:"text",    farbe:"bronze",    name:"Gut zugehört",   sub:"Kurze Geschichte, dann Fragen",   trainiert:"Textverständnis", run:playText }
+  { id:"namen",   art:"spaeter", sprachlastig:true, icon:"namen",   farbe:"nachtblau", name:"Namen merken",
+    tipp:"Verknüpfen Sie den Namen mit etwas Auffälligem: die Brille, der rote Pullover. Allein der Name bleibt selten hängen.",   sub:"Gesichter und Namen zuordnen",    trainiert:"Namensgedächtnis", run:playNamen },
+  { id:"suchen",  art:"hand", icon:"suchen", farbe:"altrosa",   name:"Alles finden",   sub:"Jede Zeile von links absuchen",   trainiert:"Blickführung", run:playSuchen,
+    regeln: [
+      "Im Feld sind viele Zeichen verstreut. Gesucht sind nur die roten Punkte.",
+      "Fangen Sie in jeder Zeile am roten Balken ganz links an und gehen Sie von dort nach rechts.",
+      "Tippen Sie jeden roten Punkt an. Erst wenn eine Zeile leer ist, gehen Sie eine tiefer."
+    ],
+    merksatz: "Nach einem Schlaganfall wird die linke Seite oft übersehen, ohne dass man es selbst bemerkt. Der rote Balken ist der Ankerpunkt: Wer ihn jedes Mal zuerst sucht, gewöhnt sich an, auch ganz links hinzuschauen.",
+    tipp:"Zeigen Sie mit dem Finger mit und sprechen Sie die Zeilen mit: „Erste Zeile — von links nach rechts.“" },
+  { id:"text",    art:"sprache", sprachlastig:true, icon:"text",    farbe:"bronze",    name:"Gut zugehört",   sub:"Kurze Geschichte, dann Fragen",   trainiert:"Textverständnis", run:playText }
 ];
 
 function faerbeKachel(t, farbe) {
@@ -1103,6 +1176,18 @@ function showHome() {
   const lede = el("p", "lede", "Kleine Übungen für zwischendurch. Es gibt kein Zeitlimit und nichts, was man verlieren kann.");
   v.append(lede);
 
+  /* Der kürzeste Weg zum Üben steht ganz oben — wer nicht wählen mag
+     oder nicht wählen kann, braucht nur einen Knopf. */
+  const rundeKnopf = el("button", "rundenknopf");
+  const rk = el("div");
+  rk.append(el("b", null, "Heutige Runde"));
+  rk.append(el("small", null, "Drei Übungen, etwa zehn Minuten — selbst zusammengestellt"));
+  const rpfeil = el("div", "pfeil");
+  rpfeil.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  rundeKnopf.append(rk, rpfeil);
+  rundeKnopf.addEventListener("click", zeigeRunde);
+  v.append(rundeKnopf);
+
   /* Vier kleinere Gruppen statt zweier großer: Bei zwölf Übungen ist
      eine Liste aus neun Kacheln unter einer Überschrift zu viel auf
      einmal — gerade für die Zielgruppe. */
@@ -1111,7 +1196,7 @@ function showHome() {
     ["spaeter", "Später erinnern",  "Was nach einer Weile noch da ist", "stahlblau"],
     ["sprache", "Sprache & Wissen", "Wörter, Sätze und Begriffe",  "pflaume"],
     ["zahlen",  "Zahlen",           "Rechnen und Ordnen",          "bordeaux"],
-    ["hand",    "Für die Hände",    "Bewegung und Genauigkeit",    "terrakotta"]
+    ["hand",    "Sehen & Bewegen",  "Blick führen, zielen, ziehen", "terrakotta"]
   ];
   for (const [art, h, sub, kfarbe] of kapitel) {
     const head = el("div", "sectionhead");
@@ -1119,7 +1204,7 @@ function showHome() {
     h2.style.setProperty("--kapitel", FARBEN[kfarbe].deep);
     head.append(h2, el("span", null, sub));
     const grid = el("div", "grid");
-    GAMES.filter(g => g.art === art).forEach(g => {
+    verfuegbareSpiele().filter(g => g.art === art).forEach(g => {
       const t = el("button", "tile");
       faerbeKachel(t, g.farbe);
       const ic = el("div", "ic"); ic.innerHTML = ICONS[g.icon];
@@ -1129,7 +1214,7 @@ function showHome() {
       t.addEventListener("click", () => chooseLevel(g));
       grid.append(t);
     });
-    v.append(head, grid);
+    if (grid.children.length) v.append(head, grid);
   }
 
   const foot = el("div", "sectionhead");
@@ -1167,6 +1252,16 @@ function chooseLevel(game) {
   const box = el("div", "choose");
   box.append(el("h2", null, game.name));
   box.append(el("p", null, "Trainiert: " + game.trainiert + ". Wie soll es heute sein?"));
+  /* Die Leitlinie stellt strategieorientiertes Training gleichrangig
+     neben das reine Funktionstraining. Ein Satz vor dem Start kostet
+     nichts und ist der besser belegte Teil. */
+  if (game.tipp) {
+    const t = el("p", "merksatz");
+    t.style.marginBottom = "1.6rem";
+    t.append(el("b", null, "Ein Kniff dazu: "));
+    t.append(document.createTextNode(game.tipp));
+    box.append(t);
+  }
   LEVELS.forEach((name, i) => {
     const b = el("button", "btn");
     b.append(el("span", null, name), el("em", null, LEVEL_HINT[i]));
@@ -1178,7 +1273,8 @@ function chooseLevel(game) {
 
 /* ================= Spielgerüst ================= */
 
-let run = null;   // aktueller Durchgang
+let run = null;              // aktueller Durchgang
+const sitzungStart = Date.now();   // für den Pausenhinweis
 
 /* Wo die Bedienung nicht selbsterklärend ist, kommt vor dem ersten Zug
    eine kurze Anleitung. Sie lässt sich im Spiel jederzeit wieder
@@ -1198,9 +1294,93 @@ function zeigeRegeln(game, level) {
   v.append(box);
 }
 
+/* ================= Tagesrunde =================
+   Die Leitlinien sprechen von mindestens zehn Sitzungen — wirksam ist
+   also die Regelmäßigkeit, nicht die Auswahl. Siebzehn Kacheln sind für
+   jemanden mit kognitiver Einschränkung aber keine Freiheit, sondern
+   eine Hürde: Viele nehmen immer dieselben zwei. Die Tagesrunde stellt
+   deshalb selbst zusammen und schlägt auch die Stufe vor. */
+
+const RUNDENLAENGE = 3;
+let runde = null;      // { spiele:[{game,level}], index:0 }
+
+/** Welche Stufe passt heute? Aus dem Verlauf der letzten Versuche. */
+function vorgeschlageneStufe(game) {
+  const frueher = store.log.filter(r => r.spiel === game.name);
+  if (!frueher.length) return 0;
+  const letzte = frueher[0];
+  let stufe = LEVELS.indexOf(letzte.stufe);
+  if (stufe < 0) stufe = 0;
+  if (letzte.fehler === 0 && stufe < 2) stufe++;        // lief glatt → eine höher
+  else if (letzte.fehler >= 6 && stufe > 0) stufe--;    // zäh → eine zurück
+  return stufe;
+}
+
+function verfuegbareSpiele() {
+  return GAMES.filter(g => store.sprache || !g.sprachlastig);
+}
+
+/** Drei Übungen aus verschiedenen Bereichen, möglichst nicht wie gestern. */
+function stelleRundeZusammen() {
+  const pool = verfuegbareSpiele();
+  const bereiche = shuffle([...new Set(pool.map(g => g.art))]);
+  const gewaehlt = [];
+  for (const bereich of bereiche) {
+    if (gewaehlt.length >= RUNDENLAENGE) break;
+    const drin = pool.filter(g => g.art === bereich);
+    const frisch = drin.filter(g => !store.letzteRunde.includes(g.id));
+    const nimm = pick(frisch.length ? frisch : drin);
+    if (nimm) gewaehlt.push(nimm);
+  }
+  // Falls zu wenige Bereiche übrig sind, mit beliebigen auffüllen
+  while (gewaehlt.length < RUNDENLAENGE && gewaehlt.length < pool.length) {
+    const rest = pool.filter(g => !gewaehlt.includes(g));
+    if (!rest.length) break;
+    gewaehlt.push(pick(rest));
+  }
+  return gewaehlt.map(g => ({ game: g, level: vorgeschlageneStufe(g) }));
+}
+
+function zeigeRunde() {
+  setAkzent("gruen");
+  const v = screen("Heutige Runde", showHome);
+  const spiele = stelleRundeZusammen();
+  const box = el("div", "regeln");
+  box.append(el("h2", null, "Ihre Runde für heute"));
+  box.append(el("p", "fliess", "Drei Übungen aus verschiedenen Bereichen, etwa zehn Minuten. "
+    + "Die Stufe ist nach Ihren letzten Versuchen vorgeschlagen — Sie können jederzeit abbrechen."));
+  const ol = el("ol");
+  spiele.forEach(({ game, level }) => {
+    const li = el("li");
+    li.append(el("b", null, game.name));
+    li.append(document.createTextNode(" — " + LEVELS[level] + ". " + game.trainiert + "."));
+    ol.append(li);
+  });
+  box.append(ol);
+
+  const los = el("button", "btn primary", "Runde beginnen");
+  los.addEventListener("click", () => {
+    runde = { spiele, index: 0 };
+    store.letzteRunde = spiele.map(x => x.game.id); save();
+    naechsteAusRunde();
+  });
+  const anders = el("button", "btn", "Andere Zusammenstellung");
+  anders.addEventListener("click", zeigeRunde);
+  const selbst = el("button", "btn", "Lieber selbst aussuchen");
+  selbst.addEventListener("click", showHome);
+  box.append(los, anders, selbst);
+  v.append(box);
+}
+
+function naechsteAusRunde() {
+  if (!runde || runde.index >= runde.spiele.length) { runde = null; showHome(); return; }
+  const { game, level } = runde.spiele[runde.index];
+  game.regeln ? zeigeRegeln(game, level) : startRun(game, level);
+}
+
 function startRun(game, level) {
   setAkzent(game.farbe);
-  run = { game, level, fehler: 0, streak: 0, t0: Date.now() };
+  run = { game, level, fehler: 0, streak: 0, t0: Date.now(), ergebnis: null };
   const v = screen(game.name, () => chooseLevel(game));
   const stage = el("div", "stage");
   v.append(stage);
@@ -1253,7 +1433,12 @@ function finish() {
     spiel: g.name,
     stufe: LEVELS[run.level],
     fehler: run.fehler,
-    sek: Math.round((Date.now() - run.t0) / 1000)
+    sek: Math.round((Date.now() - run.t0) / 1000),
+    // Manche Übungen liefern eine Zahl, die mehr sagt als Fehler und
+    // Dauer — etwa die erreichte Merkspanne. Die ist für ein Arzt-
+    // oder Therapiegespräch das Aussagekräftigste, was die App hat.
+    wert: run.ergebnis ? run.ergebnis.wert : null,
+    einheit: run.ergebnis ? run.ergebnis.einheit : null
   });
   store.log = store.log.slice(0, 200);
   save(); applySettings();
@@ -1281,6 +1466,53 @@ function finish() {
     ? "In den letzten sieben Tagen an einem Tag geübt."
     : "In den letzten sieben Tagen an " + tageWoche + " Tagen geübt.");
   box.append(el("p", null, zeilen.join(" ")));
+
+  if (run.ergebnis) {
+    const e = el("p", "merksatz");
+    e.style.maxWidth = "24rem";
+    e.style.margin = "0 auto 1.6rem";
+    e.textContent = run.ergebnis.text;
+    box.append(e);
+  }
+
+  /* Erschöpfung nach einem Schlaganfall wird regelmäßig unterschätzt.
+     Nach einer längeren Sitzung deshalb ein Hinweis — eine Bitte, kein
+     Verbot, und ohne jeden Vorwurf. */
+  const minuten = Math.round((Date.now() - sitzungStart) / 60000);
+  if (minuten >= 20) {
+    const pause = el("p", "merksatz");
+    pause.style.maxWidth = "26rem";
+    pause.style.margin = "0 auto 1.6rem";
+    pause.textContent = "Sie üben seit etwa " + minuten + " Minuten. "
+      + "Eine Pause ist keine Niederlage — morgen ein wenig ist mehr wert als heute viel.";
+    box.append(pause);
+  }
+
+  if (runde) {
+    runde.index++;
+    const offen = runde.spiele.length - runde.index;
+    if (offen > 0) {
+      const naechstes = runde.spiele[runde.index].game;
+      box.append(el("p", null, "Noch " + offen
+        + (offen === 1 ? " Übung" : " Übungen") + " in dieser Runde."));
+      const w = el("button", "btn primary", "Weiter mit „" + naechstes.name + "“");
+      w.addEventListener("click", naechsteAusRunde);
+      const stop = el("button", "btn", "Für heute genug");
+      stop.addEventListener("click", () => { runde = null; showHome(); });
+      box.append(w, stop);
+      v.append(box);
+      return;
+    }
+    runde = null;
+    box.append(el("p", null, "Die Runde für heute ist vollständig."));
+    const fertig = el("button", "btn primary", "Meine Übungen ansehen");
+    fertig.addEventListener("click", showKalender);
+    const mehr = el("button", "btn", "Noch eine Übung");
+    mehr.addEventListener("click", showHome);
+    box.append(fertig, mehr);
+    v.append(box);
+    return;
+  }
 
   const again = el("button", "btn primary", "Noch einmal");
   again.addEventListener("click", () => startRun(g, run.level));
@@ -2409,6 +2641,10 @@ function playSpanne(stage, level) {
       sperre = true;
       geloest++; misserfolge = 0;
       setProgress(geloest);
+      // Die erreichte Spanne ist die aussagekräftigste Zahl der App
+      run.ergebnis = { wert: laenge, einheit: "Felder",
+                       text: "Längste Folge: " + laenge + " Felder"
+                             + (rueckwaerts ? " rückwärts." : ".") };
       if (geloest >= runden) { await warte(600); if (sichtbar()) finish(); return; }
       laenge++;
       await warte(800);
@@ -3285,6 +3521,131 @@ function playText(stage, level) {
   lesen();
 }
 
+/* ================= 18. Alles finden =================
+   Visuelles Explorationstraining. Nach einem rechtshemisphärischen
+   Schlaganfall bleibt die linke Seite oft unbeachtet, ohne dass es
+   dem Betroffenen auffällt. Zwei Dinge sind deshalb gebaut wie in der
+   Therapie üblich: ein farbiger Anker am linken Rand jeder Zeile, und
+   eine Auswertung, die getrennt ausweist, was links und was rechts
+   gefunden wurde — damit eine Schieflage überhaupt sichtbar wird. */
+
+function playSuchen(stage, level) {
+  const zeilen   = [3, 4, 5][level];
+  /* Auf dem Handy passen keine elf Zeichen nebeneinander. Kürzere
+     Zeilen und mitwachsende Zeichen — die Übung bleibt dieselbe, nur
+     das Suchfeld ist schmaler. */
+  const schmal   = window.innerWidth < 560;
+  const proZeile = schmal ? [5, 6, 7][level] : [7, 9, 11][level];
+  const anteil   = [.40, .32, .26][level];     // wie viele davon Ziele sind
+  const maxRem   = [2.6, 2.2, 1.9][level];
+  // nie breiter als der Platz je Zeichen hergibt
+  const groesse  = "min(" + maxRem + "rem, " + (62 / proZeile).toFixed(1) + "vw)";
+
+  const ablenker = ["🔵","🟢","🟡","🟣","🟤"];
+
+  const feld = el("div", "suchfeld");
+  const p = promptText(stage, "Tippen Sie jeden roten Punkt an.",
+    "Jede Zeile am roten Balken links beginnen, dann nach rechts.");
+  stage.append(feld);
+
+  let ziele = 0, gefunden = 0;
+  let linksGesamt = 0, rechtsGesamt = 0, linksGefunden = 0, rechtsGefunden = 0;
+  const reihenfolge = [];                       // Fundreihenfolge, für die Auswertung
+
+  for (let z = 0; z < zeilen; z++) {
+    const zeile = el("div", "suchzeile");
+    const anker = el("div", "anker");
+    anker.setAttribute("aria-hidden", "true");
+    zeile.append(anker);
+
+    const inhalt = el("div", "suchinhalt");
+
+    /* Ziele werden bewusst gleichmäßig auf beide Hälften verteilt.
+       Sonst sagt die Auswertung „links alles gefunden“, nur weil links
+       ohnehin fast alle lagen — und wäre damit wertlos. */
+    const mitte = Math.floor(proZeile / 2);
+    const linkePlaetze  = shuffle(Array.from({ length: mitte }, (_, k) => k));
+    const rechtePlaetze = shuffle(Array.from({ length: proZeile - mitte }, (_, k) => k + mitte));
+    const proSeite = Math.max(1, Math.round(proZeile * anteil / 2));
+    const istZiel = new Array(proZeile).fill(false);
+    linkePlaetze.slice(0, proSeite).forEach(k => istZiel[k] = true);
+    rechtePlaetze.slice(0, proSeite).forEach(k => istZiel[k] = true);
+    // Der äußerste linke Platz wird am ehesten übersehen — oft besetzen
+    if (Math.random() < .6) istZiel[0] = true;
+
+    istZiel.forEach((ziel, k) => {
+      const linkeHaelfte = k < mitte;      // dieselbe Grenze wie bei der Platzierung
+      if (!ziel) {
+        const d = el("div", "zeichen", pick(ablenker));
+        d.style.fontSize = groesse;
+        inhalt.append(d);
+        return;
+      }
+      ziele++;
+      if (linkeHaelfte) linksGesamt++; else rechtsGesamt++;
+      const b = el("button", "zeichen ziel", "🔴");
+      b.style.fontSize = groesse;
+      b.setAttribute("aria-label", "Roter Punkt, Zeile " + (z + 1));
+      b.addEventListener("click", () => {
+        if (b.classList.contains("weg")) return;
+        richtig();
+        b.classList.add("weg");
+        b.disabled = true;
+        gefunden++;
+        if (linkeHaelfte) linksGefunden++; else rechtsGefunden++;
+        reihenfolge.push(k);          // Spalte merken, für die Auswertung
+        setProgress(gefunden);
+        if (gefunden >= ziele) {
+          p.innerHTML = "Alle gefunden.";
+          p.append(el("small", null, " "));
+          setTimeout(fertig, 700);
+        }
+      });
+      inhalt.append(b);
+    });
+
+    zeile.append(inhalt);
+    feld.append(zeile);
+  }
+
+  // Ablenker, die versehentlich angetippt werden, sollen etwas sagen
+  feld.querySelectorAll(".zeichen:not(.ziel)").forEach(d => {
+    d.addEventListener("pointerdown", () => { run.fehler++; sndNope(); });
+  });
+
+  const setProgress = progressBar(stage, ziele, "gefunden");
+  stage.insertBefore(stage.lastChild, stage.firstChild);   // Balken nach oben
+  setProgress(0);
+
+  function fertig() {
+    /* Auswertung: Wurde links genauso zuverlässig gefunden wie rechts?
+       Und kam das Linke erst zum Schluss? Beides sind Hinweise, die
+       in ein Therapiegespräch gehören — nicht mehr, aber auch nicht
+       weniger. */
+    /* Zwei Dinge sind aussagekräftig: ob links so zuverlässig gefunden
+       wurde wie rechts, und ob der Blick von rechts nach links wanderte.
+       Letzteres zeigt sich daran, dass die zuerst gefundenen Ziele im
+       Mittel weiter rechts lagen als die später gefundenen. */
+    const n = reihenfolge.length;
+    const mittelwert = a => a.reduce((x, y) => x + y, 0) / (a.length || 1);
+    const ersteHaelfte = reihenfolge.slice(0, Math.ceil(n / 2));
+    const zweiteHaelfte = reihenfolge.slice(Math.ceil(n / 2));
+    const vonRechts = n >= 6 && mittelwert(ersteHaelfte) > mittelwert(zweiteHaelfte) + 1;
+
+    let satz = "Links " + linksGefunden + " von " + linksGesamt
+             + ", rechts " + rechtsGefunden + " von " + rechtsGesamt + ".";
+    if (linksGefunden < linksGesamt && linksGefunden / Math.max(1, linksGesamt) < rechtsGefunden / Math.max(1, rechtsGesamt))
+      satz += " Links blieb mehr liegen als rechts.";
+    else if (vonRechts)
+      satz += " Gefunden wurde alles, aber der Blick ging von rechts nach links — beim nächsten Mal bewusst am roten Balken anfangen.";
+    else
+      satz += " Gleichmäßig und der Reihe nach abgesucht.";
+    run.ergebnis = { wert: linksGesamt ? Math.round(linksGefunden / linksGesamt * 100) : 100,
+                     einheit: "% links", text: satz };
+    finish();
+  }
+}
+
 /* ================= Übungskalender ================= */
 
 const WOCHENTAGE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
@@ -3410,6 +3771,14 @@ function showPanel() {
   p.append(segment("Kontrast", ["normal","stark"], ["Normal","Stark"], store.kontrast, x => { store.kontrast = x; save(); applySettings(); }));
   p.append(segment("Töne", [true,false], ["An","Aus"], store.ton, x => { store.ton = x; save(); if (x) sndGood(); }));
 
+  p.append(el("h2", null, "Übungen"));
+  p.append(el("p", "note", "Nach einem Schlaganfall ist die Sprache oft mitbetroffen. "
+    + "Steht dieser Schalter auf „Aus“, verschwinden alle Übungen, die Lesen oder "
+    + "Wortwissen verlangen — Sprichwörter, Liste merken, Gut zugehört und Namen merken. "
+    + "Die übrigen kommen ohne Sprache aus."));
+  p.append(segment("Übungen mit Sprache", [true,false], ["An","Aus"], store.sprache,
+    x => { store.sprache = x; save(); }));
+
   /* Der Verlauf liegt hinter einem eigenen Tipp. Nicht weil er geheim
      wäre, sondern damit beim Verstellen der Schrift keine Fehlerzahlen
      ins Blickfeld geraten. Wer sie sehen will, tippt einmal mehr. */
@@ -3432,12 +3801,14 @@ function showPanel() {
   } else {
     const sc = el("div", "scroller");
     const t = el("table", "log");
-    t.innerHTML = "<thead><tr><th>Datum</th><th>Übung</th><th>Stufe</th><th class='n'>Fehlgriffe</th><th class='n'>Dauer</th></tr></thead>";
+    t.innerHTML = "<thead><tr><th>Datum</th><th>Übung</th><th>Stufe</th>"
+      + "<th class='n'>Ergebnis</th><th class='n'>Fehlgriffe</th><th class='n'>Dauer</th></tr></thead>";
     const tb = el("tbody");
     store.log.slice(0, 40).forEach(r => {
       const tr = el("tr");
       const d = r.d.split("-");
       tr.append(el("td", null, d[2] + "." + d[1] + "."), el("td", null, r.spiel), el("td", null, r.stufe));
+      tr.append(el("td", "n", r.wert == null ? "—" : r.wert + " " + (r.einheit || "")));
       tr.append(el("td", "n", String(r.fehler)), el("td", "n", Math.floor(r.sek / 60) + ":" + String(r.sek % 60).padStart(2, "0")));
       tb.append(tr);
     });
@@ -3445,8 +3816,75 @@ function showPanel() {
   }
   p.append(auf, behaelter);
 
+  p.append(el("h2", null, "Entwicklung"));
+  p.append(el("p", "note", "Je Übung der erste und der letzte Wert. Für ein Arzt- oder "
+    + "Therapiegespräch ist das aussagekräftiger als eine einzelne Sitzung."));
+  const mitWert = {};
+  store.log.forEach(r => {
+    if (r.wert == null) return;
+    (mitWert[r.spiel] = mitWert[r.spiel] || []).push(r);     // neueste zuerst
+  });
+  const namenMitWert = Object.keys(mitWert);
+  if (!namenMitWert.length) {
+    p.append(el("p", "note", "Noch keine Übung mit messbarem Ergebnis abgeschlossen."));
+  } else {
+    const sc2 = el("div", "scroller");
+    const t2 = el("table", "log");
+    t2.innerHTML = "<thead><tr><th>Übung</th><th class='n'>zuerst</th>"
+      + "<th class='n'>zuletzt</th><th class='n'>Versuche</th></tr></thead>";
+    const tb2 = el("tbody");
+    namenMitWert.forEach(name => {
+      const reihe = mitWert[name];
+      const erst = reihe[reihe.length - 1], letzt = reihe[0];
+      const tr = el("tr");
+      tr.append(el("td", null, name));
+      tr.append(el("td", "n", erst.wert + " " + (erst.einheit || "")));
+      const bis = el("td", "n", letzt.wert + " " + (letzt.einheit || ""));
+      if (reihe.length > 1 && letzt.wert > erst.wert) bis.style.color = "var(--akzent-deep)";
+      tr.append(bis, el("td", "n", String(reihe.length)));
+      tb2.append(tr);
+    });
+    t2.append(tb2); sc2.append(t2); p.append(sc2);
+  }
+
   p.append(el("h2", null, "Daten"));
   p.append(el("p", "note", "Alles bleibt auf diesem Gerät gespeichert. Es werden keine Daten übertragen."));
+  p.append(el("p", "note", "Weil nichts auf einem Server liegt, ist alles weg, wenn der Browser "
+    + "seine Websitedaten löscht. Die Sicherung unten schützt davor."));
+
+  const sichern = el("button", "btn", "Daten sichern");
+  const feld = el("textarea", "sicherungsfeld");
+  feld.hidden = true;
+  feld.setAttribute("aria-label", "Gesicherte Daten");
+  feld.rows = 4;
+  const einlesen = el("button", "btn", "Gesicherte Daten einlesen");
+  einlesen.hidden = true;
+
+  sichern.addEventListener("click", () => {
+    feld.hidden = false;
+    feld.value = JSON.stringify({ gesamt: store.gesamt, tage: store.tage, log: store.log });
+    feld.select();
+    einlesen.hidden = false;
+    hinweisFeld.textContent = "Kopieren Sie den Text und bewahren Sie ihn auf — "
+      + "per E-Mail an sich selbst genügt. Zum Zurückholen den Text hier wieder "
+      + "einfügen und auf „Gesicherte Daten einlesen“ tippen.";
+  });
+  einlesen.addEventListener("click", () => {
+    let d;
+    try { d = JSON.parse(feld.value); } catch { hinweisFeld.textContent = "Der Text lässt sich nicht lesen. Bitte vollständig einfügen."; return; }
+    if (!d || typeof d !== "object" || typeof d.tage !== "object") {
+      hinweisFeld.textContent = "Das sieht nicht nach einer Sicherung dieser App aus."; return;
+    }
+    if (!confirm("Gesicherte Daten einlesen? Der jetzige Kalender wird ersetzt.")) return;
+    store.gesamt = +d.gesamt || 0;
+    store.tage = d.tage || {};
+    store.log = Array.isArray(d.log) ? d.log : [];
+    save(); applySettings();
+    hinweisFeld.textContent = "Eingelesen.";
+    setTimeout(showPanel, 900);
+  });
+  const hinweisFeld = el("p", "note", "");
+  p.append(sichern, feld, einlesen, hinweisFeld);
   const reset = el("button", "btn danger", "Alle Einträge löschen");
   reset.addEventListener("click", () => {
     if (!confirm("Wirklich alles löschen? Kalender und Verlauf gehen verloren.")) return;
