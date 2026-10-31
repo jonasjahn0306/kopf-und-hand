@@ -25,36 +25,42 @@
    ------------------------------------------------------------------ */
 
 :root{
-  --paper:      #EFF2EE;
-  --paper-deep: #E6E8E6;
-  --card:       #FFFFFF;
-  --ink:        #16201A;
-  --ink-2:      #4E5A51;
-  --line:       #D2D5D2;
-  --line-2:     #B7BCB8;
+  --paper:      #F7F2E7;
+  --paper-deep: #EDE4D0;
+  --card:       #FFFDF8;
+  --ink:        #342C23;
+  --ink-2:      #6E6150;
+  --line:       #E2D7C1;
+  --line-2:     #CBBB9C;
   --green:      #2A6B4C;
   --green-deep: #1D4C36;
   --green-soft: #DFEDE4;
-  --honey:      #A66A15;
-  --honey-soft: #F6E9D2;
-  --sky:        #2B5E7E;
-  --sky-soft:   #DCE9F0;
+  --honey:      #A5761F;
+  --honey-soft: #F3E8CE;
+  --sky:        #4C6B84;
+  --sky-soft:   #DFE4E7;
   --soil:       #A38A6A;
   --soil-deep:  #7C6650;
-  --shadow:     0 2px 0 rgba(22,32,26,.06), 0 8px 24px -12px rgba(22,32,26,.28);
-  --radius:     16px;
+  /* Nur ein Hauch Tiefe — die Flächen tragen sich über Ton und Rand,
+     nicht über Schatten. */
+  --shadow:     0 1px 2px rgba(90,70,40,.07);
+  --radius:     12px;
   --tap:        4.4rem;
 
   /* Jede Übung setzt ihre eigene Farbe in diese vier Marken ein.
      --wash tönt den ganzen Bildschirm ganz leicht mit ein, damit man
      schon am Hintergrund merkt, worin man gerade steckt. */
-  --akzent:      #2A6B4C;
-  --akzent-deep: #1D4C36;
-  --akzent-soft: #DCEBE2;
-  --wash:        #EFF2EE;
+  --akzent:      #65795C;
+  --akzent-deep: #485641;
+  --akzent-soft: #E2E2D6;
+  --wash:        #F7F2E7;
 
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           "Helvetica Neue", "Noto Sans", sans-serif;
+  /* Namen und Überschriften in einer Serifenschrift — sie gibt der App
+     ihre Wärme. Fließtext und ALLE Zahlen bleiben serifenlos:
+     Georgias Ziffern sind Minuskelziffern und taugen nicht zum Rechnen. */
+  --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
 }
 
 /* Kontrastverstärkung (Einstellungen) */
@@ -131,12 +137,14 @@ button{ font:inherit; color:inherit; }
   align-items:center;
   gap:12px;
   padding:12px 14px;
-  background:var(--wash);
-  border-bottom:2px solid var(--line);
+  background:var(--paper-deep);
+  border-bottom:1px solid var(--line-2);
   position:sticky; top:0; z-index:20;
 }
 
 .bar h1{
+  font-family:var(--serif);
+  font-weight:600;
   font-size:19px;
   font-weight:650;
   letter-spacing:.005em;
@@ -177,9 +185,9 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 }
 .sectionhead:first-of-type{ margin-top:.4rem; }
 .sectionhead h2{
-  font-size:1.35rem; font-weight:680; margin:0;
-  letter-spacing:-.01em;
-  color:var(--kapitel, var(--ink));
+  font-size:.86rem; font-weight:700; margin:0;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--kapitel, var(--ink-2));
 }
 .sectionhead span{ font-size:.95rem; color:var(--ink-2); }
 
@@ -192,32 +200,34 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 }
 
 .tile{
-  display:flex; align-items:center; gap:1rem;
+  display:flex; align-items:center; gap:.9rem;
   text-align:left;
-  padding:1.15rem 1.1rem;
+  padding:1.1rem 1rem;
   background:var(--kachel-bg, var(--card));
-  border:2px solid var(--kachel-line, var(--line));
+  border:1.5px solid var(--kachel-line, var(--line));
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   cursor:pointer;
   min-height:6.2rem;
 }
 .tile:active{ transform:translateY(1px); }
+/* Kein farbiges Quadrat mehr hinter dem Symbol — das war der
+   stärkste Grund, warum die Kacheln nach Vorlage aussahen. Das
+   Symbol steht frei in der Farbe der Übung. */
 .tile .ic{
-  flex:none; width:3.4rem; height:3.4rem;
+  flex:none; width:2.9rem; height:2.9rem;
   display:grid; place-items:center;
-  border-radius:12px;
-  background:var(--kachel-farbe, var(--akzent));
-  color:#fff;
+  color:var(--kachel-farbe, var(--akzent));
 }
-.tile .ic svg{ width:2.1rem; height:2.1rem; }
-.tile b{ display:block; font-size:1.18rem; font-weight:650; line-height:1.25; }
+.tile .ic svg{ width:2.6rem; height:2.6rem; }
+.tile b{ display:block; font-family:var(--serif); font-size:1.2rem;
+  font-weight:400; line-height:1.25; letter-spacing:.005em; }
 .tile small{ display:block; font-size:.94rem; color:var(--ink-2); margin-top:.2rem; }
 
 /* ---------------- Schwierigkeit ---------------- */
 
 .choose{ max-width:30rem; margin:1rem auto; }
-.choose h2{ font-size:1.5rem; margin:0 0 .3rem; letter-spacing:-.01em; }
+.choose h2{ font-family:var(--serif); font-weight:500; font-size:1.65rem; margin:0 0 .3rem; letter-spacing:-.01em; }
 .choose p{ color:var(--ink-2); margin:0 0 1.6rem; font-size:1.05rem; }
 
 .btn{
@@ -244,7 +254,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 
 /* Spielerklärung vor dem ersten Zug */
 .regeln{ max-width:32rem; margin:.5rem auto; }
-.regeln h2{ font-size:1.5rem; margin:0 0 1.2rem; letter-spacing:-.01em; }
+.regeln h2{ font-family:var(--serif); font-weight:500; font-size:1.6rem; margin:0 0 1.2rem; letter-spacing:-.01em; }
 .regeln ol{
   margin:0 0 1.6rem; padding:0; list-style:none;
   counter-reset:schritt;
@@ -276,7 +286,8 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 .stage{ max-width:52rem; margin:0 auto; }
 
 .prompt{
-  font-size:1.3rem; font-weight:620;
+  font-family:var(--serif); font-weight:500;
+  font-size:1.35rem;
   text-align:center;
   margin:.2rem auto 1.2rem;
   max-width:32ch;
@@ -440,6 +451,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 /* Wortkacheln (Sprichwörter, Kategorien) */
 .words{ display:grid; gap:.75rem; grid-template-columns:repeat(auto-fit,minmax(11rem,1fr)); max-width:38rem; margin:0 auto; }
 .word{
+  font-family:var(--serif); font-weight:400;
   min-height:var(--tap);
   padding:1rem .9rem;
   background:var(--card);
@@ -451,10 +463,18 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.3rem;
 }
 .word .pic{ font-size:2.2rem; line-height:1; }
+/* Zahlen gehören nie in die Serifenschrift — Georgia setzt
+   Minuskelziffern, bei denen 3, 4, 5, 7 und 9 unter die Grundlinie
+   fallen. Zum Vergleichen von Rechenergebnissen ist das untauglich. */
+.word.zahl{
+  font-family:var(--font); font-weight:650;
+  font-variant-numeric:tabular-nums lining-nums;
+}
 .word.hint{ border-color:var(--honey); animation:glow 1.1s ease infinite; }
 .word.ok{ background:var(--akzent-soft); border-color:var(--akzent); }
 .saying{
-  font-size:1.5rem; text-align:center; line-height:1.5;
+  font-family:var(--serif); font-weight:500;
+  font-size:1.55rem; text-align:center; line-height:1.5;
   max-width:26ch; margin:0 auto 1.6rem; text-wrap:balance;
 }
 .saying .gap{
@@ -567,7 +587,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 /* Abschluss */
 .done-screen{ text-align:center; max-width:26rem; margin:1.5rem auto; animation:rise .5s ease both; }
 .done-screen .bloom{ width:9rem; height:9rem; margin:0 auto 1rem; }
-.done-screen h2{ font-size:2rem; margin:0 0 .3rem; letter-spacing:-.015em; }
+.done-screen h2{ font-family:var(--serif); font-weight:500; font-size:2rem; margin:0 0 .3rem; letter-spacing:-.015em; }
 .done-screen p{ font-size:1.1rem; color:var(--ink-2); margin:0 0 2rem; }
 
 /* Folge merken */
@@ -810,7 +830,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 
 /* Einstellungen / Verlauf */
 .panel{ max-width:34rem; margin:0 auto; }
-.panel h2{ font-size:1.4rem; margin:1.8rem 0 .8rem; letter-spacing:-.01em; }
+.panel h2{ font-family:var(--serif); font-weight:500; font-size:1.45rem; margin:1.8rem 0 .8rem; letter-spacing:-.01em; }
 .panel h2:first-child{ margin-top:.2rem; }
 .panel p.note{ color:var(--ink-2); font-size:.98rem; margin:.2rem 0 1rem; }
 .seg{ display:flex; gap:.5rem; }
@@ -840,14 +860,14 @@ table.log td.n{ text-align:right; font-variant-numeric:tabular-nums; }
 .rundenknopf{
   display:flex; align-items:center; justify-content:space-between; gap:1rem;
   width:100%; text-align:left;
-  padding:1.2rem 1.2rem;
+  padding:1.15rem 1.2rem;
   margin:0 0 1.8rem;
-  background:var(--green); border:2px solid var(--green-deep);
-  border-radius:var(--radius); color:#fff;
+  background:#A8563A; border:none;
+  border-radius:var(--radius); color:#FDF8EF;
   box-shadow:var(--shadow); cursor:pointer;
 }
 .rundenknopf:active{ transform:translateY(1px); }
-.rundenknopf b{ display:block; font-size:1.3rem; font-weight:680; }
+.rundenknopf b{ display:block; font-family:var(--serif); font-size:1.35rem; font-weight:500; }
 .rundenknopf small{ display:block; font-size:.97rem; opacity:.9; margin-top:.2rem; }
 .rundenknopf .pfeil{ flex:none; width:2rem; height:2rem; }
 .rundenknopf .pfeil svg{ width:100%; height:100%; }
@@ -1069,21 +1089,24 @@ const ICONS = {
    schlecht merkt, findet „die blaue Übung“ trotzdem zuverlässig.
    Alle Töne sind dunkel genug für weiße Symbole darauf. */
 const FARBEN = {
-  petrol:    { akzent:"#14706B", deep:"#0C4F4B", soft:"#D3E9E7", wash:"#EFF7F6" },
-  indigo:    { akzent:"#2F55A0", deep:"#1F3B72", soft:"#D8E1F3", wash:"#F0F4FB" },
-  pflaume:   { akzent:"#8A3A72", deep:"#632851", soft:"#EEDBE8", wash:"#FAF1F7" },
-  ocker:     { akzent:"#965C13", deep:"#6B400A", soft:"#F3E2C8", wash:"#FCF6EB" },
-  altrosa:   { akzent:"#A93B57", deep:"#7C2940", soft:"#F4D9DF", wash:"#FCF0F2" },
-  gruen:     { akzent:"#2A6B4C", deep:"#1D4C36", soft:"#DCEBE2", wash:"#F1F7F3" },
-  stahlblau: { akzent:"#1E6584", deep:"#124559", soft:"#D5E6EE", wash:"#EFF6F9" },
-  terrakotta:{ akzent:"#AB4F2C", deep:"#7C381D", soft:"#F5DDD2", wash:"#FCF2ED" },
-  schiefer:  { akzent:"#4A5A66", deep:"#2F3B44", soft:"#DFE5E9", wash:"#F2F5F6" },
-  moos:      { akzent:"#55701F", deep:"#3A4E13", soft:"#E0E8CE", wash:"#F5F8EE" },
-  violett:   { akzent:"#6A4C9C", deep:"#4A3370", soft:"#E2DAF0", wash:"#F5F2FB" },
-  bordeaux:  { akzent:"#8C2F3E", deep:"#65202C", soft:"#F0D6DA", wash:"#FCF1F2" },
-  bronze:    { akzent:"#7C6428", deep:"#57451A", soft:"#EBE2C8", wash:"#F9F6EC" },
-  waldgruen: { akzent:"#2F5D3A", deep:"#1E4126", soft:"#D9E7DC", wash:"#F1F6F2" },
-  nachtblau: { akzent:"#24406B", deep:"#172C4B", soft:"#D6DEEA", wash:"#F1F4F8" }
+  petrol:     { akzent:"#2F6E6E", deep:"#214D4D", soft:"#C7D2CA", rand:"#9FB8B2", wash:"#E9E9DF" },
+  indigo:     { akzent:"#3D6A8C", deep:"#2B4A62", soft:"#CAD1D1", rand:"#A5B6BF", wash:"#EAE8E1" },
+  pflaume:    { akzent:"#86486E", deep:"#5E324D", soft:"#DCC9CA", rand:"#C5A7B2", wash:"#EFE6DF" },
+  ocker:      { akzent:"#A87414", deep:"#76510E", soft:"#E4D4B4", rand:"#D4BB8A", wash:"#F1E9D8" },
+  altrosa:    { akzent:"#AC4A57", deep:"#78343D", soft:"#E5CAC4", rand:"#D6A8A8", wash:"#F2E6DD" },
+  gruen:      { akzent:"#5C7F50", deep:"#405938", soft:"#D2D6C3", rand:"#B3BFA5", wash:"#ECEADC" },
+  stahlblau:  { akzent:"#4E6B90", deep:"#374B65", soft:"#CED2D2", rand:"#ADB7C1", wash:"#EBE9E1" },
+  terrakotta: { akzent:"#AF5130", deep:"#7A3922", soft:"#E6CBBB", rand:"#D7AB96", wash:"#F2E7DA" },
+  schiefer:   { akzent:"#5E5A52", deep:"#423F39", soft:"#D2CEC3", rand:"#B4AFA5", wash:"#ECE7DD" },
+  moos:       { akzent:"#6E7A2F", deep:"#4D5521", soft:"#D6D5BB", rand:"#BBBD96", wash:"#EDEADA" },
+  violett:    { akzent:"#7E4E86", deep:"#58375E", soft:"#DACBD0", rand:"#C2AABC", wash:"#EFE7E0" },
+  bordeaux:   { akzent:"#93333A", deep:"#672429", soft:"#DFC4BD", rand:"#CB9E9B", wash:"#F0E5DB" },
+  bronze:     { akzent:"#8E6A3C", deep:"#634A2A", soft:"#DED1BE", rand:"#C9B69C", wash:"#F0E8DB" },
+  waldgruen:  { akzent:"#3F6F4A", deep:"#2C4E34", soft:"#CBD3C1", rand:"#A6B8A2", wash:"#EAE9DC" },
+  nachtblau:  { akzent:"#2F4E78", deep:"#213754", soft:"#C7CBCC", rand:"#9FAAB6", wash:"#E9E7DF" },
+  tanne:      { akzent:"#35604F", deep:"#254337", soft:"#C8CFC3", rand:"#A2B2A4", wash:"#E9E8DC" },
+  kupfer:     { akzent:"#9B5A2E", deep:"#6C3F20", soft:"#E1CEBB", rand:"#CFAF96", wash:"#F1E7DA" },
+  taupe:      { akzent:"#7A6656", deep:"#55473C", soft:"#D9D0C4", rand:"#C0B4A7", wash:"#EEE8DD" }
 };
 const STANDARD_WASH = "#EFF2EE";
 
@@ -1104,9 +1127,9 @@ function setAkzent(name) {
 }
 
 const GAMES = [
-  { id:"memory", art:"merken", icon:"memory", farbe:"petrol",     name:"Memory",          sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory,
+  { id:"memory", art:"merken", icon:"memory", farbe:"stahlblau",     name:"Memory",          sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory,
     tipp:"Sprechen Sie innerlich mit: „Der Hund liegt oben links.\u201c Benannte Bilder merkt man besser als nur angeschaute." },
-  { id:"domino", art:"zahlen", icon:"domino", farbe:"indigo",     name:"Domino legen",    sub:"Alle Steine zu einer Kette",     trainiert:"Vorausdenken", run:playDomino,
+  { id:"domino", art:"zahlen", icon:"domino", farbe:"nachtblau",     name:"Domino legen",    sub:"Alle Steine zu einer Kette",     trainiert:"Vorausdenken", run:playDomino,
     regeln: [
       "In der Mitte liegt die Kette. Ganz links und ganz rechts sehen Sie, welche Augenzahl dort offen ist.",
       "Suchen Sie unten einen Stein, der dieselbe Augenzahl zeigt wie eines der beiden Enden.",
@@ -1114,44 +1137,44 @@ const GAMES = [
       "Alle Steine müssen an die Kette."
     ],
     merksatz: "Überlegen Sie, bevor Sie legen: Wer nur an einem Ende anbaut, hat am Schluss Steine übrig, die nirgends mehr passen. Verlegt? Mit „Letzten Stein zurücknehmen“ geht es zurück." },
-  { id:"spruch", art:"sprache", sprachlastig:true, icon:"spruch", farbe:"pflaume",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
-  { id:"odd",    art:"sprache", icon:"odd",    farbe:"ocker",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd },
-  { id:"reihe",  art:"zahlen", icon:"reihe",  farbe:"altrosa",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe },
-  { id:"ziel",   art:"hand", icon:"ziel",   farbe:"gruen",      name:"Ziele treffen",   sub:"Punkte genau antippen",             trainiert:"Zielgenauigkeit", run:playZiel },
-  { id:"linie",  art:"hand", icon:"linie",  farbe:"stahlblau",  name:"Linie nachfahren",sub:"Mit dem Finger der Spur folgen",    trainiert:"Feinmotorik", run:playLinie },
-  { id:"sort",   art:"hand", icon:"sort",   farbe:"terrakotta", name:"Einsortieren",    sub:"Nach Merkmalen ordnen", trainiert:"Greifen & Ziehen", run:playSort,
+  { id:"spruch", art:"sprache", sprachlastig:true, icon:"spruch", farbe:"violett",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
+  { id:"odd",    art:"sprache", icon:"odd",    farbe:"bronze",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd },
+  { id:"reihe",  art:"zahlen", icon:"reihe",  farbe:"gruen",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe },
+  { id:"ziel",   art:"hand", icon:"ziel",   farbe:"terrakotta",      name:"Ziele treffen",   sub:"Punkte genau antippen",             trainiert:"Zielgenauigkeit", run:playZiel },
+  { id:"linie",  art:"hand", icon:"linie",  farbe:"moos",  name:"Linie nachfahren",sub:"Mit dem Finger der Spur folgen",    trainiert:"Feinmotorik", run:playLinie },
+  { id:"sort",   art:"hand", icon:"sort",   farbe:"pflaume", name:"Einsortieren",    sub:"Nach Merkmalen ordnen", trainiert:"Greifen & Ziehen", run:playSort,
     regeln: [
       "Oben liegen die Dinge, unten stehen die Kisten.",
       "Ziehen Sie ein Ding in die passende Kiste — oder tippen Sie erst das Ding an und dann die Kiste.",
       "Auf der schwersten Stufe steht auf jeder Kiste zweierlei, zum Beispiel „Tier · fliegt“. Dann müssen beide Angaben stimmen."
     ],
     merksatz: "Ein Schmetterling ist ein Tier und er fliegt — er gehört also in „Tier · fliegt“. Ein Hubschrauber fliegt auch, ist aber kein Tier." },
-  { id:"spanne", art:"merken", icon:"spanne", farbe:"moos",       name:"Folge merken",    sub:"Aufleuchtende Felder nachtippen",   trainiert:"Merkspanne", run:playSpanne,
+  { id:"spanne", art:"merken", icon:"spanne", farbe:"ocker",       name:"Folge merken",    sub:"Aufleuchtende Felder nachtippen",   trainiert:"Merkspanne", run:playSpanne,
     tipp:"Teilen Sie die Folge in Häppchen: erst drei Felder, dann die nächsten drei. Am Stück ist sie kaum zu behalten." },
-  { id:"fehlt",  art:"merken", icon:"fehlt",  farbe:"violett",    name:"Was fehlt?",      sub:"Ein Ding verschwindet",             trainiert:"Bildgedächtnis", run:playFehlt,
+  { id:"fehlt",  art:"merken", icon:"fehlt",  farbe:"tanne",    name:"Was fehlt?",      sub:"Ein Ding verschwindet",             trainiert:"Bildgedächtnis", run:playFehlt,
     tipp:"Gehen Sie die Dinge in fester Reihenfolge durch, immer von links oben nach rechts unten. Mit einem festen Weg merkt man mehr." },
-  { id:"rechnen",art:"zahlen", icon:"rechnen",farbe:"bordeaux",   name:"Kopfrechnen",     sub:"Ohne Papier ausrechnen",            trainiert:"Zahlenverständnis", run:playRechnen },
-  { id:"geld",   art:"zahlen", icon:"geld",   farbe:"bronze",     name:"Geld abzählen",   sub:"Einen Betrag passend legen",        trainiert:"Rechnen & Planen", run:playGeld },
+  { id:"rechnen",art:"zahlen", icon:"rechnen",farbe:"altrosa",   name:"Kopfrechnen",     sub:"Ohne Papier ausrechnen",            trainiert:"Zahlenverständnis", run:playRechnen },
+  { id:"geld",   art:"zahlen", icon:"geld",   farbe:"schiefer",     name:"Geld abzählen",   sub:"Einen Betrag passend legen",        trainiert:"Rechnen & Planen", run:playGeld },
 
-  { id:"liste",   art:"merken",  sprachlastig:true, icon:"liste",   farbe:"waldgruen", name:"Liste merken",
+  { id:"liste",   art:"merken",  sprachlastig:true, icon:"liste",   farbe:"kupfer", name:"Liste merken",
     tipp:"Fassen Sie die Wörter zu Paaren zusammen, die zusammenpassen — zwei Paare merkt man leichter als vier einzelne Wörter.",   sub:"Wörter über mehrere Durchgänge",  trainiert:"Lernen durch Wiederholung", run:playListe },
-  { id:"spaeter", art:"spaeter", icon:"spaeter", farbe:"stahlblau", name:"Später abrufen", sub:"Merken, ablenken, erinnern",      trainiert:"Behalten über Zeit", run:playSpaeter,
+  { id:"spaeter", art:"spaeter", icon:"spaeter", farbe:"bordeaux", name:"Später abrufen", sub:"Merken, ablenken, erinnern",      trainiert:"Behalten über Zeit", run:playSpaeter,
     regeln: [
       "Zuerst sehen Sie ein paar Dinge, die Sie sich merken sollen.",
       "Danach kommt absichtlich etwas ganz anderes dazwischen — Rechnen.",
       "Erst dann wird gefragt, was vorhin zu sehen war. Und später noch einmal."
     ],
     merksatz: "Im Alltag zählt selten, ob man etwas sofort behält, sondern ob es nach zehn Minuten noch da ist. Genau das wird hier geübt." },
-  { id:"auftrag", art:"spaeter", icon:"auftrag", farbe:"bordeaux",  name:"Nicht vergessen", sub:"An einen Auftrag denken",        trainiert:"Vorhaben behalten", run:playAuftrag,
+  { id:"auftrag", art:"spaeter", icon:"auftrag", farbe:"taupe",  name:"Nicht vergessen", sub:"An einen Auftrag denken",        trainiert:"Vorhaben behalten", run:playAuftrag,
     regeln: [
       "Sie bekommen einen Auftrag, zum Beispiel: „Wenn die Glocke erscheint, tippen Sie zuerst darauf.“",
       "Danach rechnen Sie ganz normal weiter.",
       "Irgendwann taucht die Glocke auf — dann müssen Sie von selbst daran denken. Erinnert wird Sie niemand."
     ],
     merksatz: "Das ist die Fähigkeit, die im Alltag am meisten kostet, wenn sie fehlt: an die Tabletten denken, an den Termin, an den Topf auf dem Herd." },
-  { id:"namen",   art:"spaeter", sprachlastig:true, icon:"namen",   farbe:"nachtblau", name:"Namen merken",
+  { id:"namen",   art:"spaeter", sprachlastig:true, icon:"namen",   farbe:"waldgruen", name:"Namen merken",
     tipp:"Verknüpfen Sie den Namen mit etwas Auffälligem: die Brille, der rote Pullover. Allein der Name bleibt selten hängen.",   sub:"Gesichter und Namen zuordnen",    trainiert:"Namensgedächtnis", run:playNamen },
-  { id:"suchen",  art:"hand", icon:"suchen", farbe:"altrosa",   name:"Alles finden",   sub:"Jede Zeile von links absuchen",   trainiert:"Blickführung", run:playSuchen,
+  { id:"suchen",  art:"hand", icon:"suchen", farbe:"petrol",   name:"Alles finden",   sub:"Jede Zeile von links absuchen",   trainiert:"Blickführung", run:playSuchen,
     regeln: [
       "Im Feld sind viele Zeichen verstreut. Gesucht sind nur die roten Punkte.",
       "Fangen Sie in jeder Zeile am roten Balken ganz links an und gehen Sie von dort nach rechts.",
@@ -1159,15 +1182,21 @@ const GAMES = [
     ],
     merksatz: "Nach einem Schlaganfall wird die linke Seite oft übersehen, ohne dass man es selbst bemerkt. Der rote Balken ist der Ankerpunkt: Wer ihn jedes Mal zuerst sucht, gewöhnt sich an, auch ganz links hinzuschauen.",
     tipp:"Zeigen Sie mit dem Finger mit und sprechen Sie die Zeilen mit: „Erste Zeile — von links nach rechts.“" },
-  { id:"text",    art:"sprache", sprachlastig:true, icon:"text",    farbe:"bronze",    name:"Gut zugehört",   sub:"Kurze Geschichte, dann Fragen",   trainiert:"Textverständnis", run:playText }
+  { id:"text",    art:"sprache", sprachlastig:true, icon:"text",    farbe:"indigo",    name:"Gut zugehört",   sub:"Kurze Geschichte, dann Fragen",   trainiert:"Textverständnis", run:playText }
 ];
 
 function faerbeKachel(t, farbe) {
   const f = FARBEN[farbe];
   if (!f) return;
   t.style.setProperty("--kachel-farbe", f.akzent);
-  t.style.setProperty("--kachel-bg", f.wash);
-  t.style.setProperty("--kachel-line", f.soft);
+  /* Im Starkkontrast weiße Fläche und harter Rand. Die Übungsfarbe
+     bleibt im Symbol erhalten — sie ist die Wiedererkennung, auf die
+     niemand verzichten soll. Inline gesetzte Eigenschaften schlagen
+     jede Regel aus dem Stylesheet, also muss das hier entschieden
+     werden und nicht dort. */
+  const stark = store.kontrast === "stark";
+  t.style.setProperty("--kachel-bg", stark ? "#FFFFFF" : f.soft);
+  t.style.setProperty("--kachel-line", stark ? "#333333" : f.rand);
 }
 
 function showHome() {
@@ -2696,23 +2725,22 @@ function playFehlt(stage, level) {
   weiter.addEventListener("click", () => {
     weiter.hidden = true;
     schau.innerHTML = "";
-    /* Kurze Ablenkung dazwischen: Ohne sie hat man das Bild noch im
-       Auge und muss gar nichts erinnern. */
+    /* Genau EINE Rechenaufgabe dazwischen. Ohne sie hat man die Bilder
+       noch im Auge und muss sich gar nichts merken — mit ihr ist der
+       Blick kurz besetzt und der Abruf echt. */
     ablenkung();
   });
 
   function ablenkung() {
-    const bis = rint(12, 29);
-    p.innerHTML = "Kurz etwas anderes: Wie viel ist das?";
-    p.append(el("small", null, " "));
     const a = rint(4, 9), b2 = rint(3, 9);
     const loesung = a * b2;
-    const aufg = el("div", "aufgabe", a + " × " + b2 + " =");
+    p.innerHTML = "Kurz etwas anderes: Wie viel ist das?";
+    p.append(el("small", null, "Eine Aufgabe, dann geht es mit den Bildern weiter."));
     schau.innerHTML = "";
-    schau.append(aufg);
+    schau.append(el("div", "aufgabe", a + " × " + b2 + " ="));
     words.innerHTML = "";
     shuffle([loesung, loesung + rint(1, 4), Math.max(2, loesung - rint(1, 4))]).forEach(z => {
-      const b3 = el("button", "word", String(z));
+      const b3 = el("button", "word zahl", String(z));
       b3.addEventListener("click", () => {
         if (z !== loesung) { fehler(b3); return; }
         tone(600, .1, "sine", .09);
@@ -2852,7 +2880,7 @@ function playRechnen(stage, level) {
     const opts = shuffle([loesung, ...ablenker.slice(0, anzahl - 1)]);
     words.innerHTML = "";
     opts.forEach(z => {
-      const b = el("button", "word", String(z));
+      const b = el("button", "word zahl", String(z));
       b.addEventListener("click", () => {
         if (z !== loesung) {
           fehler(b);
@@ -3102,7 +3130,7 @@ function playSpaeter(stage, level) {
     schau.append(el("div", "aufgabe", a + " × " + b + " ="));
     words.innerHTML = "";
     shuffle([loesung, loesung + rint(1, 5), Math.max(2, loesung - rint(1, 5)), loesung + 10]).forEach(z => {
-      const bt = el("button", "word", String(z));
+      const bt = el("button", "word zahl", String(z));
       bt.addEventListener("click", () => {
         if (z !== loesung) { fehler(bt); return; }
         tone(600, .08, "sine", .08);
@@ -3212,7 +3240,7 @@ function playAuftrag(stage, level) {
 
     words.innerHTML = "";
     shuffle([loesung, loesung + rint(1, 5), Math.max(2, loesung - rint(1, 5)), loesung + 9]).forEach(z => {
-      const bt = el("button", "word", String(z));
+      const bt = el("button", "word zahl", String(z));
       bt.addEventListener("click", () => {
         if (z !== loesung) { fehler(bt); return; }
         if (glockeOffen) {
