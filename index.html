@@ -2731,9 +2731,14 @@ function playFehlt(stage, level) {
 
     zeigeFrage();
 
-    // Auswahl: die fehlenden Dinge plus ebenso viele, die noch daliegen
-    const koeder = rest.slice(0, Math.max(2, weglegen + 1));
-    const opts = shuffle([...fehlend, ...koeder]);
+    /* Die Köder stammen aus Dingen, die NIE dabei waren — niemals aus
+       den oben noch sichtbaren. Sonst braucht man kein Gedächtnis:
+       Man streicht alles weg, was oben noch liegt, und der Rest ist
+       zwangsläufig die Lösung. Jetzt muss man sich für jedes Bild
+       erinnern, ob man es vorhin gesehen hat. */
+    const nieDabei = shuffle(FEHLT_DINGE.filter(d => !satz.includes(d)))
+                       .slice(0, weglegen + 2);
+    const opts = shuffle([...fehlend, ...nieDabei]);
     words.innerHTML = "";
     opts.forEach(d => {
       const b4 = el("button", "word");
@@ -2764,10 +2769,10 @@ function playFehlt(stage, level) {
 
   function zeigeFrage() {
     const offen = weglegen - gefunden;
-    p.innerHTML = weglegen === 1 ? "Welches Ding fehlt jetzt?" : "Welche Dinge fehlen jetzt?";
-    p.append(el("small", null, weglegen === 1
-      ? "Es ist oben nicht mehr dabei."
-      : "Es sind " + weglegen + " Stück — noch " + offen + " zu finden."));
+    p.innerHTML = weglegen === 1 ? "Welches Ding ist verschwunden?" : "Welche Dinge sind verschwunden?";
+    p.append(el("small", null,
+      (weglegen === 1 ? "Eines fehlt. " : "Es sind " + weglegen + " Stück — noch " + offen + " zu finden. ")
+      + "Die übrigen Bilder unten waren von Anfang an nicht dabei."));
   }
 
   setProgress(0);
