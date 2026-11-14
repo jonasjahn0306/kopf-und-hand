@@ -51,6 +51,7 @@
      --wash tönt den ganzen Bildschirm ganz leicht mit ein, damit man
      schon am Hintergrund merkt, worin man gerade steckt. */
   --akzent:      #65795C;
+  --akzent-voll: #65795C;   /* Flächen mit weißer Schrift — mind. 4,5:1 */
   --akzent-deep: #485641;
   --akzent-soft: #E2E2D6;
   --wash:        #F7F2E7;
@@ -156,6 +157,35 @@ button{ font:inherit; color:inherit; }
   white-space:nowrap;
 }
 
+/* Schmale Handys: Zurück, Hilfe und Vorlesen brauchen Platz. Der Titel
+   darf dann zweizeilig werden, statt mit „…“ abgeschnitten zu werden. */
+@media (max-width:34rem){
+  .bar{ gap:6px; padding:10px 10px; }
+  .bar #back{ padding:0 10px; gap:6px; }
+  .bar .iconbtn.rund{ padding:0; min-width:48px; justify-content:center; }
+  .bar h1{
+    font-size:17.5px; line-height:1.15;
+    white-space:normal; text-overflow:clip;
+    hyphens:auto; -webkit-hyphens:auto;
+    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2;
+  }
+}
+@media (max-width:380px){
+  .bar{ padding:10px 8px; }
+  .bar #back{ font-size:16px; }
+  .bar #back svg{ width:22px; height:22px; }
+  .bar h1{ font-size:16px; }
+}
+/* Sehr kleine Handys: am Zurück-Knopf nur der Pfeil. Das Wort bleibt
+   für Screenreader und Vorlesen erhalten. */
+@media (max-width:340px){
+  .bar #back{ min-width:52px; padding:0; justify-content:center; }
+  .zurueck-text{
+    position:absolute; width:1px; height:1px; overflow:hidden;
+    clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap;
+  }
+}
+
 .iconbtn{
   display:inline-flex; align-items:center; gap:8px;
   min-height:56px; padding:0 17px;
@@ -191,6 +221,25 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 }
 .sectionhead span{ font-size:.95rem; color:var(--ink-2); }
 
+.gruppen{ margin:0 0 2rem; border-top:1px solid var(--line-2); }
+.gruppe-h{ margin:0; font:inherit; }
+.gruppenkopf{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  width:100%; min-height:4.2rem; padding:.85rem .3rem;
+  background:none; border:none; border-bottom:1px solid var(--line-2);
+  text-align:left; cursor:pointer; color:var(--ink);
+}
+.gruppenkopf:active{ background:var(--paper-deep); }
+.gruppentext{ display:flex; flex-direction:column; gap:.15rem; min-width:0; }
+.gruppenkopf .titel{ font-family:var(--serif); font-size:1.32rem; font-weight:500;
+  line-height:1.2; color:var(--kapitel, var(--ink)); }
+.gruppenkopf .unter{ font-size:.95rem; color:var(--ink-2); line-height:1.35; }
+.gruppenkopf .chev{ flex:none; width:1.6rem; height:1.6rem; color:var(--ink-2);
+  transition:transform .2s ease; }
+.gruppenkopf .chev svg{ width:100%; height:100%; display:block; }
+.gruppenkopf[aria-expanded="true"] .chev{ transform:rotate(180deg); }
+.gruppen .grid{ padding:.9rem 0 1.2rem; border-bottom:1px solid var(--line-2); }
+
 .grid{
   display:grid;
   /* min() verhindert, dass die Mindestbreite bei großer Schrift breiter
@@ -222,7 +271,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 .tile .ic svg{ width:2.6rem; height:2.6rem; }
 .tile b{ display:block; font-family:var(--serif); font-size:1.2rem;
   font-weight:400; line-height:1.25; letter-spacing:.005em; }
-.tile small{ display:block; font-size:.94rem; color:var(--ink-2); margin-top:.2rem; }
+.tile small{ display:block; font-size:.94rem; color:#4A3F33; margin-top:.2rem; }
 
 /* ---------------- Schwierigkeit ---------------- */
 
@@ -247,7 +296,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 .btn:active{ transform:translateY(1px); }
 .btn em{ font-style:normal; font-weight:500; font-size:.95rem; color:var(--ink-2); }
 .btn.primary{
-  background:var(--akzent); border-color:var(--akzent-deep); color:#fff;
+  background:var(--akzent-voll); border-color:var(--akzent-deep); color:#fff;
   justify-content:center;
 }
 .btn.primary em{ color:rgba(255,255,255,.85); }
@@ -269,7 +318,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   content:counter(schritt);
   position:absolute; left:0; top:0;
   width:2.2rem; height:2.2rem; border-radius:99px;
-  background:var(--akzent); color:#fff;
+  background:var(--akzent-voll); color:#fff;
   display:grid; place-items:center;
   font-weight:700; font-size:1.05rem;
 }
@@ -309,7 +358,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 }
 .progress .fill{
   height:100%; width:0;
-  background:var(--akzent);
+  background:var(--akzent-voll);
   border-radius:99px;
   transition:width .45s cubic-bezier(.2,.8,.3,1);
 }
@@ -343,9 +392,9 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   line-height:1;
 }
 .card .back{
-  background:var(--akzent);
+  background:var(--akzent-voll);
   border:2px solid var(--akzent-deep);
-  color:rgba(255,255,255,.5);
+  color:rgba(255,255,255,.85);
 }
 .card .front{
   background:var(--card);
@@ -508,10 +557,14 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 }
 .spot.next{ border-color:var(--honey); }
 .spot.gone{ animation:pop .34s ease forwards; pointer-events:none; }
+/* Der Zielpunkt ist immer grün, unabhängig von der Übungsfarbe — die
+   Anleitung sagt „nur den grünen Punkt antippen“, und auf der schweren
+   Stufe stehen rote Störer daneben. Mit der Übungsfarbe Terrakotta
+   sahen Ziel und Störer fast gleich aus. */
 .target{
   position:absolute; border-radius:99px;
-  background:radial-gradient(circle at 34% 30%, var(--akzent-soft), var(--akzent) 62%);
-  border:3px solid var(--akzent-deep);
+  background:radial-gradient(circle at 34% 30%, #CFE2C3, #3F7A38 62%);
+  border:3px solid #2B5626;
   cursor:pointer;
 }
 .target::after{
@@ -604,7 +657,7 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   transition:background .12s, transform .12s;
 }
 .spannefeld.an{
-  background:var(--akzent); border-color:var(--akzent-deep);
+  background:var(--akzent-voll); border-color:var(--akzent-deep);
   transform:scale(1.04);
 }
 .spannefeld.getippt{ background:var(--akzent-soft); border-color:var(--akzent); }
@@ -764,9 +817,13 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   margin:0 0 .8rem; text-align:center;
 }
 .wochentage, .wochen{
-  display:grid; grid-template-columns:repeat(7, 1fr); gap:.35rem;
+  display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:.35rem;
 }
 .wochentage{ margin-bottom:.45rem; }
+@media (max-width:360px){
+  .kalender{ padding:1rem .55rem 1.2rem; }
+  .wochentage, .wochen{ gap:.22rem; }
+}
 .wochentage span{
   text-align:center; font-size:.82rem; font-weight:650;
   color:var(--ink-2); letter-spacing:.04em;
@@ -782,9 +839,9 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   font-variant-numeric:tabular-nums;
   position:relative;
 }
-.tag.leer{ background:transparent; border-color:transparent; color:var(--line-2); font-weight:500; }
+.tag.leer{ background:transparent; border:2px dashed var(--line-2); color:var(--ink-2); font-weight:500; }
 .tag.geuebt{
-  background:var(--akzent); border-color:var(--akzent-deep); color:#fff;
+  background:var(--akzent-voll); border-color:var(--akzent-deep); color:#fff;
 }
 .tag.geuebt.viel{ box-shadow:inset 0 0 0 3px rgba(255,255,255,.45); }
 .tag.heute{ outline:3px solid var(--honey); outline-offset:2px; }
@@ -817,12 +874,12 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
   display:inline-block; width:1rem; height:1rem; border-radius:5px;
   vertical-align:-.15em; margin-right:.35rem; border:2px solid var(--line);
 }
-.legende i.voll{ background:var(--akzent); border-color:var(--akzent-deep); }
+.legende i.voll{ background:var(--akzent-voll); border-color:var(--akzent-deep); }
 
 /* Abschluss */
 .haken{
   width:6.5rem; height:6.5rem; margin:0 auto 1.2rem;
-  border-radius:99px; background:var(--akzent);
+  border-radius:99px; background:var(--akzent-voll);
   display:grid; place-items:center;
   animation:pop .5s ease;
 }
@@ -833,13 +890,18 @@ main{ flex:1; padding:1.1rem .8rem 3rem; }
 .panel h2{ font-family:var(--serif); font-weight:500; font-size:1.45rem; margin:1.8rem 0 .8rem; letter-spacing:-.01em; }
 .panel h2:first-child{ margin-top:.2rem; }
 .panel p.note{ color:var(--ink-2); font-size:.98rem; margin:.2rem 0 1rem; }
-.seg{ display:flex; gap:.5rem; }
+.seg{ display:flex; flex-wrap:wrap; gap:.5rem; }
 .seg button{
-  flex:1; min-height:3.6rem;
+  flex:1; min-height:3.6rem; padding:.3rem .5rem;
   background:var(--card); border:2px solid var(--line-2);
   border-radius:12px; font-size:1.05rem; font-weight:600; cursor:pointer;
 }
-.seg button[aria-pressed="true"]{ background:var(--akzent); border-color:var(--akzent-deep); color:#fff; }
+.seg button[aria-pressed="true"]{ background:var(--akzent-voll); border-color:var(--akzent-deep); color:#fff; }
+
+/* Kachelinhalt darf schrumpfen; lange Wörter werden bei sehr großer
+   Schrift auf kleinen Handys getrennt statt aus der Kachel zu ragen. */
+.tile > div{ min-width:0; }
+.tile b{ hyphens:auto; -webkit-hyphens:auto; overflow-wrap:break-word; }
 
 table.log{ width:100%; border-collapse:collapse; font-size:1rem; }
 table.log th, table.log td{ text-align:left; padding:.6rem .5rem; border-bottom:1px solid var(--line); }
@@ -848,6 +910,73 @@ table.log td.n{ text-align:right; font-variant-numeric:tabular-nums; }
 .scroller{ overflow-x:auto; }
 
 .danger{ border-color:var(--line-2); color:var(--ink-2); }
+
+/* ---------- Bericht ---------- */
+.bericht{ max-width:46rem; margin:0 auto; }
+.bericht-steuer{ margin:0 0 1.4rem; }
+.feldlabel{ display:block; font-size:.95rem; color:var(--ink-2); margin:.4rem 0 .4rem; }
+.feld{ width:100%; min-height:3.2rem; padding:.6rem .8rem; margin:0 0 1rem;
+  font:inherit; font-size:1.05rem; color:var(--ink);
+  background:var(--card); border:2px solid var(--line-2); border-radius:10px; }
+.bericht-blatt{
+  background:#FFFFFF; color:#1F1A15;
+  border:1px solid var(--line-2); border-radius:12px;
+  padding:1.4rem 1.2rem 1.2rem;
+}
+.bericht-marke{ margin:0 0 .3rem; font-size:.8rem; font-weight:700; letter-spacing:.09em;
+  text-transform:uppercase; color:#5A4E40; }
+.bericht-kopf h2{ font-family:var(--serif); font-weight:500; font-size:1.6rem; margin:0 0 .4rem; }
+.bericht-name{ margin:0 0 .2rem; font-size:1.05rem; font-weight:600; }
+.bericht-meta{ margin:0 0 1.2rem; font-size:.95rem; color:#4A4035; }
+.zusammenfassung{ display:grid; grid-template-columns:repeat(auto-fit, minmax(min(7.5rem,100%),1fr)); gap:.6rem; margin:0 0 1.4rem; }
+.kennzahl{ border:1px solid #D8CDB8; border-radius:10px; padding:.7rem .8rem; }
+.kennzahl b{ display:block; font-size:1.5rem; font-variant-numeric:tabular-nums lining-nums; }
+.kennzahl span{ font-size:.9rem; color:#4A4035; }
+.bericht-blatt h3{ font-family:var(--serif); font-weight:500; font-size:1.2rem; margin:1.2rem 0 .5rem; }
+.berichttab{ width:100%; border-collapse:collapse; font-size:.95rem; }
+.berichttab th, .berichttab td{ text-align:left; padding:.45rem .4rem; border-bottom:1px solid #DDD3C2; vertical-align:top; }
+.berichttab th{ font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:#4A4035; font-weight:700; }
+.berichttab td.n, .berichttab th.n{ text-align:right; font-variant-numeric:tabular-nums lining-nums; }
+.bericht-hinweis{ margin:1.4rem 0 .6rem; padding:.7rem .8rem; border-left:4px solid #8E6A3C;
+  background:#FAF5EA; font-size:.92rem; line-height:1.5; }
+.bericht-fuss{ margin:0; font-size:.82rem; color:#5A4E40; }
+
+@media print{
+  @page{ size:A4; margin:16mm 14mm; }
+  html, body{ background:#FFFFFF !important; }
+  body{ color:#000; font-size:11pt; }
+  .bar, .bericht-steuer, .hilfe-hinter, .textknopf{ display:none !important; }
+  main{ padding:0 !important; }
+  .bericht{ max-width:none; }
+  .bericht-blatt{ border:none; padding:0; border-radius:0; }
+  .berichttab{ font-size:10pt; }
+  .berichttab tr, .kennzahl{ break-inside:avoid; }
+  .bericht-blatt h3{ break-after:avoid; }
+  .scroller{ overflow:visible !important; }
+}
+.iconbtn.rund{ min-width:56px; padding:0; justify-content:center; }
+.iconbtn.spricht{ background:var(--ink); color:var(--card); border-color:var(--ink); }
+.textknopf.links{ margin:.4rem 0 0; }
+.hilfe-hinter{
+  position:fixed; inset:0; z-index:80;
+  background:rgba(52,44,35,.55);
+  display:flex; align-items:flex-end; justify-content:center;
+  padding:1rem;
+}
+.hilfe{
+  width:100%; max-width:34rem; max-height:88dvh; overflow:auto;
+  background:var(--card); color:var(--ink);
+  border-radius:16px 16px 12px 12px; padding:1.3rem 1.2rem 1.1rem;
+  box-shadow:0 -8px 40px rgba(52,44,35,.35);
+}
+.hilfe h2{ font-family:var(--serif); font-weight:500; font-size:1.55rem; margin:0 0 1rem; }
+.hilfe .hilfe-name{ margin:0 0 .15rem; font-size:.86rem; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2); }
+.hilfe ol, .hilfe ul{ margin:0 0 1.2rem; padding-left:1.4rem; }
+.hilfe li{ margin-bottom:.6rem; font-size:1.05rem; line-height:1.5; }
+.hilfe .merksatz{ margin:0 0 1rem; }
+body.hilfe-auf{ overflow:hidden; }
+@media (min-width:40rem){ .hilfe-hinter{ align-items:center; } }
 .sicherungsfeld{
   width:100%; margin:0 0 .75rem;
   font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -868,9 +997,35 @@ table.log td.n{ text-align:right; font-variant-numeric:tabular-nums; }
 }
 .rundenknopf:active{ transform:translateY(1px); }
 .rundenknopf b{ display:block; font-family:var(--serif); font-size:1.35rem; font-weight:500; }
-.rundenknopf small{ display:block; font-size:.97rem; opacity:.9; margin-top:.2rem; }
+.rundenknopf small{ display:block; font-size:.97rem; margin-top:.2rem; }
 .rundenknopf .pfeil{ flex:none; width:2rem; height:2rem; }
 .rundenknopf .pfeil svg{ width:100%; height:100%; }
+/* Heute schon geschafft: ruhige Fläche statt Aufforderung */
+.rundenknopf.erledigt{
+  background:var(--card); color:var(--ink);
+  border:2px solid #4F6E43;
+}
+.rundenknopf.erledigt .pfeil{ color:#3E5A34; }
+.rundenknopf.erledigt small{ opacity:1; color:var(--ink-2); }
+.textknopf{
+  display:block; margin:-1.2rem 0 1.6rem auto; padding:.6rem .4rem;
+  background:none; border:none; cursor:pointer;
+  font-size:.95rem; color:var(--ink-2); text-decoration:underline;
+  text-underline-offset:.2em; min-height:2.75rem;
+}
+/* Wo man in der Runde steht */
+.rundenleiste{
+  display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+  max-width:52rem; margin:0 auto 1rem;
+  padding:.55rem .9rem;
+  background:var(--card); border:1px solid var(--line-2); border-radius:10px;
+  font-size:.95rem; font-weight:600; color:var(--ink);
+}
+.rundenleiste .punkte{ display:flex; gap:.35rem; }
+.rundenleiste i{ width:.8rem; height:.8rem; border-radius:99px;
+  border:2px solid var(--ink-2); background:transparent; }
+.rundenleiste i.fertig{ background:var(--ink-2); }
+.rundenleiste i.jetzt{ background:var(--akzent-voll); border-color:var(--akzent-deep); }
 
 
 /* Noch auszufüllen — fällt absichtlich auf, damit es niemand übersieht */
@@ -893,8 +1048,6 @@ table.log td.n{ text-align:right; font-variant-numeric:tabular-nums; }
 @media (max-width:34rem){
   .sectionhead{ flex-direction:column; align-items:flex-start; gap:.15rem; }
   main{ padding-left:.6rem; padding-right:.6rem; }
-  .bar{ gap:8px; padding:10px; }
-  .bar h1{ font-size:17px; }
   .iconbtn{ padding:0 13px; gap:6px; }
 }
 
@@ -908,10 +1061,16 @@ table.log td.n{ text-align:right; font-variant-numeric:tabular-nums; }
   <header class="bar">
     <button class="iconbtn" id="back" hidden>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
-      Zurück
+      <span class="zurueck-text">Zurück</span>
     </button>
     <h1 id="title">Kopf &amp; Hand</h1>
-    <button class="iconbtn" id="gardenbtn" title="Meine Übungen">
+    <button class="iconbtn rund" id="hilfebtn" hidden aria-label="So wird gespielt" title="So wird gespielt">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.4-2.7 4.1"/><path d="M12 17.6h.01" stroke-width="3"/></svg>
+    </button>
+    <button class="iconbtn rund" id="vorlesebtn" hidden aria-label="Vorlesen" title="Vorlesen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18.3 6.5a7.6 7.6 0 0 1 0 11"/></svg>
+    </button>
+    <button class="iconbtn" id="gardenbtn" title="Meine Übungen" aria-label="Meine Übungen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/><path d="M8.5 14.5l2.5 2.5 4.5-4.5"/></svg>
       <span id="gcount">0</span>
     </button>
@@ -948,6 +1107,26 @@ const IMPRESSUM = {
 };
 
 // Wo die Seite liegt — steht in der Datenschutzangabe.
+// Stand dieser Fassung — erscheint unter „Über diese App“ und im Bericht
+const VERSION = "1.1";
+const STAND = "November 2026";
+
+/* Was ist neu? Bei JEDEM Update hier oben einen Eintrag mit der neuen
+   Versionsnummer ergänzen und VERSION oben hochzählen. Wer die App schon
+   benutzt hat, sieht beim ersten Öffnen danach genau einmal ein Fenster
+   mit diesen Punkten. Kurz und in Alltagssprache halten.
+   bauen.py bricht ab, wenn für VERSION kein Eintrag existiert. */
+const NEUIGKEITEN = [
+  { version: "1.1", punkte: [
+    "Die App kann vorlesen: Tippen Sie oben auf den Lautsprecher.",
+    "Jede Übung erklärt sich jetzt selbst. Das Fragezeichen oben hilft auch mitten in der Übung.",
+    "Die Tagesrunde merkt sich, wo Sie stehen, und zeigt „Übung 2 von 3“.",
+    "Die Übungen auf der Startseite sind in Gruppen sortiert, die sich auf- und zuklappen lassen.",
+    "Neu unter „Meine Übungen“: ein Bericht zum Ausdrucken, etwa für Therapie oder Arzt.",
+    "Memory deckt nicht mehr von selbst alle Karten auf. Wer das möchte, schaltet es in den Einstellungen ein."
+  ]}
+];
+
 const HOSTER = "GitHub, Inc. (GitHub Pages)";
 
 
@@ -988,11 +1167,22 @@ const view = $("#view"), backBtn = $("#back"), titleEl = $("#title"), gcount = $
 /* ================= Speicher ================= */
 
 const KEY = "kopfundhand.v1";
+// Ganz neue Nutzer bekommen keine „Was ist neu“-Meldung — für sie ist alles neu
+const ersterStart = (() => { try { return !localStorage.getItem(KEY); } catch { return false; } })();
 const store = Object.assign({
   gesamt: 0,          // abgeschlossene Übungen insgesamt
   tage: {},           // "2026-08-16" -> Anzahl an diesem Tag
   sprache: true,      // sprachlastige Übungen anzeigen? (bei Aphasie aus)
   letzteRunde: [],    // welche Übungen die letzte Tagesrunde hatte
+  runde: null,        // laufende Tagesrunde { datum, ids:[], stufen:[], index }
+  rundenFertig: {},   // "2026-11-14" -> Zahl der heute abgeschlossenen Runden
+  gruppenOffen: {},   // welche Gruppen auf der Startseite aufgeklappt sind
+  gesehen: {},        // Übungen, deren Anleitung schon einmal gezeigt wurde
+  anleitung: "erstes",// „erstes“: nur beim ersten Mal · „immer“: vor jedem Durchgang
+  memoryHilfe: false, // Memory: nach mehreren Fehlgriffen kurz alle Karten zeigen
+  version: "",        // zuletzt gesehene App-Version (für „Neu in Kopf & Hand“)
+  vorlesen: "knopf",  // „aus“ · „knopf“: auf Tippen · „auto“: von selbst
+  berichtName: "",    // nur für den Ausdruck, bleibt auf dem Gerät
   text: "normal",
   kontrast: "normal",
   ton: true,
@@ -1022,6 +1212,7 @@ function applySettings() {
   document.documentElement.className = store.text === "normal" ? "" : "t-" + store.text;
   document.body.classList.toggle("hc", store.kontrast === "stark");
   gcount.textContent = store.gesamt;
+  if (typeof aktualisiereVorleseKnopf === "function") aktualisiereVorleseKnopf();
   // Der Hintergrund hängt vom Kontrastmodus ab, also neu setzen
   if (typeof setAkzent === "function") setAkzent(aktuelleFarbe);
 }
@@ -1047,17 +1238,321 @@ const sndGood = () => { tone(660, .13, "sine"); setTimeout(() => tone(880, .18, 
 const sndNope = () => tone(196, .22, "triangle", .11);
 const sndDone = () => { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, .3, "sine", .13), i * 130)); };
 
+
+/* ================= Vorlesen =================
+   Die App ist textlastig, und nicht jeder kann gut lesen — wegen der
+   Augen, wegen einer Sprachstörung, oder weil Lesen nach einem
+   Schlaganfall einfach anstrengt. Es gibt drei Stufen: aus, auf Tippen
+   des Lautsprecher-Knopfs, oder von selbst bei jedem neuen Schritt.
+
+   Es werden nur Stimmen benutzt, die auf dem Gerät selbst laufen.
+   Manche Browser bieten zusätzlich Stimmen an, die den Text über das
+   Netz an einen fremden Dienst schicken. Das widerspräche der Zusage,
+   dass nichts dieses Gerät verlässt — also bleiben sie außen vor. */
+
+const sprachAusgabe = ("speechSynthesis" in window && "SpeechSynthesisUtterance" in window)
+  ? window.speechSynthesis : null;
+let stimme = null, aktuelleAeusserung = null;
+
+/* Manche Systeme bringen Spaß- oder Roboterstimmen mit („Grandma“,
+   „Grandpa“, „Eddy“ …). Die klingen für ältere Menschen befremdlich
+   oder schwer verständlich und werden nie gewählt. Erweiterte und
+   Premium-Stimmen werden bevorzugt. */
+const SPASSSTIMMEN = /grandma|grandpa|eddy|flo\b|reed|rocko|sandy|shelley|bad news|bahh|bells|boing|bubbles|cellos|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|fred|junior|kathy|ralph|good news/i;
+function waehleStimme() {
+  if (!sprachAusgabe) return;
+  const deutsch = sprachAusgabe.getVoices()
+    .filter(v => /^de([-_]|$)/i.test(v.lang) && v.localService && !SPASSSTIMMEN.test(v.name));
+  const wert = v => (/premium|enhanced|erweitert|neural/i.test(v.name) ? 4 : 0)
+                  + (/^de[-_]DE/i.test(v.lang) ? 2 : 0)
+                  + (/anna|petra|markus|helena|yannick|katja|conrad|marlene|hans/i.test(v.name) ? 1 : 0)
+                  + (v.default ? 1 : 0);
+  stimme = deutsch.sort((a, b) => wert(b) - wert(a))[0] || null;
+  aktualisiereVorleseKnopf();
+}
+if (sprachAusgabe) {
+  waehleStimme();
+  if (sprachAusgabe.addEventListener) sprachAusgabe.addEventListener("voiceschanged", waehleStimme);
+  else sprachAusgabe.onvoiceschanged = waehleStimme;
+  /* iOS spricht programmgesteuert erst, nachdem einmal innerhalb einer
+     Berührung gesprochen wurde. Eine stumme Äußerung beim ersten
+     Antippen schaltet das frei. */
+  document.addEventListener("pointerdown", () => {
+    try { const u = new SpeechSynthesisUtterance(""); u.volume = 0; sprachAusgabe.speak(u); } catch {}
+  }, { once: true });
+}
+
+function aktualisiereVorleseKnopf() {
+  const b = $("#vorlesebtn");
+  if (b) b.hidden = !(stimme && store.vorlesen !== "aus");
+}
+
+/** Macht Text sprechbar: Rechenzeichen, Beträge, Bildzeichen. */
+function fuerSprache(t) {
+  return String(t)
+    .replace(/[\p{Extended_Pictographic}️‍]/gu, " ")
+    .replace(/×/g, " mal ").replace(/÷/g, " geteilt durch ").replace(/−/g, " minus ")
+    .replace(/(\d)\s*-\s*(\d)/g, "$1 minus $2")
+    .replace(/\+/g, " plus ").replace(/=/g, " gleich ")
+    .replace(/(\d+)\s*%/g, "$1 Prozent")
+    .replace(/(\d+),(\d{2})\s*€/g, (_, e, c) => e + " Euro" + (c === "00" ? "" : " " + (+c)))
+    .replace(/€/g, " Euro ").replace(/\bct\b/g, " Cent").replace(/&/g, " und ")
+    .replace(/…/g, " ").replace(/\s*[—–·]\s*/g, ", ")
+    .replace(/\s*\n+\s*/g, ". ")
+    .replace(/([.!?:])\s*\.(\s|$)/g, "$1$2").replace(/,\s*\./g, ".")
+    .replace(/\s+/g, " ").trim();
+}
+
+function setzeSprechZustand(an) {
+  const b = $("#vorlesebtn");
+  if (!b) return;
+  b.classList.toggle("spricht", an);
+  b.setAttribute("aria-pressed", String(an));
+  b.setAttribute("aria-label", an ? "Vorlesen anhalten" : "Vorlesen");
+}
+
+function sage(text) {
+  if (!sprachAusgabe || !stimme) return;
+  const t = fuerSprache(text);
+  if (!t) return;
+  sprachAusgabe.cancel();
+  const u = new SpeechSynthesisUtterance(t);
+  u.voice = stimme; u.lang = stimme.lang; u.rate = .9; u.pitch = 1;
+  u.onstart = () => { if (u === aktuelleAeusserung) setzeSprechZustand(true); };
+  u.onend = u.onerror = () => { if (u === aktuelleAeusserung) setzeSprechZustand(false); };
+  aktuelleAeusserung = u;
+  sprachAusgabe.speak(u);
+}
+function stilleSprache() {
+  aktuelleAeusserung = null;
+  if (sprachAusgabe) sprachAusgabe.cancel();
+  setzeSprechZustand(false);
+}
+
+const hatBuchstaben = t => /[A-Za-zÄÖÜäöüß0-9]/.test(t);
+const sichtbar_ = n => n && !n.closest("[hidden]");
+
+/** Was auf dem aktuellen Bildschirm vorgelesen werden soll. */
+function bildschirmText(nurWoerterAlsAuswahl) {
+  const teile = [];
+  // Jeder Teil endet mit einem Satzzeichen, damit die Stimme Pausen macht
+  const nimm = t => {
+    t = (t || "").replace(/\s*\n+\s*/g, ". ").trim();
+    if (!t) return;
+    if (!/[.!?:…]$/.test(t)) t += ".";
+    teile.push(t);
+  };
+
+  if (hilfeOffen) {
+    const h = hilfeOffen.hinter;
+    nimm(h.querySelector(".hilfe-name").textContent);
+    nimm(h.querySelector("h2").textContent);
+    h.querySelectorAll("li").forEach(li => nimm(li.textContent));
+    h.querySelectorAll(".merksatz").forEach(m => nimm(m.textContent));
+    return teile.join(" ");
+  }
+  const regeln = view.querySelector(".regeln");
+  if (regeln) {
+    nimm(titleEl.textContent + ".");
+    regeln.querySelectorAll("h2, .fliess, li, .merksatz").forEach(n => nimm(n.textContent));
+    return teile.join(" ");
+  }
+  const fertig = view.querySelector(".done-screen");
+  if (fertig) {
+    fertig.querySelectorAll("h2, p").forEach(n => nimm(n.textContent));
+    return teile.join(" ");
+  }
+  const wahl = view.querySelector(".choose");
+  if (wahl) {
+    nimm(titleEl.textContent + ".");
+    wahl.querySelectorAll(":scope > p").forEach(n => nimm(n.textContent));
+    nimm("Zur Wahl: Leicht, Mittel oder Schwerer.");
+    return teile.join(" ");
+  }
+  const stage = view.querySelector(".stage");
+  if (stage) {
+    const leiste = view.querySelector(".rundenleiste");
+    if (leiste) nimm(leiste.firstChild.textContent + ".");
+    const pr = stage.querySelector(".prompt");
+    if (pr) nimm(pr.innerText);
+    const satz = stage.querySelector(".saying");
+    if (satz) {
+      let t = "";
+      satz.childNodes.forEach(n => {
+        if (n.nodeType === 1 && n.classList.contains("gap")) {
+          const g = n.textContent.replace(/[\s …]/g, "");
+          t += g ? " " + n.textContent + " " : " … Lücke … ";
+        } else t += n.textContent;
+      });
+      nimm(t);
+    }
+    const aufgabe = stage.querySelector(".aufgabe");
+    if (sichtbar_(aufgabe)) nimm(aufgabe.textContent);
+    const soll = stage.querySelector(".betrag .soll");
+    if (soll) nimm("Betrag: " + soll.textContent + ". " + stage.querySelector(".betrag .ist").textContent);
+    const geschichte = stage.querySelector(".geschichte");
+    if (sichtbar_(geschichte)) nimm(geschichte.textContent);
+    // Wörter, die man sich gerade merken soll (nicht die Bilder)
+    const merkKnopf = [...stage.querySelectorAll(".btn.primary")].find(b => !b.hidden && /gemerkt/.test(b.textContent));
+    if (merkKnopf) {
+      const woerter = [...stage.querySelectorAll(".schau div, .person figcaption")]
+        .map(d => d.textContent.trim()).filter(hatBuchstaben);
+      if (woerter.length) nimm(woerter.join(", ") + ".");
+    }
+    const optionen = [...stage.querySelectorAll(".words .word")]
+      .filter(b => !b.disabled || b.classList.contains("ok"))
+      .map(b => (b.querySelector("span") || b).textContent.trim())
+      .filter(hatBuchstaben);
+    const nurZahlen = optionen.every(o => /^[\d\s.,]+$/.test(o));
+    if (optionen.length && !(nurWoerterAlsAuswahl && nurZahlen))
+      nimm("Zur Auswahl: " + optionen.join(", ") + ".");
+    return teile.join(" ");
+  }
+  // Übrige Bildschirme: Titel und das Wesentliche
+  nimm(titleEl.textContent + ".");
+  view.querySelectorAll(".lede, .rundenknopf, .kalendertext, .zahlkarte, .bericht-kopf .zusammenfassung, .panel > p.fliess")
+    .forEach(n => nimm(n.innerText));
+  return teile.join(" ");
+}
+
+$("#vorlesebtn").addEventListener("click", () => {
+  if ($("#vorlesebtn").classList.contains("spricht")) stilleSprache();
+  else sage(bildschirmText(false));
+});
+
+/* Von selbst vorlesen: nur wenn sich der eigentliche Inhalt ändert —
+   die Aufforderung, die Rechnung, der Satz, die Anleitung. Zähler wie
+   „2 von 6“ lösen nichts aus, sonst würde bei jedem Tippen geredet. */
+let autoSchluessel = "", autoUhr = null;
+function autoKennung() {
+  if (hilfeOffen) return "hilfe:" + hilfeOffen.hinter.querySelector(".hilfe-name").textContent;
+  const k = [];
+  const r = view.querySelector(".regeln, .done-screen, .choose");
+  if (r) k.push(titleEl.textContent, r.className, (r.querySelector("h2") || {}).textContent);
+  const pr = view.querySelector(".stage .prompt");
+  if (pr) k.push([...pr.childNodes].filter(n => n.nodeName !== "SMALL").map(n => n.textContent).join(""));
+  const a = view.querySelector(".stage .aufgabe");
+  if (sichtbar_(a)) k.push(a.textContent);
+  const sz = view.querySelector(".stage .saying");
+  if (sz) k.push(sz.textContent.replace(/[\s ]/g, ""));
+  const g = view.querySelector(".stage .geschichte");
+  if (sichtbar_(g)) k.push(g.textContent.slice(0, 40));
+  return k.join("|");
+}
+new MutationObserver(() => {
+  if (store.vorlesen !== "auto" || !stimme) return;
+  clearTimeout(autoUhr);
+  autoUhr = setTimeout(() => {
+    const k = autoKennung();
+    if (!k || k === autoSchluessel) return;
+    autoSchluessel = k;
+    sage(bildschirmText(true));
+  }, 450);
+}).observe(document.body, { subtree: true, childList: true, characterData: true });
+
 /* ================= Navigation ================= */
 
 let onBack = null;
-function screen(title, backTo) {
+let hilfeSpiel = null;
+/* spiel: Gehört der Bildschirm zu einer Übung, erscheint der Hilfe-
+   Knopf, und der Kalender-Knopf weicht, damit auf dem Handy Platz
+   für den Titel bleibt. */
+function screen(title, backTo, spiel) {
+  if (typeof stilleSprache === "function") stilleSprache();
+  schliesseHilfe(false);
   view.innerHTML = "";
   titleEl.textContent = title;
   onBack = backTo || null;
   backBtn.hidden = !backTo;
+  hilfeSpiel = spiel || null;
+  $("#hilfebtn").hidden = !spiel;
+  $("#gardenbtn").hidden = !!spiel;
   window.scrollTo(0, 0);
   return view;
 }
+
+/* ---------- Anleitung als Fenster über der laufenden Übung ----------
+   Öffnet sich, ohne die Übung abzubrechen. Wer mitten im Spiel den
+   Faden verliert, soll nachlesen können, ohne von vorn anzufangen. */
+let hilfeOffen = null;
+function oeffneFenster(oben, titel, inhalt, knopfText, ausSpiel) {
+  const zurueckFokus = document.activeElement;
+  const hinter = el("div", "hilfe-hinter");
+  const box = el("div", "hilfe");
+  box.setAttribute("role", "dialog");
+  box.setAttribute("aria-modal", "true");
+  box.setAttribute("aria-labelledby", "hilfe-titel");
+  const h = el("h2", null, titel);
+  h.id = "hilfe-titel";
+  box.append(el("p", "hilfe-name", oben), h, ...inhalt);
+  const zu = el("button", "btn primary", knopfText);
+  zu.addEventListener("click", () => schliesseHilfe(true));
+  box.append(zu);
+  hinter.append(box);
+  hinter.addEventListener("click", e => { if (e.target === hinter) schliesseHilfe(true); });
+  document.body.append(hinter);
+  document.body.classList.add("hilfe-auf");
+  hilfeOffen = { hinter, zurueckFokus, ausSpiel };
+  zu.focus();
+}
+
+function zeigeHilfe(game) {
+  if (!game || hilfeOffen) return;
+  if (run && run.vorHilfe) run.vorHilfe();
+  const inhalt = [];
+  const ol = el("ol");
+  (game.regeln || []).forEach(r => ol.append(el("li", null, r)));
+  inhalt.push(ol);
+  if (game.merksatz) inhalt.push(el("p", "merksatz", game.merksatz));
+  if (game.tipp) {
+    const t = el("p", "merksatz");
+    t.append(el("b", null, "Ein Kniff dazu: "), document.createTextNode(game.tipp));
+    inhalt.push(t);
+  }
+  oeffneFenster(game.name, "So wird gespielt", inhalt,
+    run && hilfeSpiel === game && view.querySelector(".stage") ? "Weiter üben" : "Verstanden", true);
+}
+
+/* „Neu in Kopf & Hand“: einmal nach jedem Update, nur für bisherige Nutzer.
+   Wer mehrere Updates übersprungen hat, sieht die Punkte aller verpassten
+   Versionen, die neueste zuerst. */
+function versionsZahl(v) { return String(v || "0").split(".").map(Number); }
+function neuerAls(a, b) {
+  const x = versionsZahl(a), y = versionsZahl(b);
+  for (let i = 0; i < Math.max(x.length, y.length); i++) {
+    if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0);
+  }
+  return false;
+}
+function pruefeNeuigkeiten() {
+  if (ersterStart) { store.version = VERSION; save(); return; }
+  if (store.version === VERSION) return;
+  const offen = NEUIGKEITEN
+    .filter(n => !neuerAls(n.version, VERSION))
+    .filter(n => store.version ? neuerAls(n.version, store.version) : n.version === VERSION)
+    .sort((a, b) => neuerAls(a.version, b.version) ? -1 : 1);
+  store.version = VERSION;     // gleich merken: das Fenster kommt nur einmal
+  save();
+  const punkte = offen.flatMap(n => n.punkte);
+  if (!punkte.length || hilfeOffen) return;
+  const ul = el("ul");
+  punkte.forEach(t => ul.append(el("li", null, t)));
+  oeffneFenster("Version " + VERSION + " · " + STAND, "Neu in Kopf & Hand", [ul], "Alles klar", false);
+}
+function schliesseHilfe(mitRueckruf) {
+  if (!hilfeOffen) return;
+  const { hinter, zurueckFokus, ausSpiel } = hilfeOffen;
+  hilfeOffen = null;
+  hinter.remove();
+  document.body.classList.remove("hilfe-auf");
+  if (typeof stilleSprache === "function") stilleSprache();
+  if (zurueckFokus && document.body.contains(zurueckFokus)) zurueckFokus.focus();
+  // Manche Übungen müssen nach dem Lesen etwas wiederholen — etwa die
+  // Folge, die währenddessen unbemerkt aufgeleuchtet ist
+  if (mitRueckruf && ausSpiel && run && run.nachHilfe) run.nachHilfe();
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape" && hilfeOffen) schliesseHilfe(true); });
+$("#hilfebtn").addEventListener("click", () => zeigeHilfe(hilfeSpiel));
 backBtn.addEventListener("click", () => { if (onBack) onBack(); });
 $("#gardenbtn").addEventListener("click", showKalender);
 
@@ -1089,24 +1584,24 @@ const ICONS = {
    schlecht merkt, findet „die blaue Übung“ trotzdem zuverlässig.
    Alle Töne sind dunkel genug für weiße Symbole darauf. */
 const FARBEN = {
-  petrol:     { akzent:"#2F6E6E", deep:"#214D4D", soft:"#C7D2CA", rand:"#9FB8B2", wash:"#E9E9DF" },
-  indigo:     { akzent:"#3D6A8C", deep:"#2B4A62", soft:"#CAD1D1", rand:"#A5B6BF", wash:"#EAE8E1" },
-  pflaume:    { akzent:"#86486E", deep:"#5E324D", soft:"#DCC9CA", rand:"#C5A7B2", wash:"#EFE6DF" },
-  ocker:      { akzent:"#A87414", deep:"#76510E", soft:"#E4D4B4", rand:"#D4BB8A", wash:"#F1E9D8" },
-  altrosa:    { akzent:"#AC4A57", deep:"#78343D", soft:"#E5CAC4", rand:"#D6A8A8", wash:"#F2E6DD" },
-  gruen:      { akzent:"#5C7F50", deep:"#405938", soft:"#D2D6C3", rand:"#B3BFA5", wash:"#ECEADC" },
-  stahlblau:  { akzent:"#4E6B90", deep:"#374B65", soft:"#CED2D2", rand:"#ADB7C1", wash:"#EBE9E1" },
-  terrakotta: { akzent:"#AF5130", deep:"#7A3922", soft:"#E6CBBB", rand:"#D7AB96", wash:"#F2E7DA" },
-  schiefer:   { akzent:"#5E5A52", deep:"#423F39", soft:"#D2CEC3", rand:"#B4AFA5", wash:"#ECE7DD" },
-  moos:       { akzent:"#6E7A2F", deep:"#4D5521", soft:"#D6D5BB", rand:"#BBBD96", wash:"#EDEADA" },
-  violett:    { akzent:"#7E4E86", deep:"#58375E", soft:"#DACBD0", rand:"#C2AABC", wash:"#EFE7E0" },
-  bordeaux:   { akzent:"#93333A", deep:"#672429", soft:"#DFC4BD", rand:"#CB9E9B", wash:"#F0E5DB" },
-  bronze:     { akzent:"#8E6A3C", deep:"#634A2A", soft:"#DED1BE", rand:"#C9B69C", wash:"#F0E8DB" },
-  waldgruen:  { akzent:"#3F6F4A", deep:"#2C4E34", soft:"#CBD3C1", rand:"#A6B8A2", wash:"#EAE9DC" },
-  nachtblau:  { akzent:"#2F4E78", deep:"#213754", soft:"#C7CBCC", rand:"#9FAAB6", wash:"#E9E7DF" },
-  tanne:      { akzent:"#35604F", deep:"#254337", soft:"#C8CFC3", rand:"#A2B2A4", wash:"#E9E8DC" },
-  kupfer:     { akzent:"#9B5A2E", deep:"#6C3F20", soft:"#E1CEBB", rand:"#CFAF96", wash:"#F1E7DA" },
-  taupe:      { akzent:"#7A6656", deep:"#55473C", soft:"#D9D0C4", rand:"#C0B4A7", wash:"#EEE8DD" }
+  petrol:     { akzent:"#2F6E6E", deep:"#214D4D", soft:"#C7D2CA", rand:"#9FB8B2", wash:"#E9E9DF", voll:"#2F6E6E", ikon:"#2F6E6E" },
+  indigo:     { akzent:"#3D6A8C", deep:"#2B4A62", soft:"#CAD1D1", rand:"#A5B6BF", wash:"#EAE8E1", voll:"#3D6A8C", ikon:"#3D6A8C" },
+  pflaume:    { akzent:"#86486E", deep:"#5E324D", soft:"#DCC9CA", rand:"#C5A7B2", wash:"#EFE6DF", voll:"#86486E", ikon:"#86486E" },
+  ocker:      { akzent:"#A87414", deep:"#76510E", soft:"#E4D4B4", rand:"#D4BB8A", wash:"#F1E9D8", voll:"#9B6B12", ikon:"#976812" },
+  altrosa:    { akzent:"#AC4A57", deep:"#78343D", soft:"#E5CAC4", rand:"#D6A8A8", wash:"#F2E6DD", voll:"#AC4A57", ikon:"#AC4A57" },
+  gruen:      { akzent:"#5C7F50", deep:"#405938", soft:"#D2D6C3", rand:"#B3BFA5", wash:"#ECEADC", voll:"#5B7E4F", ikon:"#57794C" },
+  stahlblau:  { akzent:"#4E6B90", deep:"#374B65", soft:"#CED2D2", rand:"#ADB7C1", wash:"#EBE9E1", voll:"#4E6B90", ikon:"#4E6B90" },
+  terrakotta: { akzent:"#AF5130", deep:"#7A3922", soft:"#E6CBBB", rand:"#D7AB96", wash:"#F2E7DA", voll:"#AF5130", ikon:"#AF5130" },
+  schiefer:   { akzent:"#5E5A52", deep:"#423F39", soft:"#D2CEC3", rand:"#B4AFA5", wash:"#ECE7DD", voll:"#5E5A52", ikon:"#5E5A52" },
+  moos:       { akzent:"#6E7A2F", deep:"#4D5521", soft:"#D6D5BB", rand:"#BBBD96", wash:"#EDEADA", voll:"#6E7A2F", ikon:"#6B762E" },
+  violett:    { akzent:"#7E4E86", deep:"#58375E", soft:"#DACBD0", rand:"#C2AABC", wash:"#EFE7E0", voll:"#7E4E86", ikon:"#7E4E86" },
+  bordeaux:   { akzent:"#93333A", deep:"#672429", soft:"#DFC4BD", rand:"#CB9E9B", wash:"#F0E5DB", voll:"#93333A", ikon:"#93333A" },
+  bronze:     { akzent:"#8E6A3C", deep:"#634A2A", soft:"#DED1BE", rand:"#C9B69C", wash:"#F0E8DB", voll:"#8E6A3C", ikon:"#8D693B" },
+  waldgruen:  { akzent:"#3F6F4A", deep:"#2C4E34", soft:"#CBD3C1", rand:"#A6B8A2", wash:"#EAE9DC", voll:"#3F6F4A", ikon:"#3F6F4A" },
+  nachtblau:  { akzent:"#2F4E78", deep:"#213754", soft:"#C7CBCC", rand:"#9FAAB6", wash:"#E9E7DF", voll:"#2F4E78", ikon:"#2F4E78" },
+  tanne:      { akzent:"#35604F", deep:"#254337", soft:"#C8CFC3", rand:"#A2B2A4", wash:"#E9E8DC", voll:"#35604F", ikon:"#35604F" },
+  kupfer:     { akzent:"#9B5A2E", deep:"#6C3F20", soft:"#E1CEBB", rand:"#CFAF96", wash:"#F1E7DA", voll:"#9B5A2E", ikon:"#9B5A2E" },
+  taupe:      { akzent:"#7A6656", deep:"#55473C", soft:"#D9D0C4", rand:"#C0B4A7", wash:"#EEE8DD", voll:"#7A6656", ikon:"#7A6656" }
 };
 const STANDARD_WASH = "#EFF2EE";
 
@@ -1116,10 +1611,11 @@ function setAkzent(name) {
   const s = document.documentElement.style;
   const f = FARBEN[name];
   if (!f) {
-    ["--akzent","--akzent-deep","--akzent-soft","--wash"].forEach(k => s.removeProperty(k));
+    ["--akzent","--akzent-voll","--akzent-deep","--akzent-soft","--wash"].forEach(k => s.removeProperty(k));
     return;
   }
   s.setProperty("--akzent", f.akzent);
+  s.setProperty("--akzent-voll", f.voll);
   s.setProperty("--akzent-deep", f.deep);
   s.setProperty("--akzent-soft", f.soft);
   // Im Starkkontrast bleibt der Hintergrund weiß
@@ -1128,6 +1624,18 @@ function setAkzent(name) {
 
 const GAMES = [
   { id:"memory", art:"merken", icon:"memory", farbe:"stahlblau",     name:"Memory",          sub:"Gleiche Bilder wiederfinden",       trainiert:"Merkfähigkeit", run:playMemory,
+    // Getter, weil die Aufdeckhilfe abschaltbar ist und die Anleitung stimmen muss
+    get regeln() {
+      const r = [
+        "Alle Karten liegen verdeckt. Unter jeder ist ein Bild, und jedes Bild gibt es genau zweimal.",
+        "Tippen Sie zwei Karten an. Zeigen beide dasselbe Bild, bleiben sie offen.",
+        "Sind die Bilder verschieden, drehen sich die Karten nach einem Moment wieder um. Merken Sie sich, wo was lag.",
+        "Die Übung ist fertig, wenn alle Paare gefunden sind."
+      ];
+      if (store.memoryHilfe) r.splice(3, 0,
+        "Klappt es ein paarmal hintereinander nicht, zeigt die App alle Karten kurz zum Einprägen.");
+      return r;
+    },
     tipp:"Sprechen Sie innerlich mit: „Der Hund liegt oben links.\u201c Benannte Bilder merkt man besser als nur angeschaute." },
   { id:"domino", art:"zahlen", icon:"domino", farbe:"nachtblau",     name:"Domino legen",    sub:"Alle Steine zu einer Kette",     trainiert:"Vorausdenken", run:playDomino,
     regeln: [
@@ -1137,11 +1645,38 @@ const GAMES = [
       "Alle Steine müssen an die Kette."
     ],
     merksatz: "Überlegen Sie, bevor Sie legen: Wer nur an einem Ende anbaut, hat am Schluss Steine übrig, die nirgends mehr passen. Verlegt? Mit „Letzten Stein zurücknehmen“ geht es zurück." },
-  { id:"spruch", art:"sprache", sprachlastig:true, icon:"spruch", farbe:"violett",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch },
-  { id:"odd",    art:"sprache", icon:"odd",    farbe:"bronze",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd },
-  { id:"reihe",  art:"zahlen", icon:"reihe",  farbe:"gruen",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe },
-  { id:"ziel",   art:"hand", icon:"ziel",   farbe:"terrakotta",      name:"Ziele treffen",   sub:"Punkte genau antippen",             trainiert:"Zielgenauigkeit", run:playZiel },
-  { id:"linie",  art:"hand", icon:"linie",  farbe:"moos",  name:"Linie nachfahren",sub:"Mit dem Finger der Spur folgen",    trainiert:"Feinmotorik", run:playLinie },
+  { id:"spruch", art:"sprache", sprachlastig:true, icon:"spruch", farbe:"violett",    name:"Sprichwörter",    sub:"Bekannte Sätze vervollständigen",   trainiert:"Sprache & Langzeitgedächtnis", run:playSpruch,
+    regeln: [
+      "Sie sehen den Anfang eines bekannten Sprichworts. Am Ende fehlt ein Wort.",
+      "Tippen Sie unten das Wort an, das in die Lücke gehört.",
+      "Auf der schwersten Stufe ist es umgekehrt: Das Ende steht da, und Sie suchen den passenden Anfang."
+    ] },
+  { id:"odd",    art:"sprache", icon:"odd",    farbe:"bronze",      name:"Was passt nicht?",sub:"Den Ausreißer finden",              trainiert:"Begriffe ordnen", run:playOdd,
+    regeln: [
+      "Sie sehen mehrere Bilder mit ihrem Namen.",
+      "Alle bis auf eines gehören zu einer gemeinsamen Gruppe, zum Beispiel Obst oder Werkzeug.",
+      "Tippen Sie das eine an, das nicht dazu passt. Danach steht da, welche Gruppe es war."
+    ],
+    merksatz: "Auf der schwersten Stufe ist der Ausreißer mit den anderen verwandt — etwa Gemüse zwischen Obst. Dann lohnt es sich, die Gruppe erst zu benennen." },
+  { id:"reihe",  art:"zahlen", icon:"reihe",  farbe:"gruen",    name:"Zahlenreihe",     sub:"Der Reihe nach antippen",           trainiert:"Konzentration", run:playReihe,
+    regeln: [
+      "Im Feld sind Zahlen verstreut. Tippen Sie sie der Reihe nach an: 1, 2, 3 und so weiter.",
+      "Angetippte Zahlen verschwinden. Oben steht immer, welche als Nächstes kommt.",
+      "Auf der schwersten Stufe wechseln sich Zahlen und Buchstaben ab: 1, A, 2, B, 3, C …"
+    ] },
+  { id:"ziel",   art:"hand", icon:"ziel",   farbe:"terrakotta",      name:"Ziele treffen",   sub:"Punkte genau antippen",             trainiert:"Zielgenauigkeit", run:playZiel,
+    regeln: [
+      "Im Feld erscheint ein grüner Punkt. Tippen Sie ihn an — dann erscheint der nächste.",
+      "Auf den höheren Stufen wird der Punkt kleiner und wandert langsam umher.",
+      "Auf der schwersten Stufe kommen rote Punkte mit gestricheltem Ring dazu. Die gehören nicht dazu — nur den grünen antippen."
+    ] },
+  { id:"linie",  art:"hand", icon:"linie",  farbe:"moos",  name:"Linie nachfahren",sub:"Mit dem Finger der Spur folgen",    trainiert:"Feinmotorik", run:playLinie,
+    regeln: [
+      "Sie sehen einen breiten Streifen. Am Anfang liegt ein heller Punkt — dort setzen Sie den Finger auf.",
+      "Fahren Sie den Streifen mit dem Finger entlang bis zum Ende.",
+      "Absetzen ist erlaubt. Setzen Sie danach wieder am hellen Punkt an.",
+      "Wer den Streifen verlässt, rutscht ein Stück zurück und setzt neu an."
+    ] },
   { id:"sort",   art:"hand", icon:"sort",   farbe:"pflaume", name:"Einsortieren",    sub:"Nach Merkmalen ordnen", trainiert:"Greifen & Ziehen", run:playSort,
     regeln: [
       "Oben liegen die Dinge, unten stehen die Kisten.",
@@ -1150,14 +1685,44 @@ const GAMES = [
     ],
     merksatz: "Ein Schmetterling ist ein Tier und er fliegt — er gehört also in „Tier · fliegt“. Ein Hubschrauber fliegt auch, ist aber kein Tier." },
   { id:"spanne", art:"merken", icon:"spanne", farbe:"ocker",       name:"Folge merken",    sub:"Aufleuchtende Felder nachtippen",   trainiert:"Merkspanne", run:playSpanne,
+    regeln: [
+      "Mehrere Felder leuchten nacheinander auf. Schauen Sie dabei nur zu.",
+      "Danach tippen Sie die Felder in derselben Reihenfolge an.",
+      "Auf der schwersten Stufe geht es rückwärts: das zuletzt aufgeleuchtete Feld zuerst.",
+      "Klappt es, wird die Folge um ein Feld länger. Nach zwei Fehlversuchen wird sie wieder kürzer."
+    ],
     tipp:"Teilen Sie die Folge in Häppchen: erst drei Felder, dann die nächsten drei. Am Stück ist sie kaum zu behalten." },
   { id:"fehlt",  art:"merken", icon:"fehlt",  farbe:"tanne",    name:"Was fehlt?",      sub:"Ein Ding verschwindet",             trainiert:"Bildgedächtnis", run:playFehlt,
+    regeln: [
+      "Sie sehen einige Dinge. Prägen Sie sie sich in Ruhe ein und tippen Sie dann auf „Ich habe es mir gemerkt“.",
+      "Es folgt eine kleine Rechenaufgabe. Sie soll den Blick kurz besetzen.",
+      "Dann kommen die Dinge zurück — aber eines oder mehrere fehlen.",
+      "Tippen Sie unten an, was fehlt. Die übrigen Bilder unten waren von Anfang an nicht dabei."
+    ],
     tipp:"Gehen Sie die Dinge in fester Reihenfolge durch, immer von links oben nach rechts unten. Mit einem festen Weg merkt man mehr." },
-  { id:"rechnen",art:"zahlen", icon:"rechnen",farbe:"altrosa",   name:"Kopfrechnen",     sub:"Ohne Papier ausrechnen",            trainiert:"Zahlenverständnis", run:playRechnen },
-  { id:"geld",   art:"zahlen", icon:"geld",   farbe:"schiefer",     name:"Geld abzählen",   sub:"Einen Betrag passend legen",        trainiert:"Rechnen & Planen", run:playGeld },
+  { id:"rechnen",art:"zahlen", icon:"rechnen",farbe:"altrosa",   name:"Kopfrechnen",     sub:"Ohne Papier ausrechnen",            trainiert:"Zahlenverständnis", run:playRechnen,
+    regeln: [
+      "Oben steht eine Rechenaufgabe.",
+      "Rechnen Sie sie im Kopf aus, ohne Papier, und tippen Sie das richtige Ergebnis an.",
+      "Die falschen Antworten liegen absichtlich nah dran. Überschlagen allein genügt nicht."
+    ] },
+  { id:"geld",   art:"zahlen", icon:"geld",   farbe:"schiefer",     name:"Geld abzählen",   sub:"Einen Betrag passend legen",        trainiert:"Rechnen & Planen", run:playGeld,
+    regeln: [
+      "Oben steht ein Betrag.",
+      "Tippen Sie unten auf Münzen und Scheine, um sie hinzulegen. Darunter steht, wie viel schon liegt und was noch fehlt.",
+      "Eine Münze, die zu viel wäre, wird nicht angenommen. Falsch gelegt? Im Feld antippen nimmt sie zurück.",
+      "Der Betrag muss genau stimmen."
+    ],
+    merksatz: "Mit den großen Werten anfangen und dann kleiner werden — so wie an der Kasse." },
 
   { id:"liste",   art:"merken",  sprachlastig:true, icon:"liste",   farbe:"kupfer", name:"Liste merken",
-    tipp:"Fassen Sie die Wörter zu Paaren zusammen, die zusammenpassen — zwei Paare merkt man leichter als vier einzelne Wörter.",   sub:"Wörter über mehrere Durchgänge",  trainiert:"Lernen durch Wiederholung", run:playListe },
+    tipp:"Fassen Sie die Wörter zu Paaren zusammen, die zusammenpassen — zwei Paare merkt man leichter als vier einzelne Wörter.",   sub:"Wörter über mehrere Durchgänge",  trainiert:"Lernen durch Wiederholung", run:playListe,
+    regeln: [
+      "Sie sehen eine Liste von Wörtern. Lesen Sie sie in Ruhe und tippen Sie dann auf „Ich habe es mir gemerkt“.",
+      "Danach stehen doppelt so viele Wörter da. Tippen Sie alle an, die auf der Liste standen.",
+      "Anschließend sehen Sie dieselbe Liste noch einmal, und es geht von vorn los."
+    ],
+    merksatz: "Nicht der erste Durchgang zählt, sondern dass von Mal zu Mal mehr hängen bleibt." },
   { id:"spaeter", art:"spaeter", icon:"spaeter", farbe:"bordeaux", name:"Später abrufen", sub:"Merken, ablenken, erinnern",      trainiert:"Behalten über Zeit", run:playSpaeter,
     regeln: [
       "Zuerst sehen Sie ein paar Dinge, die Sie sich merken sollen.",
@@ -1173,7 +1738,12 @@ const GAMES = [
     ],
     merksatz: "Das ist die Fähigkeit, die im Alltag am meisten kostet, wenn sie fehlt: an die Tabletten denken, an den Termin, an den Topf auf dem Herd." },
   { id:"namen",   art:"spaeter", sprachlastig:true, icon:"namen",   farbe:"waldgruen", name:"Namen merken",
-    tipp:"Verknüpfen Sie den Namen mit etwas Auffälligem: die Brille, der rote Pullover. Allein der Name bleibt selten hängen.",   sub:"Gesichter und Namen zuordnen",    trainiert:"Namensgedächtnis", run:playNamen },
+    tipp:"Verknüpfen Sie den Namen mit etwas Auffälligem: die Brille, der rote Pullover. Allein der Name bleibt selten hängen.",   sub:"Gesichter und Namen zuordnen",    trainiert:"Namensgedächtnis", run:playNamen,
+    regeln: [
+      "Sie sehen gezeichnete Personen mit ihren Vornamen.",
+      "Prägen Sie sich ein, wer wie heißt, und tippen Sie dann auf „Ich habe sie mir gemerkt“.",
+      "Danach erscheint immer eine Person allein. Tippen Sie den passenden Namen an."
+    ] },
   { id:"suchen",  art:"hand", icon:"suchen", farbe:"petrol",   name:"Alles finden",   sub:"Jede Zeile von links absuchen",   trainiert:"Blickführung", run:playSuchen,
     regeln: [
       "Im Feld sind viele Zeichen verstreut. Gesucht sind nur die roten Punkte.",
@@ -1182,13 +1752,19 @@ const GAMES = [
     ],
     merksatz: "Nach einem Schlaganfall wird die linke Seite oft übersehen, ohne dass man es selbst bemerkt. Der rote Balken ist der Ankerpunkt: Wer ihn jedes Mal zuerst sucht, gewöhnt sich an, auch ganz links hinzuschauen.",
     tipp:"Zeigen Sie mit dem Finger mit und sprechen Sie die Zeilen mit: „Erste Zeile — von links nach rechts.“" },
-  { id:"text",    art:"sprache", sprachlastig:true, icon:"text",    farbe:"indigo",    name:"Gut zugehört",   sub:"Kurze Geschichte, dann Fragen",   trainiert:"Textverständnis", run:playText }
+  { id:"text",    art:"sprache", sprachlastig:true, icon:"text",    farbe:"indigo",    name:"Gut zugehört",   sub:"Kurze Geschichte, dann Fragen",   trainiert:"Textverständnis", run:playText,
+    regeln: [
+      "Sie lesen eine kurze Geschichte. Lassen Sie sich Zeit und tippen Sie dann auf „Ich habe es gelesen“.",
+      "Danach kommen drei Fragen dazu. Tippen Sie jeweils die richtige Antwort an.",
+      "Auf der leichten Stufe bleibt die Geschichte zum Nachlesen stehen, sonst verschwindet sie."
+    ] }
 ];
 
 function faerbeKachel(t, farbe) {
   const f = FARBEN[farbe];
   if (!f) return;
-  t.style.setProperty("--kachel-farbe", f.akzent);
+  // Symbolfarbe so dunkel, dass sie auf der Tönung mindestens 3:1 erreicht
+  t.style.setProperty("--kachel-farbe", f.ikon);
   /* Im Starkkontrast weiße Fläche und harter Rand. Die Übungsfarbe
      bleibt im Symbol erhalten — sie ist die Wiedererkennung, auf die
      niemand verzichten soll. Inline gesetzte Eigenschaften schlagen
@@ -1207,15 +1783,40 @@ function showHome() {
 
   /* Der kürzeste Weg zum Üben steht ganz oben — wer nicht wählen mag
      oder nicht wählen kann, braucht nur einen Knopf. */
+  /* Der Knopf kennt drei Zustände: Runde offen, Runde heute schon
+     geschafft, oder noch nichts. Vorher sah er immer gleich aus —
+     wer vergisst, ob er heute schon geübt hat, sah es nirgends. */
   const rundeKnopf = el("button", "rundenknopf");
   const rk = el("div");
-  rk.append(el("b", null, "Heutige Runde"));
-  rk.append(el("small", null, "Drei Übungen, etwa zehn Minuten — selbst zusammengestellt"));
   const rpfeil = el("div", "pfeil");
-  rpfeil.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  const PFEIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  const HAKEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 7"/></svg>';
+  let klick = zeigeRunde;
+  if (runde && runde.index < runde.spiele.length) {
+    rk.append(el("b", null, "Runde fortsetzen"));
+    rk.append(el("small", null, "Übung " + (runde.index + 1) + " von " + runde.spiele.length
+      + ": " + runde.spiele[runde.index].game.name));
+    rpfeil.innerHTML = PFEIL;
+    klick = naechsteAusRunde;
+  } else if (rundenHeute() > 0) {
+    rundeKnopf.classList.add("erledigt");
+    rk.append(el("b", null, rundenHeute() === 1
+      ? "Heutige Runde erledigt" : rundenHeute() + " Runden heute erledigt"));
+    rk.append(el("small", null, "Gut gemacht. Wer mag, kann noch eine Runde üben."));
+    rpfeil.innerHTML = HAKEN;
+  } else {
+    rk.append(el("b", null, "Heutige Runde"));
+    rk.append(el("small", null, "Drei Übungen, etwa zehn Minuten — selbst zusammengestellt"));
+    rpfeil.innerHTML = PFEIL;
+  }
   rundeKnopf.append(rk, rpfeil);
-  rundeKnopf.addEventListener("click", zeigeRunde);
+  rundeKnopf.addEventListener("click", klick);
   v.append(rundeKnopf);
+  if (runde && runde.index < runde.spiele.length) {
+    const ende = el("button", "textknopf", "Runde beenden");
+    ende.addEventListener("click", () => { runde = null; rundeSpeichern(); showHome(); });
+    v.append(ende);
+  }
 
   /* Vier kleinere Gruppen statt zweier großer: Bei zwölf Übungen ist
      eine Liste aus neun Kacheln unter einer Überschrift zu viel auf
@@ -1227,13 +1828,42 @@ function showHome() {
     ["zahlen",  "Zahlen",           "Rechnen und Ordnen",          "bordeaux"],
     ["hand",    "Sehen & Bewegen",  "Blick führen, zielen, ziehen", "terrakotta"]
   ];
+  /* Die Gruppen sind einklappbar. Aufgeklappt war die Startseite auf
+     dem Handy über vier Bildschirme lang — zwanzig Kacheln sind zu
+     viel auf einmal. Jetzt steht oben die Runde, darunter fünf Zeilen
+     wie ein Inhaltsverzeichnis. Was offen war, bleibt offen. */
+  const gruppen = el("div", "gruppen");
+  v.append(gruppen);
   for (const [art, h, sub, kfarbe] of kapitel) {
-    const head = el("div", "sectionhead");
-    const h2 = el("h2", null, h);
-    h2.style.setProperty("--kapitel", FARBEN[kfarbe].deep);
-    head.append(h2, el("span", null, sub));
+    const spiele = verfuegbareSpiele().filter(g => g.art === art);
+    if (!spiele.length) continue;
+    const offen = !!store.gruppenOffen[art];
+    // Überschrift außen, Knopf innen — so verlangt es das Muster für
+    // aufklappbare Abschnitte, damit Vorleseprogramme beides erkennen
+    const head = el("h2", "gruppe-h");
+    const kopf = el("button", "gruppenkopf");
+    kopf.setAttribute("aria-expanded", String(offen));
+    kopf.setAttribute("aria-controls", "gruppe-" + art);
+    const txt = el("span", "gruppentext");
+    const titel = el("span", "titel", h);
+    titel.style.setProperty("--kapitel", FARBEN[kfarbe].deep);
+    txt.append(titel, el("span", "unter",
+      sub + " · " + spiele.length + (spiele.length === 1 ? "\u00A0Übung" : "\u00A0Übungen")));
+    const chev = el("span", "chev");
+    chev.setAttribute("aria-hidden", "true");
+    chev.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+    kopf.append(txt, chev);
+    head.append(kopf);
     const grid = el("div", "grid");
-    verfuegbareSpiele().filter(g => g.art === art).forEach(g => {
+    grid.id = "gruppe-" + art;
+    grid.hidden = !offen;
+    kopf.addEventListener("click", () => {
+      const auf = grid.hidden;
+      grid.hidden = !auf;
+      kopf.setAttribute("aria-expanded", String(auf));
+      store.gruppenOffen[art] = auf; save();
+    });
+    spiele.forEach(g => {
       const t = el("button", "tile");
       faerbeKachel(t, g.farbe);
       const ic = el("div", "ic"); ic.innerHTML = ICONS[g.icon];
@@ -1243,7 +1873,7 @@ function showHome() {
       t.addEventListener("click", () => chooseLevel(g));
       grid.append(t);
     });
-    if (grid.children.length) v.append(head, grid);
+    gruppen.append(head, grid);
   }
 
   const foot = el("div", "sectionhead");
@@ -1277,7 +1907,7 @@ const LEVEL_HINT = ["Zum Ankommen", "Etwas mehr", "Für gute Tage"];
 
 function chooseLevel(game) {
   setAkzent(game.farbe);
-  const v = screen(game.name, showHome);
+  const v = screen(game.name, showHome, game);
   const box = el("div", "choose");
   box.append(el("h2", null, game.name));
   box.append(el("p", null, "Trainiert: " + game.trainiert + ". Wie soll es heute sein?"));
@@ -1294,9 +1924,12 @@ function chooseLevel(game) {
   LEVELS.forEach((name, i) => {
     const b = el("button", "btn");
     b.append(el("span", null, name), el("em", null, LEVEL_HINT[i]));
-    b.addEventListener("click", () => game.regeln ? zeigeRegeln(game, i) : startRun(game, i));
+    b.addEventListener("click", () => brauchtAnleitung(game) ? zeigeRegeln(game, i) : startRun(game, i));
     box.append(b);
   });
+  const wie = el("button", "textknopf links", "So wird gespielt");
+  wie.addEventListener("click", () => zeigeHilfe(game));
+  box.append(wie);
   v.append(box);
 }
 
@@ -1305,12 +1938,15 @@ function chooseLevel(game) {
 let run = null;              // aktueller Durchgang
 const sitzungStart = Date.now();   // für den Pausenhinweis
 
-/* Wo die Bedienung nicht selbsterklärend ist, kommt vor dem ersten Zug
-   eine kurze Anleitung. Sie lässt sich im Spiel jederzeit wieder
-   aufrufen — wer den Faden verliert, soll nicht raten müssen. */
-function zeigeRegeln(game, level) {
+/* Jede Übung hat eine Anleitung. Sie kommt vor dem ersten Durchgang —
+   oder vor jedem, wenn das in den Einstellungen so gewählt ist. Danach
+   ist sie über den Fragezeichen-Knopf jederzeit erreichbar, auch mitten
+   im Spiel, ohne den Durchgang abzubrechen. */
+function zeigeRegeln(game, level, ausRunde) {
   setAkzent(game.farbe);
-  const v = screen(game.name, () => chooseLevel(game));
+  const v = screen(game.name, ausRunde ? showHome : () => chooseLevel(game), game);
+  $("#hilfebtn").hidden = true;      // die Anleitung steht ja schon da
+  if (ausRunde && runde) v.append(rundenLeiste());
   const box = el("div", "regeln");
   box.append(el("h2", null, "So wird gespielt"));
   const ol = el("ol");
@@ -1318,7 +1954,10 @@ function zeigeRegeln(game, level) {
   box.append(ol);
   if (game.merksatz) box.append(el("p", "merksatz", game.merksatz));
   const los = el("button", "btn primary", "Los geht's");
-  los.addEventListener("click", () => startRun(game, level));
+  los.addEventListener("click", () => {
+    store.gesehen[game.id] = true; save();
+    startRun(game, level, ausRunde);
+  });
   box.append(los);
   v.append(box);
 }
@@ -1332,6 +1971,42 @@ function zeigeRegeln(game, level) {
 
 const RUNDENLAENGE = 3;
 let runde = null;      // { spiele:[{game,level}], index:0 }
+
+/* Die laufende Runde wird gespeichert. Wer zwischendurch „Zurück“
+   tippt oder die App schließt, findet sie am selben Tag auf der
+   Startseite wieder, statt neu anfangen zu müssen. */
+function rundeSpeichern() {
+  store.runde = runde
+    ? { datum: heuteAlsText(), ids: runde.spiele.map(x => x.game.id),
+        stufen: runde.spiele.map(x => x.level), index: runde.index }
+    : null;
+  // Nur die letzten Wochen behalten, sonst wächst der Speicher endlos
+  const tage = Object.keys(store.rundenFertig).sort();
+  tage.slice(0, Math.max(0, tage.length - 60)).forEach(t => delete store.rundenFertig[t]);
+  save();
+}
+function rundeLaden() {
+  const r = store.runde;
+  runde = null;
+  if (!r || r.datum !== heuteAlsText()) { store.runde = null; return; }
+  const spiele = r.ids.map((id, i) => ({ game: GAMES.find(g => g.id === id), level: r.stufen[i] }));
+  const gueltig = spiele.every(x => x.game && (store.sprache || !x.game.sprachlastig));
+  if (!gueltig || r.index >= spiele.length) { store.runde = null; return; }
+  runde = { spiele, index: r.index };
+}
+function rundenHeute() { return store.rundenFertig[heuteAlsText()] || 0; }
+
+/** Zeigt über der Übung, wo man in der Runde steht. */
+function rundenLeiste() {
+  const l = el("div", "rundenleiste");
+  l.append(el("span", null, "Heutige Runde · Übung " + (runde.index + 1) + " von " + runde.spiele.length));
+  const punkte = el("span", "punkte");
+  punkte.setAttribute("aria-hidden", "true");
+  runde.spiele.forEach((_, i) =>
+    punkte.append(el("i", i < runde.index ? "fertig" : i === runde.index ? "jetzt" : "")));
+  l.append(punkte);
+  return l;
+}
 
 /** Welche Stufe passt heute? Aus dem Verlauf der letzten Versuche. */
 function vorgeschlageneStufe(game) {
@@ -1390,7 +2065,8 @@ function zeigeRunde() {
   const los = el("button", "btn primary", "Runde beginnen");
   los.addEventListener("click", () => {
     runde = { spiele, index: 0 };
-    store.letzteRunde = spiele.map(x => x.game.id); save();
+    store.letzteRunde = spiele.map(x => x.game.id);
+    rundeSpeichern();
     naechsteAusRunde();
   });
   const anders = el("button", "btn", "Andere Zusammenstellung");
@@ -1402,15 +2078,26 @@ function zeigeRunde() {
 }
 
 function naechsteAusRunde() {
-  if (!runde || runde.index >= runde.spiele.length) { runde = null; showHome(); return; }
+  if (!runde || runde.index >= runde.spiele.length) { runde = null; rundeSpeichern(); showHome(); return; }
   const { game, level } = runde.spiele[runde.index];
-  game.regeln ? zeigeRegeln(game, level) : startRun(game, level);
+  brauchtAnleitung(game) ? zeigeRegeln(game, level, true) : startRun(game, level, true);
 }
 
-function startRun(game, level) {
+/** Anleitung beim ersten Mal — oder immer, wenn so eingestellt. */
+function brauchtAnleitung(game) {
+  return store.anleitung === "immer" || !store.gesehen[game.id];
+}
+
+function startRun(game, level, ausRunde) {
   setAkzent(game.farbe);
-  run = { game, level, fehler: 0, streak: 0, t0: Date.now(), ergebnis: null };
-  const v = screen(game.name, () => chooseLevel(game));
+  /* Nur ein Durchgang, der wirklich aus der Runde gestartet wurde,
+     setzt sie am Ende fort. Vorher reichte es, dass irgendwo eine
+     Runde offen war — wer sie mit „Zurück“ verließ und eine Übung
+     von Hand wählte, bekam trotzdem „Weiter mit …“ angeboten. */
+  run = { game, level, fehler: 0, streak: 0, t0: Date.now(), ergebnis: null,
+          ausRunde: !!(ausRunde && runde) };
+  const v = screen(game.name, run.ausRunde ? showHome : () => chooseLevel(game), game);
+  if (run.ausRunde) v.append(rundenLeiste());
   const stage = el("div", "stage");
   v.append(stage);
   game.run(stage, level);
@@ -1459,6 +2146,7 @@ function finish() {
   store.tage[heute] = (store.tage[heute] || 0) + 1;
   store.log.unshift({
     d: heute,
+    id: g.id,           // Namen haben sich geändert, die Kennung nicht
     spiel: g.name,
     stufe: LEVELS[run.level],
     fehler: run.fehler,
@@ -1469,7 +2157,8 @@ function finish() {
     wert: run.ergebnis ? run.ergebnis.wert : null,
     einheit: run.ergebnis ? run.ergebnis.einheit : null
   });
-  store.log = store.log.slice(0, 200);
+  // Lang genug für einen Bericht über ein Vierteljahr auch bei täglichem Üben
+  store.log = store.log.slice(0, 1500);
   save(); applySettings();
   sndDone();
 
@@ -1517,22 +2206,25 @@ function finish() {
     box.append(pause);
   }
 
-  if (runde) {
+  if (run.ausRunde && runde) {
     runde.index++;
     const offen = runde.spiele.length - runde.index;
     if (offen > 0) {
+      rundeSpeichern();
       const naechstes = runde.spiele[runde.index].game;
       box.append(el("p", null, "Noch " + offen
         + (offen === 1 ? " Übung" : " Übungen") + " in dieser Runde."));
       const w = el("button", "btn primary", "Weiter mit „" + naechstes.name + "“");
       w.addEventListener("click", naechsteAusRunde);
       const stop = el("button", "btn", "Für heute genug");
-      stop.addEventListener("click", () => { runde = null; showHome(); });
+      stop.addEventListener("click", () => { runde = null; rundeSpeichern(); showHome(); });
       box.append(w, stop);
       v.append(box);
       return;
     }
     runde = null;
+    store.rundenFertig[heute] = (store.rundenFertig[heute] || 0) + 1;
+    rundeSpeichern();
     box.append(el("p", null, "Die Runde für heute ist vollständig."));
     const fertig = el("button", "btn primary", "Meine Übungen ansehen");
     fertig.addEventListener("click", showKalender);
@@ -1568,10 +2260,11 @@ function playMemory(stage, level) {
      für sicheres Treffen. */
   const schmal = window.innerWidth < 560;
   const spalten = [schmal ? 4 : 4, schmal ? 4 : 5, schmal ? 5 : 6][level];
-  // Auf den hoeheren Stufen faellt die Aufdeckhilfe seltener
+  // Aufdeckhilfe (nur wenn in den Einstellungen eingeschaltet):
+  // nach so vielen Fehlgriffen in Folge kurz alle Karten zeigen
   const hilfeAb = [3, 4, 6][level];
   const setProgress = progressBar(stage, paare, "Paare");
-  promptText(stage, "Finden Sie die gleichen Bilder.", "Tippen Sie zwei Karten an.");
+  const p = promptText(stage, "Finden Sie die gleichen Bilder.", "Tippen Sie zwei Karten an.");
 
   const bilder = frischeAuswahl("memory", MEM_BILDER, paare);
   const deck = shuffle([...bilder, ...bilder]);
@@ -1610,13 +2303,18 @@ function playMemory(stage, level) {
         setTimeout(() => {
           a.classList.remove("open"); b.classList.remove("open");
           offen = []; sperre = false;
-          // Hilfe: nach drei Fehlgriffen kurz alles zeigen
-          if (run.streak >= hilfeAb) {
+          if (store.memoryHilfe && run.streak >= hilfeAb) {
             run.streak = 0;
             const zu = [...grid.querySelectorAll(".card:not(.done)")];
             zu.forEach(k => k.classList.add("open"));
             sperre = true;
-            setTimeout(() => { zu.forEach(k => k.classList.remove("open")); sperre = false; }, 1600);
+            const vorher = p.innerHTML;
+            p.textContent = "Schauen Sie genau hin.";
+            p.append(el("small", null, "Gleich drehen sich die Karten wieder um."));
+            setTimeout(() => {
+              zu.forEach(k => k.classList.remove("open")); sperre = false;
+              if (document.body.contains(p)) p.innerHTML = vorher;
+            }, 1600);
           }
         }, 1300);
       }
@@ -2248,6 +2946,8 @@ function playZiel(stage, level) {
       let px = pos.x, py = pos.y;
       let dx = (Math.random() - .5) * tempo, dy = (Math.random() - .5) * tempo;
       animation = setInterval(() => {
+        // Übung verlassen: Takt beenden, statt im Hintergrund Akku zu ziehen
+        if (!document.body.contains(t)) { clearInterval(animation); animation = null; return; }
         px += dx; py += dy;
         if (px < 2 || px > 98 - groesse) dx *= -1;
         if (py < 2 || py > 98 - groesse) dy *= -1;
@@ -2618,7 +3318,10 @@ function playSpanne(stage, level) {
     zeigeFolge();
   }
 
+  let folgeLauf = 0;   // nur der jüngste Durchlauf darf weiterleuchten
   async function zeigeFolge() {
+    const meiner = ++folgeLauf;
+    const aktuell = () => sichtbar() && meiner === folgeLauf;
     sperre = true;
     felder.forEach(f => { f.disabled = true; f.className = "spannefeld"; });
     p.innerHTML = "Merken Sie sich die Reihenfolge.";
@@ -2626,14 +3329,14 @@ function playSpanne(stage, level) {
       + (rueckwaerts ? " — nachher rückwärts eingeben" : "")));
     await warte(700);
     for (const k of folge) {
-      if (!sichtbar()) return;
+      if (!aktuell()) return;
       felder[k].classList.add("an");
       tone(360 + k * 55, .32, "sine", .13);
       await warte(560);
       felder[k].classList.remove("an");
       await warte(240);
     }
-    if (!sichtbar()) return;
+    if (!aktuell()) return;
     eingabe = [];
     sperre = false;
     felder.forEach(f => { f.disabled = false; });
@@ -2680,6 +3383,11 @@ function playSpanne(stage, level) {
       if (sichtbar()) neueFolge();
     });
   });
+
+  // Wer mittendrin die Anleitung öffnet, verpasst sonst das Aufleuchten
+  // Solange die Anleitung offen ist, leuchtet und klingt hinten nichts weiter.
+  run.vorHilfe = () => { folgeLauf++; felder.forEach(f => f.classList.remove("an")); };
+  run.nachHilfe = () => { if (sichtbar()) zeigeFolge(); };
 
   setProgress(0);
   neueFolge();
@@ -3747,6 +4455,7 @@ function showKalender() {
         + ": " + zelle.title);
     } else {
       zelle.className = "tag leer";
+      zelle.setAttribute("aria-label", d.getDate() + ". " + MONATE[d.getMonth()] + ": nichts eingetragen");
     }
     if (text === heuteText) zelle.classList.add("heute");
     gitter.append(zelle);
@@ -3785,12 +4494,179 @@ function showKalender() {
   }
 
   const panel = el("div", "panel");
+  const ber = el("button", "btn", "Bericht zum Mitnehmen");
+  ber.style.marginTop = "1.4rem";
+  ber.addEventListener("click", () => showBericht(showKalender));
+  panel.append(ber);
   const b = el("button", "btn primary", "Eine Übung machen");
   b.style.marginTop = "1.4rem";
   b.addEventListener("click", showHome);
   panel.append(b);
   v.append(panel);
 }
+
+
+/* ================= Bericht zum Mitnehmen =================
+   Eine druckbare Übersicht für Arzt-, Therapie- oder Klinikgespräche.
+   Er zählt, was geübt wurde, und zeigt Messwerte im Verlauf — aber er
+   deutet nichts. Er ist kein Befund, und das steht auch darauf. */
+
+const ALTE_NAMEN = { "Bilderpaare": "memory", "Domino anlegen": "domino" };
+function eintragId(r) {
+  if (r.id) return r.id;
+  const g = GAMES.find(x => x.name === r.spiel);
+  return g ? g.id : (ALTE_NAMEN[r.spiel] || r.spiel);
+}
+function spielName(id) { const g = GAMES.find(x => x.id === id); return g ? g.name : id; }
+function datumDeutsch(t) { const [j, m, d] = t.split("-"); return d + "." + m + "." + j; }
+function wochenbeginn(d) {
+  const x = new Date(d); x.setHours(0, 0, 0, 0);
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return x;
+}
+function kalenderwoche(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const tag = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - tag);
+  const j = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return Math.ceil(((t - j) / 86400000 + 1) / 7);
+}
+function dauerText(sek) {
+  const m = Math.round(sek / 60);
+  return m < 60 ? m + " Min." : Math.floor(m / 60) + " Std. " + (m % 60) + " Min.";
+}
+
+let berichtWochen = 4;
+function showBericht(zurueck) {
+  zurueck = zurueck || showKalender;
+  setAkzent("schiefer");
+  const v = screen("Bericht", zurueck);
+  const b = el("div", "bericht");
+
+  // ---- Bedienung (erscheint nicht auf dem Ausdruck) ----
+  const steuer = el("div", "bericht-steuer");
+  steuer.append(segment("Zeitraum", [4, 12, 0], ["4 Wochen", "12 Wochen", "Alles"], berichtWochen,
+    x => { berichtWochen = x; showBericht(zurueck); }));
+  const lab = el("label", "feldlabel", "Name für den Ausdruck — freiwillig, bleibt auf diesem Gerät");
+  lab.htmlFor = "bericht-name";
+  const name = el("input", "feld");
+  name.type = "text"; name.id = "bericht-name"; name.autocomplete = "off";
+  name.maxLength = 80; name.value = store.berichtName || "";
+  steuer.append(lab, name);
+  const druck = el("button", "btn primary", "Drucken oder als PDF sichern");
+  druck.addEventListener("click", () => window.print());
+  steuer.append(druck);
+  b.append(steuer);
+
+  // ---- Zeitraum bestimmen ----
+  const heute = new Date(); heute.setHours(0, 0, 0, 0);
+  const alleTage = Object.keys(store.tage).filter(t => store.tage[t] > 0).sort();
+  let ab;
+  if (berichtWochen) {
+    ab = wochenbeginn(heute); ab.setDate(ab.getDate() - (berichtWochen - 1) * 7);
+  } else {
+    ab = alleTage.length ? wochenbeginn(new Date(alleTage[0] + "T12:00:00")) : wochenbeginn(heute);
+  }
+  const abText = alsText(ab), bisText = alsText(heute);
+  const imZeitraum = t => t >= abText && t <= bisText;
+  const tage = alleTage.filter(imZeitraum);
+  const eintraege = store.log.filter(r => r && r.d && imZeitraum(r.d));
+  const uebungen = tage.reduce((n, t) => n + store.tage[t], 0);
+  const sekunden = eintraege.reduce((n, r) => n + (r.sek || 0), 0);
+  const wochenZahl = Math.max(1, Math.round((heute - ab) / 6048e5 + (1 / 7)));
+
+  // ---- Das Blatt ----
+  const blatt = el("article", "bericht-blatt");
+  const kopf = el("header", "bericht-kopf");
+  kopf.append(el("p", "bericht-marke", "Kopf & Hand · Übungsbericht"));
+  kopf.append(el("h2", null, "Übersicht der geübten Tage"));
+  const nameZeile = el("p", "bericht-name");
+  const setzeName = () => { nameZeile.textContent = store.berichtName ? "Für: " + store.berichtName : ""; nameZeile.hidden = !store.berichtName; };
+  setzeName();
+  name.addEventListener("input", () => { store.berichtName = name.value.trim(); save(); setzeName(); });
+  kopf.append(nameZeile);
+  kopf.append(el("p", "bericht-meta", "Zeitraum " + datumDeutsch(abText) + " bis " + datumDeutsch(bisText)
+    + " · erstellt am " + datumDeutsch(bisText)));
+  blatt.append(kopf);
+
+  if (!uebungen) {
+    blatt.append(el("p", "fliess", "Im gewählten Zeitraum wurde keine Übung abgeschlossen."));
+  } else {
+    // Kennzahlen
+    const zus = el("div", "zusammenfassung");
+    [[tage.length, tage.length === 1 ? "Übungstag" : "Übungstage"],
+     [uebungen, uebungen === 1 ? "Übung abgeschlossen" : "Übungen abgeschlossen"],
+     [dauerText(sekunden), "Übungszeit"],
+     [(tage.length / wochenZahl).toLocaleString("de-DE", { maximumFractionDigits: 1 }), "Übungstage je Woche"]
+    ].forEach(([z, w]) => {
+      const k = el("div", "kennzahl");
+      k.append(el("b", null, String(z)), el("span", null, w));
+      zus.append(k);
+    });
+    blatt.append(zus);
+
+    // Wochen
+    blatt.append(el("h3", null, "Je Woche"));
+    const tw = el("table", "berichttab");
+    tw.innerHTML = "<thead><tr><th scope='col'>Woche</th><th scope='col' class='n'>Tage</th>"
+      + "<th scope='col' class='n'>Übungen</th><th scope='col' class='n'>Zeit</th></tr></thead>";
+    const tbw = el("tbody");
+    for (let w = new Date(ab); w <= heute; w.setDate(w.getDate() + 7)) {
+      const ende = new Date(w); ende.setDate(ende.getDate() + 6);
+      const von = alsText(w), bis = alsText(ende);
+      const inWoche = t => t >= von && t <= bis;
+      const wt = tage.filter(inWoche);
+      const wu = wt.reduce((n, t) => n + store.tage[t], 0);
+      const ws = eintraege.filter(r => inWoche(r.d)).reduce((n, r) => n + (r.sek || 0), 0);
+      const tr = el("tr");
+      tr.append(el("td", null, "KW " + kalenderwoche(w) + " · " + datumDeutsch(von).slice(0, 6)
+        + "–" + datumDeutsch(bis).slice(0, 6)));
+      tr.append(el("td", "n", String(wt.length)), el("td", "n", String(wu)),
+                el("td", "n", wu ? dauerText(ws) : "—"));
+      tbw.append(tr);
+    }
+    tw.append(tbw);
+    blatt.append(wrapTabelle(tw));
+
+    // Übungen
+    blatt.append(el("h3", null, "Je Übung"));
+    const nachId = {};
+    eintraege.forEach(r => { (nachId[eintragId(r)] = nachId[eintragId(r)] || []).push(r); });
+    const tu = el("table", "berichttab");
+    tu.innerHTML = "<thead><tr><th scope='col'>Übung</th><th scope='col' class='n'>Durchgänge</th>"
+      + "<th scope='col'>Stufen</th><th scope='col'>Zuletzt</th><th scope='col'>Messwert erster → letzter</th></tr></thead>";
+    const tbu = el("tbody");
+    Object.keys(nachId).sort((a, z) => nachId[z].length - nachId[a].length).forEach(id => {
+      const liste = nachId[id];                         // neueste zuerst
+      const stufen = LEVELS.map(l => [l, liste.filter(r => r.stufe === l).length]).filter(x => x[1]);
+      const mitWert = liste.filter(r => r.wert != null);
+      let mess = "—";
+      if (mitWert.length) {
+        const erst = mitWert[mitWert.length - 1], letzt = mitWert[0];
+        const fmt = r => r.wert + " " + (r.einheit || "") + " (" + r.stufe + ")";
+        mess = mitWert.length === 1 ? fmt(erst) : fmt(erst) + " → " + fmt(letzt);
+      }
+      const tr = el("tr");
+      tr.append(el("td", null, spielName(id)), el("td", "n", String(liste.length)),
+        el("td", null, stufen.map(x => x[0] + " " + x[1]).join(", ")),
+        el("td", null, datumDeutsch(liste[0].d)), el("td", null, mess));
+      tbu.append(tr);
+    });
+    tu.append(tbu);
+    blatt.append(wrapTabelle(tu));
+  }
+
+  const hinweis = el("p", "bericht-hinweis", "Dieser Bericht fasst selbstständig durchgeführte "
+    + "Übungen zusammen. Er ist kein Befund und ersetzt keine fachliche Untersuchung. "
+    + "Messwerte sind nur innerhalb derselben Übung und Stufe vergleichbar; "
+    + "Übungen ohne Messwert zeigen nur, dass und wie oft geübt wurde.");
+  blatt.append(hinweis);
+  blatt.append(el("p", "bericht-fuss", "Kopf & Hand · Version " + VERSION
+    + " · Alle Daten liegen nur auf dem Gerät, auf dem geübt wurde."));
+  b.append(blatt);
+  v.append(b);
+}
+function wrapTabelle(t) { const w = el("div", "scroller"); w.append(t); return w; }
 
 /* ================= Einstellungen ================= */
 
@@ -3804,6 +4680,20 @@ function showPanel() {
   p.append(segment("Kontrast", ["normal","stark"], ["Normal","Stark"], store.kontrast, x => { store.kontrast = x; save(); applySettings(); }));
   p.append(segment("Töne", [true,false], ["An","Aus"], store.ton, x => { store.ton = x; save(); if (x) sndGood(); }));
 
+  p.append(el("h2", null, "Vorlesen"));
+  p.append(el("p", "note", stimme
+    ? "Texte und Aufgaben werden mit der Stimme dieses Geräts vorgelesen. „Auf Tippen“: "
+      + "mit dem Lautsprecher-Knopf oben rechts. „Von selbst“: bei jedem neuen Schritt."
+    : "Auf diesem Gerät ist keine deutsche Stimme verfügbar, die ohne Internet arbeitet. "
+      + "In den Systemeinstellungen unter Bedienungshilfen lässt sich meist eine nachladen."));
+  p.append(segment("Vorlesen", ["aus","knopf","auto"], ["Aus","Auf Tippen","Von selbst"], store.vorlesen,
+    x => { store.vorlesen = x; save(); aktualisiereVorleseKnopf(); if (x === "aus") stilleSprache(); }));
+  if (stimme) {
+    const probe = el("button", "btn", "Stimme probehören");
+    probe.addEventListener("click", () => sage("So klingt die Vorlesestimme. Sie liest Aufgaben, Anleitungen und Geschichten vor."));
+    p.append(probe);
+  }
+
   p.append(el("h2", null, "Übungen"));
   p.append(el("p", "note", "Nach einem Schlaganfall ist die Sprache oft mitbetroffen. "
     + "Steht dieser Schalter auf „Aus“, verschwinden alle Übungen, die Lesen oder "
@@ -3811,6 +4701,18 @@ function showPanel() {
     + "Die übrigen kommen ohne Sprache aus."));
   p.append(segment("Übungen mit Sprache", [true,false], ["An","Aus"], store.sprache,
     x => { store.sprache = x; save(); }));
+  p.append(el("p", "note", "Memory-Hilfe: Klappt es mehrmals hintereinander nicht, "
+    + "zeigt die App alle Karten kurz zum Einprägen — auf Leicht nach drei, auf Mittel "
+    + "nach vier, auf Schwer nach sechs Fehlgriffen. Ab Werk ist sie aus."));
+  p.append(segment("Memory-Hilfe", [false,true], ["Aus","An"], store.memoryHilfe,
+    x => { store.memoryHilfe = x; save(); }));
+
+  p.append(el("h2", null, "Anleitung"));
+  p.append(el("p", "note", "Jede Übung erklärt sich vor dem ersten Durchgang selbst. "
+    + "Danach steht die Anleitung über das Fragezeichen oben rechts jederzeit bereit. "
+    + "Wer sich Abläufe schwer merkt, stellt hier „Vor jeder Übung“ ein."));
+  p.append(segment("Anleitung zeigen", ["erstes","immer"], ["Beim ersten Mal","Vor jeder Übung"],
+    store.anleitung, x => { store.anleitung = x; save(); }));
 
   /* Der Verlauf liegt hinter einem eigenen Tipp. Nicht weil er geheim
      wäre, sondern damit beim Verstellen der Schrift keine Fehlerzahlen
@@ -3818,6 +4720,9 @@ function showPanel() {
   p.append(el("h2", null, "Verlauf"));
   const hinweis = el("p", "note", "Eine Übersicht der abgeschlossenen Übungen — nützlich für Therapie- oder Arzttermine. In den Übungen selbst gibt es bewusst keine Punkte und keine Bewertung.");
   p.append(hinweis);
+  const berichtKnopf = el("button", "btn", "Bericht zum Mitnehmen");
+  berichtKnopf.addEventListener("click", () => showBericht(showPanel));
+  p.append(berichtKnopf);
 
   const auf = el("button", "btn", "Verlauf anzeigen");
   const behaelter = el("div");
@@ -3951,12 +4856,18 @@ function showAbout() {
     + "und erlauben keinen Rückschluss auf den Krankheitsverlauf. Sprechen Sie die Nutzung "
     + "im Zweifel mit der behandelnden Praxis ab."));
 
+  p.append(el("p", "note", "Version " + VERSION + " · Stand " + STAND));
+
   p.append(el("h2", null, "Datenschutz"));
   p.append(el("p", "fliess", "Diese App sendet keine Daten. Es gibt keine Nutzerkonten, "
     + "keine Anmeldung, keine Werbung und keine Analysedienste. Der Kalender, der Verlauf und "
     + "die Einstellungen werden ausschließlich im Speicher Ihres eigenen Browsers abgelegt "
-    + "und verlassen dieses Gerät nicht. Über „Alle Einträge löschen“ in den "
+    + "und verlassen dieses Gerät nicht. Das gilt auch für den Namen, den Sie im Bericht "
+    + "eintragen können. Über „Alle Einträge löschen“ in den "
     + "Einstellungen entfernen Sie alles wieder."));
+  p.append(el("p", "fliess", "Die Vorlesefunktion benutzt ausschließlich Stimmen, die auf "
+    + "diesem Gerät installiert sind. Stimmen, die Text über das Internet an einen Dienst "
+    + "schicken, werden bewusst nicht verwendet."));
   if (HOSTER) {
     p.append(el("p", "fliess", "Diese Seite wird bei " + HOSTER + " gehostet. Beim Aufruf "
       + "verarbeitet der Anbieter technisch bedingt Ihre IP-Adresse, wie bei jedem "
@@ -4050,8 +4961,10 @@ function segment(label, werte, namen, aktiv, fn) {
 
 document.documentElement.lang = "de";   // damit Vorlesefunktionen deutsch sprechen
 migriere();
+rundeLaden();
 applySettings();
 showHome();
+pruefeNeuigkeiten();
 
 })();
 </script>
